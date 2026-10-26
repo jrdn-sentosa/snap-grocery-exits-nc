@@ -54,17 +54,20 @@ ALL_COLUMNS = IDS + FEATURES + BIAS + ACS_META + DESCRIPTORS[:6] + LABELS + OUTC
 
 
 def role_of(col: str) -> str:
+    """id | label | feature | qa_ | impact_ | bias_ | grouping. Only `feature` may enter a model."""
     if col in IDS:
         return "id"
     if col in FEATURES:
         return "feature"
-    if col in BIAS:
-        return "bias (never a feature)"
     if col in LABELS:
         return "label"
-    if col in OUTCOME_SIDE:
-        return "outcome_side (never a feature)"
-    return "descriptor (never a feature)"
+    if col in BIAS:
+        return "bias_"
+    if col.startswith("impact_"):
+        return "impact_"
+    if col.startswith("qa_"):
+        return "qa_"
+    return "grouping"  # descriptors used to slice results (county, tracts, coordinates, ACS vintage metadata)
 
 
 # ---------------------------------------------------------------- ACS ----------------------------------------------------

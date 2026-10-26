@@ -23,27 +23,27 @@ pct_snap_hh,float64,feature,33.6,0.0,0.0
 pct_renter,float64,feature,33.6,0.0,0.0
 pct_age_65_plus,float64,feature,33.6,0.0,0.0
 unemployment_rate,float64,feature,42.7,0.0,0.0
-bias_pct_hispanic,float64,bias (never a feature),33.6,0.0,0.0
-bias_pct_white_nh,float64,bias (never a feature),33.6,0.0,0.0
-bias_pct_black_nh,float64,bias (never a feature),33.6,0.0,0.0
-bias_pct_asian_nh,float64,bias (never a feature),33.6,0.0,0.0
-bias_pct_aian_nh,float64,bias (never a feature),33.6,0.0,0.0
-bias_pct_other_multi_nh,float64,bias (never a feature),33.6,0.0,0.0
-acs_available,bool,descriptor (never a feature),0.0,0.0,0.0
-acs_vintage,object,descriptor (never a feature),33.6,0.0,0.0
-acs_release_date,datetime64[ns],descriptor (never a feature),33.6,0.0,0.0
-acs_tract_vintage,object,descriptor (never a feature),33.6,0.0,0.0
-store_name,str,descriptor (never a feature),0.0,0.0,0.0
-county,str,descriptor (never a feature),0.0,0.0,0.0
-latitude,float64,descriptor (never a feature),0.0,0.0,0.0
-longitude,float64,descriptor (never a feature),0.0,0.0,0.0
-tract_geoid_2010,str,descriptor (never a feature),0.0,0.0,0.0
-tract_geoid_2020,str,descriptor (never a feature),0.0,0.0,0.0
+bias_pct_hispanic,float64,bias_,33.6,0.0,0.0
+bias_pct_white_nh,float64,bias_,33.6,0.0,0.0
+bias_pct_black_nh,float64,bias_,33.6,0.0,0.0
+bias_pct_asian_nh,float64,bias_,33.6,0.0,0.0
+bias_pct_aian_nh,float64,bias_,33.6,0.0,0.0
+bias_pct_other_multi_nh,float64,bias_,33.6,0.0,0.0
+acs_available,bool,grouping,0.0,0.0,0.0
+acs_vintage,object,grouping,33.6,0.0,0.0
+acs_release_date,datetime64[ns],grouping,33.6,0.0,0.0
+acs_tract_vintage,object,grouping,33.6,0.0,0.0
+store_name,str,grouping,0.0,0.0,0.0
+county,str,grouping,0.0,0.0,0.0
+latitude,float64,grouping,0.0,0.0,0.0
+longitude,float64,grouping,0.0,0.0,0.0
+tract_geoid_2010,str,grouping,0.0,0.0,0.0
+tract_geoid_2020,str,grouping,0.0,0.0,0.0
 exit_12m,int8,label,0.0,0.0,0.0
 exit_12m_strict,Int8,label,2.2,1.3,0.5
 exit_is_batch,boolean,label,95.9,96.2,97.2
-impact_dist_nearest_other_grocery_mi,float64,outcome_side (never a feature),95.9,96.2,97.2
-qa_coord_invalid,bool,outcome_side (never a feature),0.0,0.0,0.0
-qa_tract_unmatched,bool,outcome_side (never a feature),0.0,0.0,0.0
-qa_ownership_change_in_year,bool,outcome_side (never a feature),0.0,0.0,0.0
-qa_spell_end,datetime64[us],outcome_side (never a feature),63.0,79.8,88.8
+impact_dist_nearest_other_grocery_mi,float64,impact_,95.9,96.2,97.2
+qa_coord_invalid,bool,qa_,0.0,0.0,0.0
+qa_tract_unmatched,bool,qa_,0.0,0.0,0.0
+qa_ownership_change_in_year,bool,qa_,0.0,0.0,0.0
+qa_spell_end,datetime64[us],qa_,63.0,79.8,88.8
