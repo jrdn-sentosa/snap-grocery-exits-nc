@@ -3,7 +3,6 @@
 # below when the official download fails or serves different bytes, and verifies size and SHA-256 of every file.
 #
 #   access: scripted        official URL, downloadable by script
-#           manual_blocked  official page exists but the publisher refuses scripted downloads (HTTP 403)
 #           manual_export   hand-exported from a web tool, no stable URL
 # retrieved / retrieved_how: see each file. For scripted files this is the date the official URL was re-downloaded and
 # the SHA-256 matched the file used in the analysis. Original download dates were not recorded.
@@ -18,18 +17,20 @@ datasets:
     title: "Historical SNAP Retailer Locator Data (2005-2025, current to 31 Dec 2025)"
     publisher: "USDA Food and Nutrition Service"
     landing_page: "https://www.fns.usda.gov/snap/retailer-locator/data"
-    url: null
-    access: manual_blocked
+    url: "https://fns-prod.azureedge.us/sites/default/files/resource-files/snap-retailer-locator-data2005-2025.zip"
+    archive: zip
+    access: scripted
     citation: "U.S. Department of Agriculture, Food and Nutrition Service. SNAP Retailer Locator historical data, 2005-2025 (current to 31 December 2025). https://www.fns.usda.gov/snap/retailer-locator/data"
     used_by: "01_load.py -> everything"
-    note: "FNS answers scripted requests with HTTP 403 and the direct zip link is not published in documentation we could cite, so this file is served from the GitHub Release fallback. The official page now offers a rolling 20-year window; this CSV is the 2005-2025 extract."
-    manual_instructions: "Open the landing page in a browser, download 'Historical SNAP Retailer Locator Data (.zip)', unzip the CSV into data/raw/, then run download_raw.py --check. If the SHA-256 differs, FNS has re-issued the file: use the data-v1 release asset to reproduce the reported results."
+    note: "The landing page on www.fns.usda.gov answers scripted requests with HTTP 403, but the zip is served from FNS's content-delivery host (url above) and downloads normally. FNS may replace the file when it publishes a new rolling window; a changed SHA-256 then sends the downloader to the data-v1 release asset, which holds the file used for the reported results."
+    manual_instructions: "If the url stops working: open the landing page in a browser, download 'Historical SNAP Retailer Locator Data (.zip)', unzip the CSV into data/raw/, then run download_raw.py --check."
     files:
       - local: "Historical SNAP Retailer Locator Data 2005-2025.csv"
+        member: "Historical SNAP Retailer Locator Data 2005-2025.csv"
         size_bytes: 95165777
         sha256: 4af9a16811b7d906a2ad077eb59d3f1c7e99a32a87d2bca0900f8d14033c7b9e
-        retrieved: 2026-02-10
-        retrieved_how: "local file modified date; original download date not recorded; the official file is a zip containing this CSV"
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
   - id: ers_fara_2010
     title: "Food Access Research Atlas, 2010 data and documentation (archived)"
     publisher: "USDA Economic Research Service"

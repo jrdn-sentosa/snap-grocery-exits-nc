@@ -18,7 +18,7 @@ and verifies the SHA-256 of every file. It exits non-zero on any mismatch and ne
 
 | Dataset | File(s) in `data/raw/` | Source | Access |
 |---|---|---|---|
-| Historical SNAP Retailer Locator data, 2005-2025 | `Historical SNAP Retailer Locator Data 2005-2025.csv` | USDA FNS, [SNAP Retailer Locator data](https://www.fns.usda.gov/snap/retailer-locator/data) | Download the zip in a browser (FNS returns HTTP 403 to scripts); otherwise the Release fallback |
+| Historical SNAP Retailer Locator data, 2005-2025 | `Historical SNAP Retailer Locator Data 2005-2025.csv` | USDA FNS, [SNAP Retailer Locator data](https://www.fns.usda.gov/snap/retailer-locator/data) | Script (zip from FNS's content-delivery host; the landing page itself returns HTTP 403 to scripts) |
 | Food Access Research Atlas 2010 (data + documentation) | `FoodAccessResearchAtlasData2010.xlsx`, `FoodAccessResearchAtlasDocumentation2010.pdf` | USDA ERS, [Food Access Research Atlas downloads](https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data) | Script (zip) |
 | Food Access Research Atlas 2015 (data + documentation) | `FoodAccessResearchAtlasData2015.xlsx`, `FoodAccessResearchAtlasDocumentation2015.pdf` | same page | Script (zip) |
 | Large Retailer Access Map (LRAM) 2019, formerly the Food Access Research Atlas | `FoodAccessResearchAtlasData2019.xlsx` | same page | Script |
@@ -37,8 +37,8 @@ Census API into `data/raw/acs/` and records each vintage's release date and sour
 
 ### Fallback release (maintainers)
 
-The SNAP file and the QOL export cannot be fetched from a stable URL, so a `data-v1` release holds a flat zip of
-every file in the manifest. The repository must be pushed first (`git push -u origin main`); then, from PowerShell
+The QOL export has no stable URL and any official file can be re-issued upstream, so a `data-v1` release holds a flat
+zip of every file in the manifest. The repository must be pushed first (`git push -u origin main`); then, from PowerShell
 at the repository root:
 
 ```powershell
