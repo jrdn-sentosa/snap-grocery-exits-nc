@@ -184,7 +184,10 @@ def main() -> None:
         "successor_is_grocery", "ownership_change", "true_exit", "qa_batch_end", "exit_is_batch",
     ]]
     spells.to_parquet(INTERIM / "spells.parquet", index=False)
-    p[["record_id", "period_seq", "spell_id", "store_type", "is_grocery", "is_convenience", "auth_date", "end_date"]].to_parquet(
+    # Location/name columns ride along so 04 can take them from the period in force on a given
+    # Jan 1 (a store that moved must not be placed at its future address).
+    p[["record_id", "period_seq", "spell_id", "store_type", "is_grocery", "is_convenience", "auth_date", "end_date",
+       "store_name", "name_std", "address_key", "zip5", "county", "latitude", "longitude"]].to_parquet(
         INTERIM / "periods_spells.parquet", index=False)
     log_step(SCRIPT, "write_spells", "write spells.parquet and periods_spells.parquet",
              "Handoff to 04_panel", len(spells), len(spells), 0)

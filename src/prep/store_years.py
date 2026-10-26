@@ -26,9 +26,12 @@ EARLIEST = pd.Timestamp("1900-01-01")
 
 
 def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.DataFrame:
-    per = periods[["spell_id", "auth_date", "store_type"]].copy()
+    # Only what membership and labels need from the spell; name/location come from the period in force.
+    spells = spells[["spell_id", "record_id", "spell_start", "spell_end", "true_exit", "ownership_change", "qa_batch_end"]]
+    attrs = ["store_name", "name_std", "address_key", "zip5", "county", "latitude", "longitude"]
+    per = periods[["spell_id", "auth_date", "store_type", *attrs]].copy()
     per["key"] = per["auth_date"].fillna(EARLIEST).astype("datetime64[us]")
-    per = per.sort_values("key")[["spell_id", "key", "store_type"]].rename(columns={"store_type": "store_type_jan1"})
+    per = per.sort_values("key").drop(columns="auth_date").rename(columns={"store_type": "store_type_jan1"})
 
     frames = []
     for y in years:
@@ -52,6 +55,8 @@ def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.
         "spell_id": sy["spell_id"],
         "year": sy["year"],
         "store_type": sy["store_type_jan1"],
+        **{c: sy[c] for c in attrs},
+        "qa_coord_invalid": sy["latitude"].isna() | sy["longitude"].isna(),  # 02 blanked invalid coordinates
         "exit_12m": exit_in_year.astype("int8"),
         "exit_12m_strict": exit_in_year.astype("Int8").mask(exit_in_year & batch),
         "exit_is_batch": batch.astype("boolean").where(exit_in_year),
