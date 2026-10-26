@@ -49,7 +49,7 @@ authorized after the exit date (others ending the same day excluded). Outcome-si
 
 ## 4. Exits with no other grocery within 1 mi and within 10 mi (train + validation, 2008-2021)
 
-RUCA group from the 2010 codes on 2010 tracts (all train/validation years): urban = primary RUCA 1, suburban = 2-3,
+RUCA group from the 2010 codes on 2010 tracts (all train/validation years): urban = primary RUCA 1, metro fringe = 2-3,
 small town = 4-9 (micropolitan and small-town tracts), rural = 10, unclassified = 99. "> 1 mi" means the nearest other
 grocery was more than 1 mile away. Counts are exits with a distance; the label rows overlap (strict is a subset of all).
 
@@ -57,8 +57,8 @@ grocery was more than 1 mile away. Counts are exits with a distance; the label r
 |---|---|---|---|---|---|---|---|
 | RUCA group | urban | exit_12m (all true exits) | 705 | 93 | 13.2% | 0 | 0.0% |
 | RUCA group | urban | exit_12m_strict (non-batch exits) | 376 | 46 | 12.2% | 0 | 0.0% |
-| RUCA group | suburban | exit_12m (all true exits) | 117 | 65 | 55.6% | 2 | 1.7% |
-| RUCA group | suburban | exit_12m_strict (non-batch exits) | 50 | 22 | 44.0% | 0 | 0.0% |
+| RUCA group | metro fringe | exit_12m (all true exits) | 117 | 65 | 55.6% | 2 | 1.7% |
+| RUCA group | metro fringe | exit_12m_strict (non-batch exits) | 50 | 22 | 44.0% | 0 | 0.0% |
 | RUCA group | small town | exit_12m (all true exits) | 290 | 82 | 28.3% | 4 | 1.4% |
 | RUCA group | small town | exit_12m_strict (non-batch exits) | 143 | 28 | 19.6% | 2 | 1.4% |
 | RUCA group | rural | exit_12m (all true exits) | 48 | 22 | 45.8% | 7 | 14.6% |

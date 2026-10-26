@@ -125,7 +125,7 @@ def main() -> None:
     n_miss_ruca = int((valid & sy["ruca_primary"].isna()).sum())
     log_step(SCRIPT, "ruca",
              f"ruca_primary / ruca_group joined by tract: RUCA 2010 on 2010 tracts for t <= {RUCA_2020_FROM_YEAR - 1}, RUCA 2020 on 2020 tracts from {RUCA_2020_FROM_YEAR}; "
-             "groups: 1 urban, 2-3 suburban, 4-9 small town, 10 rural, 99 unclassified; "
+             "groups: 1 urban, 2-3 metro fringe, 4-9 small town, 10 rural, 99 unclassified; "
              "ruca_release_date = last-updated date of the file we hold (original release not stated by ERS), enforced in 05",
              "Urban/rural context for the exit analysis; valid-coordinate store-years with no RUCA code are counted as affected",
              int(valid.sum()), int(valid.sum()) - n_miss_ruca, n_miss_ruca)

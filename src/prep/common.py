@@ -40,9 +40,10 @@ CONVENIENCE_TYPE = "Convenience Store"
 RELEASE_DATES_CSV = ROOT / "src" / "prep" / "reference" / "release_dates.csv"
 
 # 4-way urban-rural grouping of USDA primary RUCA codes (analyst choice, documented in the data dictionary):
-#   1 metropolitan core -> urban; 2-3 metropolitan commuting -> suburban;
+#   1 metropolitan core -> urban; 2-3 metropolitan high/low commuting -> metro fringe (not "suburban":
+#   these tracts are defined by commuting flows to a metro area, and many are rural in character);
 #   4-9 micropolitan and small-town tracts -> small town; 10 -> rural; 99 (zero-population water tract) -> unclassified.
-RUCA_GROUP_ORDER = ["urban", "suburban", "small town", "rural", "unclassified"]
+RUCA_GROUP_ORDER = ["urban", "metro fringe", "small town", "rural", "unclassified"]
 
 
 def ruca_group(code) -> str | None:
@@ -52,7 +53,7 @@ def ruca_group(code) -> str | None:
     if code == 1:
         return "urban"
     if code in (2, 3):
-        return "suburban"
+        return "metro fringe"
     if 4 <= code <= 9:
         return "small town"
     if code == 10:

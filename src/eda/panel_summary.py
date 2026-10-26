@@ -113,7 +113,7 @@ def main() -> None:
         "",
         md_table(pd.DataFrame(dist_rows)), "",
         "## 4. Exits with no other grocery within 1 mi and within 10 mi (train + validation, 2008-2021)", "",
-        "RUCA group from the 2010 codes on 2010 tracts (all train/validation years): urban = primary RUCA 1, suburban = 2-3,",
+        "RUCA group from the 2010 codes on 2010 tracts (all train/validation years): urban = primary RUCA 1, metro fringe = 2-3,",
         "small town = 4-9 (micropolitan and small-town tracts), rural = 10, unclassified = 99. \"> 1 mi\" means the nearest other",
         "grocery was more than 1 mile away. Counts are exits with a distance; the label rows overlap (strict is a subset of all).",
         "",
