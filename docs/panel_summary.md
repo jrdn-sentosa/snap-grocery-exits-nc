@@ -73,3 +73,14 @@ grocery was more than 1 mile away. Counts are exits with a distance; the label r
 | Region | Rest of NC | exit_12m_strict (non-batch exits) | 513 | 104 | 20.3% | 5 | 1.0% |
 | Region | All NC | exit_12m (all true exits) | 1161 | 262 | 22.6% | 13 | 1.1% |
 | Region | All NC | exit_12m_strict (non-batch exits) | 593 | 106 | 17.9% | 5 | 0.8% |
+
+## 5. Train store-years and exits: 2008-2011 vs 2012-2018 (train split only)
+
+ACS features exist from the 2012 cohort (first usable vintage, 2006-2010, was released 2011-12-08). Baseline and
+models must be compared on the same rows in D3, so the comparison sample is likely the 2012-2018 train rows.
+
+| train years | store-years | exit_12m exits | exit_12m rate | strict n | strict exits | exit_12m_strict rate |
+|---|---|---|---|---|---|---|
+| 2008-2011 (no ACS) | 7,572 | 242 | 3.2% | 7,455 | 125 | 1.7% |
+| 2012-2018 (ACS available) | 14,982 | 678 | 4.5% | 14,614 | 310 | 2.1% |
+| 2008-2018 (all train) | 22,554 | 920 | 4.1% | 22,069 | 435 | 2.0% |

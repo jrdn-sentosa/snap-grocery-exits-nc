@@ -25,7 +25,9 @@ Batch ends (`qa_batch_end`) are ~32% of ended periods through 2021, ~33% of groc
 - `exit_12m_strict`: same, but a batch-end exit makes the label **missing** (the row is excluded from strict analyses; it is not coded 0, because those stores did lose authorization).
 - `exit_is_batch`: for exits only, whether the exit was a `qa_batch_end`; missing for non-exits. Never a feature.
 - **Same-Record-ID periods** separated by ≤ 90 days (or overlapping) form one spell; a longer gap ends the spell (exit) and the later period starts a new spell.
-- **Never model features:** every `qa_*`, `impact_*` and `exit_*` column, and raw end dates. They describe the exit itself or data quality, not the state on Jan 1.
+- **ACS features exist from the 2012 cohort.** The first usable vintage (2006–2010, on 2010 tracts) was released 2011-12-08, so 2008–2011 store-years have no ACS features. The vintage for cohort t is the latest one released before Jan 1 of t (release dates and sources in `src/prep/reference/release_dates.csv` and `data/raw/acs/manifest.json`); e.g. 2016–2020 was released 2022-03-17, so the 2022 cohort uses 2015–2019. ACS tracts are on 2010 boundaries through the 2022 cohort and on 2020 boundaries from 2023.
+- **D3: baseline and models must be compared on the same rows.** The historical-rate baseline and every model are evaluated on identical store-years, so the comparison sample is likely the 2012–2018 train rows (14,982 store-years, 678 `exit_12m` exits; 2008–2011 has 7,572 and 242). Do not compare a baseline fit on 2008–2018 with a model fit on 2012–2018 without saying so.
+- **Never model features:** every `qa_*`, `impact_*`, `exit_*` and `bias_*` column (`bias_*` = race/ethnicity for group error analysis and the bias discussion only), and raw end dates. They describe the exit itself or data quality, not the state on Jan 1.
 - **Calendar year is not a model feature**, nor any transform of it (year dummies, years since 2005, etc.). Batch ends cluster in particular years, so a year feature would let a model learn USDA's batch timing, which cannot be expected to carry into the test years. `year` is only the cohort index for the split.
 - Implementation: label definitions live in `src/prep/store_years.py` (shared by 04 and EDA); spells and ownership changes in `src/prep/03_spells.py`.
 
@@ -41,7 +43,8 @@ Batch ends (`qa_batch_end`) are ~32% of ended periods through 2021, ~33% of groc
 
 ## Repository layout
 ```
-data/raw/            # downloaded files (gitignored)
+data/sources.yaml    # manifest of data/raw: official URL, size, SHA-256, citation (src/prep/download_raw.py verifies it)
+data/raw/            # downloaded files (gitignored); data/raw/acs/ is built by 00_download_acs.py
 data/interim/        # cleaned retailer + spell tables
 data/processed/      # store_year_trainval.parquet, store_year_test.parquet
 src/prep/            # 01_load.py, 02_clean.py, 03_spells.py, 04_panel.py, 05_features.py, 06_load_supabase.py

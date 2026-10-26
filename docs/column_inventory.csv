@@ -1,0 +1,49 @@
+column,dtype,role,missing_pct_train,missing_pct_validation,missing_pct_test
+record_id,int64,id,0.0,0.0,0.0
+spell_id,str,id,0.0,0.0,0.0
+year,int64,id,0.0,0.0,0.0
+split,str,id,0.0,0.0,0.0
+store_type,str,feature,0.0,0.0,0.0
+store_age_years,float64,feature,2.7,1.9,1.5
+auth_date_placeholder,bool,feature,0.0,0.0,0.0
+n_prior_spells_same_id,Int64,feature,0.0,0.0,0.0
+n_prior_ownership_changes,Int64,feature,0.0,0.0,0.0
+chain_size,Int64,feature,0.0,0.1,0.1
+n_grocery_05mi,Int64,feature,0.0,0.0,0.0
+n_grocery_1mi,Int64,feature,0.0,0.0,0.0
+n_convenience_1mi,Int64,feature,0.0,0.0,0.0
+convenience_to_grocery_ratio_1mi,float64,feature,0.0,0.0,0.0
+n_grocery_ends_1mi_prior12m,Int64,feature,0.0,0.0,0.0
+acs_population,float64,feature,33.6,0.0,0.0
+pop_density_sqmi,float64,feature,33.6,0.0,0.0
+pct_poverty,float64,feature,33.6,0.0,0.0
+median_hh_income,float64,feature,33.6,0.1,0.1
+pct_no_vehicle,float64,feature,33.6,0.0,0.0
+pct_snap_hh,float64,feature,33.6,0.0,0.0
+pct_renter,float64,feature,33.6,0.0,0.0
+pct_age_65_plus,float64,feature,33.6,0.0,0.0
+unemployment_rate,float64,feature,42.7,0.0,0.0
+bias_pct_hispanic,float64,bias (never a feature),33.6,0.0,0.0
+bias_pct_white_nh,float64,bias (never a feature),33.6,0.0,0.0
+bias_pct_black_nh,float64,bias (never a feature),33.6,0.0,0.0
+bias_pct_asian_nh,float64,bias (never a feature),33.6,0.0,0.0
+bias_pct_aian_nh,float64,bias (never a feature),33.6,0.0,0.0
+bias_pct_other_multi_nh,float64,bias (never a feature),33.6,0.0,0.0
+acs_available,bool,descriptor (never a feature),0.0,0.0,0.0
+acs_vintage,object,descriptor (never a feature),33.6,0.0,0.0
+acs_release_date,datetime64[ns],descriptor (never a feature),33.6,0.0,0.0
+acs_tract_vintage,object,descriptor (never a feature),33.6,0.0,0.0
+store_name,str,descriptor (never a feature),0.0,0.0,0.0
+county,str,descriptor (never a feature),0.0,0.0,0.0
+latitude,float64,descriptor (never a feature),0.0,0.0,0.0
+longitude,float64,descriptor (never a feature),0.0,0.0,0.0
+tract_geoid_2010,str,descriptor (never a feature),0.0,0.0,0.0
+tract_geoid_2020,str,descriptor (never a feature),0.0,0.0,0.0
+exit_12m,int8,label,0.0,0.0,0.0
+exit_12m_strict,Int8,label,2.2,1.3,0.5
+exit_is_batch,boolean,label,95.9,96.2,97.2
+impact_dist_nearest_other_grocery_mi,float64,outcome_side (never a feature),95.9,96.2,97.2
+qa_coord_invalid,bool,outcome_side (never a feature),0.0,0.0,0.0
+qa_tract_unmatched,bool,outcome_side (never a feature),0.0,0.0,0.0
+qa_ownership_change_in_year,bool,outcome_side (never a feature),0.0,0.0,0.0
+qa_spell_end,datetime64[us],outcome_side (never a feature),63.0,79.8,88.8

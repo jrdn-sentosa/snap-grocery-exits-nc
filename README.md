@@ -1,0 +1,79 @@
+# Predicting SNAP Grocery Store Exits in North Carolina
+
+Using only information available on January 1 of each year, can we predict which SNAP-authorized grocery
+stores in North Carolina will lose SNAP authorization within the next 12 months more accurately than the
+historical exit rate for their store type? Charlotte-Mecklenburg is the focus area. Cohorts are 2008-2024
+with a fixed chronological split (train 2008-2018, validation 2019-2021, test 2022-2024, reserved).
+
+Project rules, labels and feature-timing rules are in [`CLAUDE.md`](CLAUDE.md); the cleaning log is in
+[`docs/cleaning_log.md`](docs/cleaning_log.md).
+
+## Data
+
+Raw data is not stored in git (`data/raw/` is gitignored). [`data/sources.yaml`](data/sources.yaml) is the manifest:
+for every file it records the official download URL, the local filename, size, SHA-256, retrieval date and a
+citation. [`src/prep/download_raw.py`](src/prep/download_raw.py) downloads missing files from the official URL,
+falls back to the GitHub Release asset `raw-data-v1.zip` (tag `data-v1`) if that fails or serves different bytes,
+and verifies the SHA-256 of every file. It exits non-zero on any mismatch and never overwrites a file silently.
+
+| Dataset | File(s) in `data/raw/` | Source | Access |
+|---|---|---|---|
+| Historical SNAP Retailer Locator data, 2005-2025 | `Historical SNAP Retailer Locator Data 2005-2025.csv` | USDA FNS, [SNAP Retailer Locator data](https://www.fns.usda.gov/snap/retailer-locator/data) | Download the zip in a browser (FNS returns HTTP 403 to scripts); otherwise the Release fallback |
+| Food Access Research Atlas 2010 (data + documentation) | `FoodAccessResearchAtlasData2010.xlsx`, `FoodAccessResearchAtlasDocumentation2010.pdf` | USDA ERS, [Food Access Research Atlas downloads](https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data) | Script (zip) |
+| Food Access Research Atlas 2015 (data + documentation) | `FoodAccessResearchAtlasData2015.xlsx`, `FoodAccessResearchAtlasDocumentation2015.pdf` | same page | Script (zip) |
+| Large Retailer Access Map (LRAM) 2019, formerly the Food Access Research Atlas | `FoodAccessResearchAtlasData2019.xlsx` | same page | Script |
+| SNAP-authorized Retailer Access Map (SRAM) 2025 | `2025-sram-fara-data.xlsx` | same page | Script (not used: built from SNAP retailers and published after every cohort year) |
+| Rural-Urban Commuting Area codes 2010, tracts (revised 7/3/2019) and ZIP codes | `ruca2010revised.xlsx`, `RUCA2010zipcode.xlsx` | USDA ERS, [RUCA codes](https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes) | Script |
+| Rural-Urban Commuting Area codes 2020, tracts and ZIP codes | `RUCA-codes-2020-tract.xlsx`, `RUCA-codes-2020-zipcode.xlsx` | same page | Script |
+| TIGER/Line tract shapefile, 2010, NC | `tl_2010_37_tract10.*` (5 files) | U.S. Census Bureau, [TIGER/Line](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html) | Script (zip) |
+| TIGER/Line tract shapefile, 2020, NC | `tl_2020_37_tract.*` (7 files) | same page | Script (zip) |
+| 2020-to-2010 tract relationship file: explanation (PDF only; the file itself is not used) | `explanation_tab20_tract20_tract10.pdf` | [U.S. Census Bureau relationship files](https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html) | Script |
+| Proximity to a Grocery Store, Mecklenburg neighborhoods (Quality of Life Explorer) | `Proximity to a Grocery Store(1).csv` | [Quality of Life Explorer](https://explore.charlottenc.gov/), variable [m45](https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html) | **Manual export, no stable URL**; Release fallback only |
+
+ACS 5-year tract tables (2006-2010 through 2018-2022) are not in the manifest: `00_download_acs.py` pulls them from the
+Census API into `data/raw/acs/` and records each vintage's release date and source in `data/raw/acs/manifest.json`
+(it needs a free [Census API key](https://api.census.gov/data/key_signup.html) in `.env` as `CENSUS_API_KEY`).
+
+### Fallback release (maintainers)
+
+The SNAP file and the QOL export cannot be fetched from a stable URL, so a `data-v1` release holds a flat zip of
+every file in the manifest. The repository must be pushed first (`git push -u origin main`); then, from PowerShell
+at the repository root:
+
+```powershell
+# the zip goes to the temp folder, not the repo, so it cannot be committed by accident
+Get-ChildItem data\raw -File | Where-Object { $_.Name -ne '.gitkeep' } | Compress-Archive -DestinationPath "$env:TEMP\raw-data-v1.zip" -Force
+gh release create data-v1 "$env:TEMP\raw-data-v1.zip" --repo jrdn-sentosa/snap-grocery-exits-nc --title "Raw data v1" --notes "Raw inputs for the SNAP grocery exits project: a flat zip of the 25 files listed in data/sources.yaml. Verify with: uv run python src/prep/download_raw.py --check"
+```
+
+The release must be public for graders to download it without credentials. Offline, download the asset by hand and
+run `uv run python src/prep/download_raw.py --fallback-zip path\to\raw-data-v1.zip`.
+
+## Reproduce
+
+Requires [uv](https://docs.astral.sh/uv/). Every step is a script that reads raw files and writes to `data/interim/`,
+`data/processed/` or `docs/`.
+
+```bash
+uv sync
+
+# 1. raw inputs, verified against data/sources.yaml (add --check to verify without downloading)
+uv run python src/prep/download_raw.py
+
+# 2. ACS tract tables: copy .env.example to .env and set CENSUS_API_KEY first
+uv run python src/prep/00_download_acs.py
+
+# 3. prepare the data
+uv run python src/prep/01_load.py       # SNAP CSV -> NC; RUCA tract tables
+uv run python src/prep/02_clean.py      # cleaning rules, all NC retailers
+uv run python src/prep/03_spells.py     # authorization periods -> spells, ownership changes
+uv run python src/prep/04_panel.py      # store-years, tracts, labels, train/validation vs reserved test split
+uv run python src/prep/05_features.py   # Jan-1 features -> data/processed/store_year_*.parquet
+
+# 4. reports (outcome statistics use train and validation years only)
+uv run python src/eda/batch_end_profile.py
+uv run python src/eda/label_rates.py
+uv run python src/eda/panel_summary.py
+```
+
+Not built yet: `06_load_supabase.py`, the Streamlit app and the Modal deployment.

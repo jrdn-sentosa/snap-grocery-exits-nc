@@ -87,6 +87,18 @@ def main() -> None:
                 "> 10 mi (n)": int((d > 10).sum()), "> 10 mi (%)": f"{100 * (d > 10).mean():.1f}%",
             })
 
+    # 5. Train rows with and without ACS: ACS features exist from the 2012 cohort, so D3 baseline and
+    #    models must be compared on the same rows (likely 2012-2018 train). TRAIN split only.
+    tr = tv[tv["split"] == "train"]
+    acs_rows = []
+    for name, g in (("2008-2011 (no ACS)", tr[tr["year"] <= 2011]), ("2012-2018 (ACS available)", tr[tr["year"] >= 2012]), ("2008-2018 (all train)", tr)):
+        s = g["exit_12m_strict"].dropna()
+        acs_rows.append({
+            "train years": name, "store-years": f"{len(g):,}", "exit_12m exits": int(g["exit_12m"].sum()),
+            "exit_12m rate": f"{100 * g['exit_12m'].mean():.1f}%",
+            "strict n": f"{len(s):,}", "strict exits": int(s.sum()), "exit_12m_strict rate": f"{100 * s.mean():.1f}%",
+        })
+
     out = [
         "# Panel summary",
         "",
@@ -106,6 +118,11 @@ def main() -> None:
         "grocery was more than 1 mile away. Counts are exits with a distance; the label rows overlap (strict is a subset of all).",
         "",
         md_table(pd.DataFrame(far_rows)), "",
+        "## 5. Train store-years and exits: 2008-2011 vs 2012-2018 (train split only)", "",
+        "ACS features exist from the 2012 cohort (first usable vintage, 2006-2010, was released 2011-12-08). Baseline and",
+        "models must be compared on the same rows in D3, so the comparison sample is likely the 2012-2018 train rows.",
+        "",
+        md_table(pd.DataFrame(acs_rows)), "",
     ]
     (DOCS / "panel_summary.md").write_text("\n".join(out), encoding="utf-8")
     print(f"Wrote {DOCS / 'panel_summary.md'}")

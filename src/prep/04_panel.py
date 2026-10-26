@@ -33,7 +33,7 @@ SCRIPT = "04_panel"
 CRS_GEO = "EPSG:4269"
 CRS_PROJ = "EPSG:32119"  # NC State Plane (NAD83), metres: distances in a locally accurate plane
 M_PER_MI = 1609.344
-RUCA_2020_FROM_YEAR = 2022  # first cohort year that uses RUCA 2020 / 2020 tracts
+RUCA_2020_FROM_YEAR = 2023  # first cohort year on 2020 tracts; matches ACS, whose newest vintage usable on Jan 1 2023 (2017-2021) is on 2020 tracts
 OPEN_END = pd.Timestamp("2200-01-01").as_unit("us")
 EARLIEST = pd.Timestamp("1900-01-01").as_unit("us")
 
@@ -107,10 +107,11 @@ def main() -> None:
                  int(valid.sum()), int(valid.sum()) - miss, miss)
     sy["qa_tract_unmatched"] = valid & (sy["tract_geoid_2010"].isna() | sy["tract_geoid_2020"].isna())
 
-    # 3b. RUCA by tract vintage: RUCA 2010 (keyed by 2010 tracts) up to 2021, RUCA 2020 (2020 tracts)
-    #     from 2022, the first cohort year after the 2020-census tracts replaced the 2010 ones in
-    #     federal products. The release date of the version we hold rides along so 05 can enforce
-    #     the Jan-1 timing rule (rule 2) instead of this script silently dropping early years.
+    # 3b. RUCA by tract vintage: RUCA 2010 (keyed by 2010 tracts) up to 2022, RUCA 2020 (2020 tracts)
+    #     from 2023, the first cohort year whose ACS vintage is on 2020 tracts, so every source uses
+    #     the same tract boundaries in a given year. The release date of the version we hold rides
+    #     along so 05 can enforce the Jan-1 timing rule (rule 2) instead of this script silently
+    #     dropping early years.
     ruca = {v: pd.read_parquet(INTERIM / f"ruca_{v}_tract_nc.parquet").set_index("tract_geoid")["ruca_primary"] for v in (2010, 2020)}
     rel = load_release_dates()
     rel = rel[rel["dataset"] == "ruca"].set_index("end_year")["release_date"]

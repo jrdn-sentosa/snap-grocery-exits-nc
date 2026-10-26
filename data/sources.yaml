@@ -1,0 +1,292 @@
+# Manifest of every file in data/raw/ (except data/raw/acs/, which 00_download_acs.py fetches from the Census API).
+# Read by src/prep/download_raw.py: it downloads missing files from `url`, falls back to the GitHub Release asset
+# below when the official download fails or serves different bytes, and verifies size and SHA-256 of every file.
+#
+#   access: scripted        official URL, downloadable by script
+#           manual_blocked  official page exists but the publisher refuses scripted downloads (HTTP 403)
+#           manual_export   hand-exported from a web tool, no stable URL
+# retrieved / retrieved_how: see each file. For scripted files this is the date the official URL was re-downloaded and
+# the SHA-256 matched the file used in the analysis. Original download dates were not recorded.
+schema: 1
+verified_on: 2026-10-26
+fallback:
+  github_repo: "jrdn-sentosa/snap-grocery-exits-nc"
+  release_tag: "data-v1"
+  asset: "raw-data-v1.zip"   # flat zip of every `local` file below (create/upload commands are in README.md)
+datasets:
+  - id: snap_retailers
+    title: "Historical SNAP Retailer Locator Data (2005-2025, current to 31 Dec 2025)"
+    publisher: "USDA Food and Nutrition Service"
+    landing_page: "https://www.fns.usda.gov/snap/retailer-locator/data"
+    url: null
+    access: manual_blocked
+    citation: "U.S. Department of Agriculture, Food and Nutrition Service. SNAP Retailer Locator historical data, 2005-2025 (current to 31 December 2025). https://www.fns.usda.gov/snap/retailer-locator/data"
+    used_by: "01_load.py -> everything"
+    note: "FNS answers scripted requests with HTTP 403 and the direct zip link is not published in documentation we could cite, so this file is served from the GitHub Release fallback. The official page now offers a rolling 20-year window; this CSV is the 2005-2025 extract."
+    manual_instructions: "Open the landing page in a browser, download 'Historical SNAP Retailer Locator Data (.zip)', unzip the CSV into data/raw/, then run download_raw.py --check. If the SHA-256 differs, FNS has re-issued the file: use the data-v1 release asset to reproduce the reported results."
+    files:
+      - local: "Historical SNAP Retailer Locator Data 2005-2025.csv"
+        size_bytes: 95165777
+        sha256: 4af9a16811b7d906a2ad077eb59d3f1c7e99a32a87d2bca0900f8d14033c7b9e
+        retrieved: 2026-02-10
+        retrieved_how: "local file modified date; original download date not recorded; the official file is a zip containing this CSV"
+  - id: ers_fara_2010
+    title: "Food Access Research Atlas, 2010 data and documentation (archived)"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    url: "https://www.ers.usda.gov/media/5624/2010-food-access-research-atlas-fara-data-and-documentation.zip?v=43479"
+    archive: zip
+    access: scripted
+    upstream_last_updated: "2021-04-27"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Food Access Research Atlas, 2010 data and documentation (archived). https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    used_by: "not yet used (Food Access Atlas features deferred)"
+    files:
+      - local: "FoodAccessResearchAtlasData2010.xlsx"
+        member: "FoodAccessResearchAtlasData2010.xlsx"
+        size_bytes: 29748574
+        sha256: 3f4026028645982aeb661347d1e771a84bf1e2fda38e4f15f11702094048fcdd
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "FoodAccessResearchAtlasDocumentation2010.pdf"
+        member: "FoodAccessResearchAtlasDocumentation2010.pdf"
+        size_bytes: 682016
+        sha256: 2db7e9027a9cfef92c30faa50db60055768545b329fa828db20c16945f49df2c
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+  - id: ers_fara_2015
+    title: "Food Access Research Atlas, 2015 data and documentation (archived)"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    url: "https://www.ers.usda.gov/media/5623/2015-food-access-research-atlas-fara-data-and-documentation.zip?v=26316"
+    archive: zip
+    access: scripted
+    upstream_last_updated: "2021-04-27"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Food Access Research Atlas, 2015 data and documentation (archived). https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    used_by: "not yet used (Food Access Atlas features deferred)"
+    files:
+      - local: "FoodAccessResearchAtlasData2015.xlsx"
+        member: "FoodAccessResearchAtlasData2015.xlsx"
+        size_bytes: 77710180
+        sha256: 04d0d89947bc5efd2dfeafee5e7d29ce0778fa535ea3f22111dc289bcf3e271b
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "FoodAccessResearchAtlasDocumentation2015.pdf"
+        member: "FoodAccessResearchAtlasDocumentation2015.pdf"
+        size_bytes: 461471
+        sha256: 94b7a34879d79d05695ff3f959c0a98a996ca3f623fbfab5ce496e8126e1d1ed
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+  - id: ers_lram_2019
+    title: "Large Retailer Access Map (LRAM), 2019 data (formerly the Food Access Research Atlas)"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    url: "https://www.ers.usda.gov/media/5626/2019-large-retailer-access-map-lram-formerly-known-as-the-food-access-research-atlas-fara-data.xlsx?v=46407"
+    access: scripted
+    upstream_last_updated: "2021-04-27"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Large Retailer Access Map (LRAM), 2019 data, formerly the Food Access Research Atlas. https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    used_by: "not yet used (Food Access Atlas features deferred)"
+    files:
+      - local: "FoodAccessResearchAtlasData2019.xlsx"
+        size_bytes: 85803176
+        sha256: 4faf369a75c0cd45e8707bd23c95f48ad055df3a643f59c3223a52490792daa8
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: ers_sram_2025
+    title: "SNAP-authorized Retailer Access Map (SRAM), 2025 data"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    url: "https://www.ers.usda.gov/media/29394/2025-snap-authorized-retailer-access-map-sram-data.xlsx?v=38468"
+    access: scripted
+    upstream_last_updated: "2026-07-27"
+    citation: "U.S. Department of Agriculture, Economic Research Service. SNAP-authorized Retailer Access Map (SRAM), 2025 data. https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
+    used_by: "not used"
+    note: "This is the SRAM, not a Food Access Research Atlas release (the local filename is historical). It is built from SNAP-authorized retailers and was updated 2026-07-27, after every cohort year, so it can never be a Jan-1 predictor."
+    files:
+      - local: "2025-sram-fara-data.xlsx"
+        size_bytes: 112608645
+        sha256: fd0eff35de6664e27bb5ecbffbe1e8e5ea044979d4237b09b18010e8a4449858
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: ers_ruca_2010_tract
+    title: "Rural-Urban Commuting Area Codes, 2010, census tracts (revised 7/3/2019)"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    url: "https://www.ers.usda.gov/media/5438/2010-rural-urban-commuting-area-codes-revised-732019.xlsx?v=11233"
+    access: scripted
+    upstream_last_updated: "2019-07-03"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2010 (revised 7/3/2019), census tracts. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    used_by: "01_load.py -> 04_panel.py (ruca_primary, ruca_group)"
+    files:
+      - local: "ruca2010revised.xlsx"
+        size_bytes: 5287706
+        sha256: d02a2329294db567ebf23eaa3ca5702ee531f020cee25cb5f653df99bd668c70
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: ers_ruca_2010_zip
+    title: "Rural-Urban Commuting Area Codes, 2010, ZIP codes"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    url: "https://www.ers.usda.gov/media/5439/2010-rural-urban-commuting-area-codes-zip-code-file.xlsx?v=22373"
+    access: scripted
+    upstream_last_updated: "2020-08-17"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2010, ZIP code file. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    used_by: "not used (tract-level RUCA is used)"
+    files:
+      - local: "RUCA2010zipcode.xlsx"
+        size_bytes: 1190851
+        sha256: 92f23fd320b1ebdb6484670e051da8d250e007d2d80c8ad8580ee388792c9021
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: ers_ruca_2020_tract
+    title: "Rural-Urban Commuting Area Codes, 2020, census tracts"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    url: "https://www.ers.usda.gov/media/5441/2020-rural-urban-commuting-area-codes-census-tracts.xlsx?v=33386"
+    access: scripted
+    upstream_last_updated: "2025-07-31"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2020, census tracts. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    used_by: "01_load.py -> 04_panel.py (ruca_primary, ruca_group, 2023+)"
+    files:
+      - local: "RUCA-codes-2020-tract.xlsx"
+        size_bytes: 11838472
+        sha256: 705e7c6eeccb57ac03d95374ad44c6f02d193929cfea77f40b2c9b06df87e420
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: ers_ruca_2020_zip
+    title: "Rural-Urban Commuting Area Codes, 2020, ZIP codes"
+    publisher: "USDA Economic Research Service"
+    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    url: "https://www.ers.usda.gov/media/5442/2020-rural-urban-commuting-area-codes-zip-codes.xlsx?v=26002"
+    access: scripted
+    upstream_last_updated: "2025-09-26"
+    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2020, ZIP codes. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
+    used_by: "not used (tract-level RUCA is used)"
+    files:
+      - local: "RUCA-codes-2020-zipcode.xlsx"
+        size_bytes: 1566381
+        sha256: 76a56446af901fd8c56a74caf7186e4fb5dee0a4f5bc9004297ea3880babf11d
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: census_tiger_2010_tract_nc
+    title: "TIGER/Line Shapefile, 2010, North Carolina census tracts (tl_2010_37_tract10)"
+    publisher: "U.S. Census Bureau"
+    landing_page: "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html"
+    url: "https://www2.census.gov/geo/tiger/TIGER2010/TRACT/2010/tl_2010_37_tract10.zip"
+    archive: zip
+    access: scripted
+    citation: "U.S. Census Bureau, Geography Division. TIGER/Line Shapefiles, 2010 Census Tracts, North Carolina (tl_2010_37_tract10). https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html"
+    used_by: "00_download_acs.py (GEOID check), 04_panel.py, 05_features.py"
+    files:
+      - local: "tl_2010_37_tract10.dbf"
+        member: "tl_2010_37_tract10.dbf"
+        size_bytes: 235283
+        sha256: c746c8d9e1120983d46f874cd06fc5277b35e8456962df1d46e07a497a876adb
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2010_37_tract10.prj"
+        member: "tl_2010_37_tract10.prj"
+        size_bytes: 165
+        sha256: 0b9041e921d9ebb43247d314608fe9e38a0b008ee793067fc1806199ea1fb9dd
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2010_37_tract10.shp"
+        member: "tl_2010_37_tract10.shp"
+        size_bytes: 25137076
+        sha256: 96bc2a7528d331c9650a3fe84ce58588a27754b3a516c24a180827dfb9fffa7c
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2010_37_tract10.shp.xml"
+        member: "tl_2010_37_tract10.shp.xml"
+        size_bytes: 21241
+        sha256: cd4f88957b4708f6e8d9630cc1601090b93c1218d2e73edce1b768c7fc55c5fb
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2010_37_tract10.shx"
+        member: "tl_2010_37_tract10.shx"
+        size_bytes: 17660
+        sha256: 18b2cbd70060bf0977471fc116f9390eef48e1180d2223288a5a66f81d4f3e14
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+  - id: census_tiger_2020_tract_nc
+    title: "TIGER/Line Shapefile, 2020, North Carolina census tracts (tl_2020_37_tract)"
+    publisher: "U.S. Census Bureau"
+    landing_page: "https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html"
+    url: "https://www2.census.gov/geo/tiger/TIGER2020/TRACT/tl_2020_37_tract.zip"
+    archive: zip
+    access: scripted
+    citation: "U.S. Census Bureau, Geography Division. TIGER/Line Shapefiles, 2020 Census Tracts, North Carolina (tl_2020_37_tract). https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html"
+    used_by: "00_download_acs.py (GEOID check), 04_panel.py, 05_features.py"
+    files:
+      - local: "tl_2020_37_tract.cpg"
+        member: "tl_2020_37_tract.cpg"
+        size_bytes: 5
+        sha256: 3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.dbf"
+        member: "tl_2020_37_tract.dbf"
+        size_bytes: 286322
+        sha256: bb04d88fb0b441d6d352210a70ad9fe6902e4963013d6db9677ddb68446e4162
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.prj"
+        member: "tl_2020_37_tract.prj"
+        size_bytes: 165
+        sha256: 0b9041e921d9ebb43247d314608fe9e38a0b008ee793067fc1806199ea1fb9dd
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.shp"
+        member: "tl_2020_37_tract.shp"
+        size_bytes: 31635960
+        sha256: f16e92e1fb6842af7aa8ef52c29c7b779312ad1682b00a547ac200a104fc6410
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.shp.ea.iso.xml"
+        member: "tl_2020_37_tract.shp.ea.iso.xml"
+        size_bytes: 21354
+        sha256: 1640afc5c532a5a16e9b91132f349d9e5bdeb2419d5188765ecd8709262444c3
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.shp.iso.xml"
+        member: "tl_2020_37_tract.shp.iso.xml"
+        size_bytes: 39595
+        sha256: 9943ef290f3529ebfe45289dacb131bc7f610760d3d23bca31b4e66ec2bf18c3
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+      - local: "tl_2020_37_tract.shx"
+        member: "tl_2020_37_tract.shx"
+        size_bytes: 21476
+        sha256: 42cfaefce3df2b23b29e0ab7f33a35560d29616388301f35dd22b464ddbc1628
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
+  - id: census_tract_relationship_explanation
+    title: "Explanation of the 2020-to-2010 census tract relationship file (PDF)"
+    publisher: "U.S. Census Bureau"
+    landing_page: "https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html"
+    url: "https://www2.census.gov/geo/pdfs/maps-data/data/rel2020/tract/explanation_tab20_tract20_tract10.pdf"
+    access: scripted
+    citation: "U.S. Census Bureau, Geography Division. 2020 Census Tract to 2010 Census Tract Relationship File: explanation (explanation_tab20_tract20_tract10.pdf). https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html"
+    used_by: "not used"
+    note: "Documentation for a tract relationship file we do not download or use (the earlier census-tract.txt in data/raw was a county-subdivision file, not this one, and has been removed)."
+    files:
+      - local: "explanation_tab20_tract20_tract10.pdf"
+        size_bytes: 123887
+        sha256: 41fc3de28f9317bef48fd5748148a8e14cfdde5fdded5c016f05904d8da10636
+        retrieved: 2026-10-26
+        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
+  - id: qol_proximity_grocery
+    title: "Proximity to a Grocery Store, Mecklenburg County Quality of Life Explorer (neighborhood profile areas)"
+    publisher: "Mecklenburg County Quality of Life Explorer"
+    landing_page: "https://explore.charlottenc.gov/"
+    url: null
+    access: manual_export
+    citation: "Mecklenburg County Quality of Life Explorer. Proximity to a Grocery Store: percentage of housing units within 1/2-mile of a full-service, chain grocery store (variable m45; sources: chain grocery store addresses, Mecklenburg County tax parcels). Metadata: https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html. Manual export from the Explorer."
+    used_by: "not used (Mecklenburg-only neighbourhood data; sanity check at most)"
+    note: "MANUAL EXPORT with no stable URL: exported by hand from the Quality of Life Explorer, so it can only be reproduced from the GitHub Release fallback."
+    manual_instructions: "Open the Explorer (landing_page), choose the variable 'Proximity to a Grocery Store', export the table as CSV, and save it as data/raw/Proximity to a Grocery Store(1).csv. Then run download_raw.py --check; a different SHA-256 means the Explorer has republished its values."
+    files:
+      - local: "Proximity to a Grocery Store(1).csv"
+        size_bytes: 62839
+        sha256: 524189cbdf33fac9935973385ede1c3c070f2ff5458f0f4d89da3aa23d82e4f7
+        retrieved: 2026-10-26
+        retrieved_how: "local file modified date; manual export, exact export date not recorded"
