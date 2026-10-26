@@ -19,6 +19,16 @@ Using only information available on January 1 of each year, can we predict which
 5. **Explain choices.** Every cleaning rule gets a comment explaining why, and is logged with row counts before/after (we report these in the data note).
 6. Follow the conventions from our HW1–HW4 repos (file layout, Supabase loading, Modal deployment). Ask if unsure rather than inventing a different pattern.
 
+## Labels and feature exclusions (decided after the batch-end profile, `docs/batch_end_profile.md`)
+Batch ends (`qa_batch_end`) are ~32% of ended periods through 2021, ~33% of grocery ends, concentrated in 2013–2019, and almost never have a same-address successor (~3% vs ~35% for non-batch ends). They also are rarely re-authorized under the same Record ID (~2–3%). We keep both labels in 03/04 and report results under each.
+- `exit_12m` (**primary**): 1 if a `true_exit` (an end that is not an ownership change) falls in [Jan 1 t, Dec 31 t], **including batch ends**; 0 otherwise.
+- `exit_12m_strict`: same, but a batch-end exit makes the label **missing** (the row is excluded from strict analyses; it is not coded 0, because those stores did lose authorization).
+- `exit_is_batch`: for exits only, whether the exit was a `qa_batch_end`; missing for non-exits. Never a feature.
+- **Same-Record-ID periods** separated by ≤ 90 days (or overlapping) form one spell; a longer gap ends the spell (exit) and the later period starts a new spell.
+- **Never model features:** every `qa_*`, `impact_*` and `exit_*` column, and raw end dates. They describe the exit itself or data quality, not the state on Jan 1.
+- **Calendar year is not a model feature**, nor any transform of it (year dummies, years since 2005, etc.). Batch ends cluster in particular years, so a year feature would let a model learn USDA's batch timing, which cannot be expected to carry into the test years. `year` is only the cohort index for the split.
+- Implementation: label definitions live in `src/prep/store_years.py` (shared by 04 and EDA); spells and ownership changes in `src/prep/03_spells.py`.
+
 ## Known data issues (from D1 inspection)
 - Raw file: USDA FNS Historical SNAP Retailer Locator Data (national CSV, 2005–2025). Columns: Record ID, Store Name, Store Type, Street Number, Street Name, Additional Address, City, State, Zip Code, Zip4, County, Latitude, Longitude, Authorization Date, End Date (blank = active).
 - A row is an **authorization period**, not a store; the same Record ID can have several periods (re-authorizations).
