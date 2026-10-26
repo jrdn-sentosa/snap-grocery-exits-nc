@@ -23,7 +23,7 @@ import geopandas as gpd
 
 from common import (
     COHORT_YEARS, DOCS, INTERIM, RAW, TEST_YEARS, TRAIN_END_YEAR, VAL_END_YEAR,
-    ensure_dirs, log_step, start_log,
+    ensure_dirs, load_release_dates, log_step, ruca_group, start_log,
 )
 from store_years import build_store_years
 
@@ -33,6 +33,7 @@ SCRIPT = "04_panel"
 CRS_GEO = "EPSG:4269"
 CRS_PROJ = "EPSG:32119"  # NC State Plane (NAD83), metres: distances in a locally accurate plane
 M_PER_MI = 1609.344
+RUCA_2020_FROM_YEAR = 2022  # first cohort year that uses RUCA 2020 / 2020 tracts
 OPEN_END = pd.Timestamp("2200-01-01").as_unit("us")
 EARLIEST = pd.Timestamp("1900-01-01").as_unit("us")
 
@@ -106,6 +107,28 @@ def main() -> None:
                  int(valid.sum()), int(valid.sum()) - miss, miss)
     sy["qa_tract_unmatched"] = valid & (sy["tract_geoid_2010"].isna() | sy["tract_geoid_2020"].isna())
 
+    # 3b. RUCA by tract vintage: RUCA 2010 (keyed by 2010 tracts) up to 2021, RUCA 2020 (2020 tracts)
+    #     from 2022, the first cohort year after the 2020-census tracts replaced the 2010 ones in
+    #     federal products. The release date of the version we hold rides along so 05 can enforce
+    #     the Jan-1 timing rule (rule 2) instead of this script silently dropping early years.
+    ruca = {v: pd.read_parquet(INTERIM / f"ruca_{v}_tract_nc.parquet").set_index("tract_geoid")["ruca_primary"] for v in (2010, 2020)}
+    rel = load_release_dates()
+    rel = rel[rel["dataset"] == "ruca"].set_index("end_year")["release_date"]
+    use20 = sy["year"] >= RUCA_2020_FROM_YEAR
+    code = sy["tract_geoid_2020"].map(ruca[2020]).where(use20, sy["tract_geoid_2010"].map(ruca[2010]))
+    sy["ruca_primary"] = code.astype("Int8")
+    sy["ruca_group"] = sy["ruca_primary"].map(ruca_group)
+    sy["ruca_vintage"] = np.where(use20, 2020, 2010).astype("int16")
+    sy["ruca_release_date"] = rel[2010]
+    sy.loc[use20, "ruca_release_date"] = rel[2020]
+    n_miss_ruca = int((valid & sy["ruca_primary"].isna()).sum())
+    log_step(SCRIPT, "ruca",
+             f"ruca_primary / ruca_group joined by tract: RUCA 2010 on 2010 tracts for t <= {RUCA_2020_FROM_YEAR - 1}, RUCA 2020 on 2020 tracts from {RUCA_2020_FROM_YEAR}; "
+             "groups: 1 urban, 2-3 suburban, 4-9 small town, 10 rural, 99 unclassified; "
+             "ruca_release_date = last-updated date of the file we hold (original release not stated by ERS), enforced in 05",
+             "Urban/rural context for the exit analysis; valid-coordinate store-years with no RUCA code are counted as affected",
+             int(valid.sum()), int(valid.sum()) - n_miss_ruca, n_miss_ruca)
+
     # 4. Impact distance for true exits (not ownership changes). Measured at the exit date, i.e.
     #    after Jan 1, so it is an outcome-side column (impact_*), never a predictor.
     sy["impact_dist_nearest_other_grocery_mi"] = np.nan
@@ -123,6 +146,7 @@ def main() -> None:
     cols = [
         "record_id", "spell_id", "year", "split", "store_type", "store_name", "name_std", "address_key",
         "zip5", "county", "latitude", "longitude", "tract_geoid_2010", "tract_geoid_2020",
+        "ruca_primary", "ruca_group", "ruca_vintage", "ruca_release_date",
         "exit_12m", "exit_12m_strict", "exit_is_batch",
         "impact_dist_nearest_other_grocery_mi",
         "qa_coord_invalid", "qa_tract_unmatched", "qa_ownership_change_in_year", "qa_spell_end",

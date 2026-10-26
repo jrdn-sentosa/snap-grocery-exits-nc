@@ -37,6 +37,34 @@ GROCERY_TYPES = (
 )
 CONVENIENCE_TYPE = "Convenience Store"
 
+RELEASE_DATES_CSV = ROOT / "src" / "prep" / "reference" / "release_dates.csv"
+
+# 4-way urban-rural grouping of USDA primary RUCA codes (analyst choice, documented in the data dictionary):
+#   1 metropolitan core -> urban; 2-3 metropolitan commuting -> suburban;
+#   4-9 micropolitan and small-town tracts -> small town; 10 -> rural; 99 (zero-population water tract) -> unclassified.
+RUCA_GROUP_ORDER = ["urban", "suburban", "small town", "rural", "unclassified"]
+
+
+def ruca_group(code) -> str | None:
+    if pd.isna(code):
+        return None
+    code = int(code)
+    if code == 1:
+        return "urban"
+    if code in (2, 3):
+        return "suburban"
+    if 4 <= code <= 9:
+        return "small town"
+    if code == 10:
+        return "rural"
+    return "unclassified"
+
+
+def load_release_dates() -> pd.DataFrame:
+    """Curated, cited release dates (src/prep/reference/release_dates.csv) used by the timing rule."""
+    return pd.read_csv(RELEASE_DATES_CSV, parse_dates=["release_date"])
+
+
 CLEANING_LOG_CSV = INTERIM / "cleaning_log.csv"
 CLEANING_LOG_MD = DOCS / "cleaning_log.md"
 _LOG_COLS = ["script", "seq", "step", "rule", "why", "rows_before", "rows_after", "rows_affected"]
