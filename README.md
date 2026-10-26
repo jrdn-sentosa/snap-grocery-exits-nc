@@ -22,13 +22,14 @@ and verifies the SHA-256 of every file. It exits non-zero on any mismatch and ne
 | Food Access Research Atlas 2010 (data + documentation) | `FoodAccessResearchAtlasData2010.xlsx`, `FoodAccessResearchAtlasDocumentation2010.pdf` | USDA ERS, [Food Access Research Atlas downloads](https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data) | Script (zip) |
 | Food Access Research Atlas 2015 (data + documentation) | `FoodAccessResearchAtlasData2015.xlsx`, `FoodAccessResearchAtlasDocumentation2015.pdf` | same page | Script (zip) |
 | Large Retailer Access Map (LRAM) 2019, formerly the Food Access Research Atlas | `FoodAccessResearchAtlasData2019.xlsx` | same page | Script |
-| SNAP-authorized Retailer Access Map (SRAM) 2025 | `2025-sram-fara-data.xlsx` | same page | Script (not used: built from SNAP retailers and published after every cohort year) |
-| Rural-Urban Commuting Area codes 2010, tracts (revised 7/3/2019) and ZIP codes | `ruca2010revised.xlsx`, `RUCA2010zipcode.xlsx` | USDA ERS, [RUCA codes](https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes) | Script |
-| Rural-Urban Commuting Area codes 2020, tracts and ZIP codes | `RUCA-codes-2020-tract.xlsx`, `RUCA-codes-2020-zipcode.xlsx` | same page | Script |
+| Rural-Urban Commuting Area codes 2010, census tracts (revised 7/3/2019) | `ruca2010revised.xlsx` | USDA ERS, [RUCA codes](https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes) | Script |
+| Rural-Urban Commuting Area codes 2020, census tracts | `RUCA-codes-2020-tract.xlsx` | same page | Script |
 | TIGER/Line tract shapefile, 2010, NC | `tl_2010_37_tract10.*` (5 files) | U.S. Census Bureau, [TIGER/Line](https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html) | Script (zip) |
 | TIGER/Line tract shapefile, 2020, NC | `tl_2020_37_tract.*` (7 files) | same page | Script (zip) |
-| 2020-to-2010 tract relationship file: explanation (PDF only; the file itself is not used) | `explanation_tab20_tract20_tract10.pdf` | [U.S. Census Bureau relationship files](https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html) | Script |
-| Proximity to a Grocery Store, Mecklenburg neighborhoods (Quality of Life Explorer) | `Proximity to a Grocery Store(1).csv` | [Quality of Life Explorer](https://explore.charlottenc.gov/), variable [m45](https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html) | **Manual export, no stable URL**; Release fallback only |
+| Proximity to a Grocery Store, Mecklenburg neighborhoods (Quality of Life Explorer) | `Proximity to a Grocery Store.csv` | [Quality of Life Explorer](https://explore.charlottenc.gov/), variable [m45](https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html) | **Manual export, no stable URL**; Release fallback only |
+
+Only files the pipeline reads are kept: the ZIP-level RUCA files, the 2025 SNAP-authorized Retailer Access Map and the
+tract relationship-file explanation were removed from `data/raw/` and the manifest.
 
 ACS 5-year tract tables (2006-2010 through 2018-2022) are not in the manifest: `00_download_acs.py` pulls them from the
 Census API into `data/raw/acs/` and records each vintage's release date and source in `data/raw/acs/manifest.json`
@@ -43,7 +44,7 @@ at the repository root:
 ```powershell
 # the zip goes to the temp folder, not the repo, so it cannot be committed by accident
 Get-ChildItem data\raw -File | Where-Object { $_.Name -ne '.gitkeep' } | Compress-Archive -DestinationPath "$env:TEMP\raw-data-v1.zip" -Force
-gh release create data-v1 "$env:TEMP\raw-data-v1.zip" --repo jrdn-sentosa/snap-grocery-exits-nc --title "Raw data v1" --notes "Raw inputs for the SNAP grocery exits project: a flat zip of the 25 files listed in data/sources.yaml. Verify with: uv run python src/prep/download_raw.py --check"
+gh release create data-v1 "$env:TEMP\raw-data-v1.zip" --repo jrdn-sentosa/snap-grocery-exits-nc --title "Raw data v1" --notes "Raw inputs for the SNAP grocery exits project: a flat zip of the 21 files listed in data/sources.yaml. Verify with: uv run python src/prep/download_raw.py --check"
 ```
 
 The release must be public for graders to download it without credentials. Offline, download the asset by hand and

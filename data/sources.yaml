@@ -91,22 +91,6 @@ datasets:
         sha256: 4faf369a75c0cd45e8707bd23c95f48ad055df3a643f59c3223a52490792daa8
         retrieved: 2026-10-26
         retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
-  - id: ers_sram_2025
-    title: "SNAP-authorized Retailer Access Map (SRAM), 2025 data"
-    publisher: "USDA Economic Research Service"
-    landing_page: "https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
-    url: "https://www.ers.usda.gov/media/29394/2025-snap-authorized-retailer-access-map-sram-data.xlsx?v=38468"
-    access: scripted
-    upstream_last_updated: "2026-07-27"
-    citation: "U.S. Department of Agriculture, Economic Research Service. SNAP-authorized Retailer Access Map (SRAM), 2025 data. https://www.ers.usda.gov/data-products/food-access-research-atlas/download-the-data"
-    used_by: "not used"
-    note: "This is the SRAM, not a Food Access Research Atlas release (the local filename is historical). It is built from SNAP-authorized retailers and was updated 2026-07-27, after every cohort year, so it can never be a Jan-1 predictor."
-    files:
-      - local: "2025-sram-fara-data.xlsx"
-        size_bytes: 112608645
-        sha256: fd0eff35de6664e27bb5ecbffbe1e8e5ea044979d4237b09b18010e8a4449858
-        retrieved: 2026-10-26
-        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
   - id: ers_ruca_2010_tract
     title: "Rural-Urban Commuting Area Codes, 2010, census tracts (revised 7/3/2019)"
     publisher: "USDA Economic Research Service"
@@ -122,21 +106,6 @@ datasets:
         sha256: d02a2329294db567ebf23eaa3ca5702ee531f020cee25cb5f653df99bd668c70
         retrieved: 2026-10-26
         retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
-  - id: ers_ruca_2010_zip
-    title: "Rural-Urban Commuting Area Codes, 2010, ZIP codes"
-    publisher: "USDA Economic Research Service"
-    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
-    url: "https://www.ers.usda.gov/media/5439/2010-rural-urban-commuting-area-codes-zip-code-file.xlsx?v=22373"
-    access: scripted
-    upstream_last_updated: "2020-08-17"
-    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2010, ZIP code file. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
-    used_by: "not used (tract-level RUCA is used)"
-    files:
-      - local: "RUCA2010zipcode.xlsx"
-        size_bytes: 1190851
-        sha256: 92f23fd320b1ebdb6484670e051da8d250e007d2d80c8ad8580ee388792c9021
-        retrieved: 2026-10-26
-        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
   - id: ers_ruca_2020_tract
     title: "Rural-Urban Commuting Area Codes, 2020, census tracts"
     publisher: "USDA Economic Research Service"
@@ -150,21 +119,6 @@ datasets:
       - local: "RUCA-codes-2020-tract.xlsx"
         size_bytes: 11838472
         sha256: 705e7c6eeccb57ac03d95374ad44c6f02d193929cfea77f40b2c9b06df87e420
-        retrieved: 2026-10-26
-        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
-  - id: ers_ruca_2020_zip
-    title: "Rural-Urban Commuting Area Codes, 2020, ZIP codes"
-    publisher: "USDA Economic Research Service"
-    landing_page: "https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
-    url: "https://www.ers.usda.gov/media/5442/2020-rural-urban-commuting-area-codes-zip-codes.xlsx?v=26002"
-    access: scripted
-    upstream_last_updated: "2025-09-26"
-    citation: "U.S. Department of Agriculture, Economic Research Service. Rural-Urban Commuting Area Codes, 2020, ZIP codes. https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes"
-    used_by: "not used (tract-level RUCA is used)"
-    files:
-      - local: "RUCA-codes-2020-zipcode.xlsx"
-        size_bytes: 1566381
-        sha256: 76a56446af901fd8c56a74caf7186e4fb5dee0a4f5bc9004297ea3880babf11d
         retrieved: 2026-10-26
         retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
   - id: census_tiger_2010_tract_nc
@@ -259,21 +213,6 @@ datasets:
         sha256: 42cfaefce3df2b23b29e0ab7f33a35560d29616388301f35dd22b464ddbc1628
         retrieved: 2026-10-26
         retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file (member of the archive)"
-  - id: census_tract_relationship_explanation
-    title: "Explanation of the 2020-to-2010 census tract relationship file (PDF)"
-    publisher: "U.S. Census Bureau"
-    landing_page: "https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html"
-    url: "https://www2.census.gov/geo/pdfs/maps-data/data/rel2020/tract/explanation_tab20_tract20_tract10.pdf"
-    access: scripted
-    citation: "U.S. Census Bureau, Geography Division. 2020 Census Tract to 2010 Census Tract Relationship File: explanation (explanation_tab20_tract20_tract10.pdf). https://www.census.gov/geographies/reference-files/time-series/geo/relationship-files.html"
-    used_by: "not used"
-    note: "Documentation for a tract relationship file we do not download or use (the earlier census-tract.txt in data/raw was a county-subdivision file, not this one, and has been removed)."
-    files:
-      - local: "explanation_tab20_tract20_tract10.pdf"
-        size_bytes: 123887
-        sha256: 41fc3de28f9317bef48fd5748148a8e14cfdde5fdded5c016f05904d8da10636
-        retrieved: 2026-10-26
-        retrieved_how: "re-downloaded from the official URL on 2026-10-26; SHA-256 matched this file"
   - id: qol_proximity_grocery
     title: "Proximity to a Grocery Store, Mecklenburg County Quality of Life Explorer (neighborhood profile areas)"
     publisher: "Mecklenburg County Quality of Life Explorer"
@@ -283,9 +222,9 @@ datasets:
     citation: "Mecklenburg County Quality of Life Explorer. Proximity to a Grocery Store: percentage of housing units within 1/2-mile of a full-service, chain grocery store (variable m45; sources: chain grocery store addresses, Mecklenburg County tax parcels). Metadata: https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html. Manual export from the Explorer."
     used_by: "not used (Mecklenburg-only neighbourhood data; sanity check at most)"
     note: "MANUAL EXPORT with no stable URL: exported by hand from the Quality of Life Explorer, so it can only be reproduced from the GitHub Release fallback."
-    manual_instructions: "Open the Explorer (landing_page), choose the variable 'Proximity to a Grocery Store', export the table as CSV, and save it as data/raw/Proximity to a Grocery Store(1).csv. Then run download_raw.py --check; a different SHA-256 means the Explorer has republished its values."
+    manual_instructions: "Open the Explorer (landing_page), choose the variable 'Proximity to a Grocery Store', export the table as CSV, and save it as data/raw/Proximity to a Grocery Store.csv. Then run download_raw.py --check; a different SHA-256 means the Explorer has republished its values."
     files:
-      - local: "Proximity to a Grocery Store(1).csv"
+      - local: "Proximity to a Grocery Store.csv"
         size_bytes: 62839
         sha256: 524189cbdf33fac9935973385ede1c3c070f2ff5458f0f4d89da3aa23d82e4f7
         retrieved: 2026-10-26

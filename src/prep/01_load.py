@@ -1,7 +1,8 @@
 """01: load the national USDA SNAP retailer CSV and keep North Carolina.
 
 Reads : data/raw/Historical SNAP Retailer Locator Data 2005-2025.csv
-        data/raw/ruca2010revised.xlsx, data/raw/RUCA-codes-2020-tract.xlsx
+        data/raw/ruca2010revised.xlsx, data/raw/RUCA-codes-2020-tract.xlsx   (tract-level only: stores are
+        matched to tracts by point-in-polygon, so the ZIP-level RUCA files are neither downloaded nor read)
 Writes: data/interim/snap_retailers_nc_raw.parquet  (NC rows, every column still a raw string)
         data/interim/ruca_2010_tract_nc.parquet, ruca_2020_tract_nc.parquet  (NC tracts, typed)
 
