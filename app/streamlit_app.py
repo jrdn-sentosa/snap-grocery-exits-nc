@@ -32,6 +32,8 @@ SY_COLS = ["record_id", "year", "split", "store_type", "store_name", "county", "
            "exit_12m", "exit_12m_strict", "exit_is_batch", "impact_dist_nearest_other_grocery_mi"]
 RET_COLS = ["end_date", "qa_batch_end", "store_type", "is_grocery", "is_convenience"]
 FALLBACK_DATA_THROUGH = "2021-12-31"
+IMPACT_COL = "Miles to next grocery after exit"
+STILL_ACTIVE = "— (still active)"
 PAGE = 1000  # PostgREST returns at most 1000 rows per request
 # colour = entity (same as the report figures): blue = exit_12m, orange = exit_12m_strict
 BLUE, ORANGE, INK, INK2, MUTED, GRID, TINT = "#2a78d6", "#eb6834", "#0b0b0b", "#52514e", "#898781", "#e1e0d9", "#f0efec"
@@ -190,6 +192,13 @@ with tab_map:
     m["status"] = m[col].map({0: "Stayed authorized", 1: "Exited within 12 months"})
     m["size"] = m[col].map({0: 4, 1: 9})
     m["impact"] = m["impact_dist_nearest_other_grocery_mi"].round(2)
+    # The distance is measured only for stores that exit, so an active store has none. Say that instead of showing a null.
+    m[IMPACT_COL] = m["impact"].map(lambda v: f"{v:.2f}" if pd.notna(v) else None)
+    m.loc[m[col] == 0, IMPACT_COL] = STILL_ACTIVE
+    m.loc[(m[col] == 1) & m["impact"].isna(), IMPACT_COL] = "— (not available)"
+    n_missing = int(((m[col] == 1) & m["impact"].isna()).sum())
+    if n_missing:
+        st.warning(f"{n_missing} exited store(s) have no distance in the database.")
     n_exit = int(m[col].sum())
     k1, k2, k3 = st.columns(3)
     k1.metric("Stores authorized on Jan 1", f"{len(m):,}")
@@ -203,17 +212,22 @@ with tab_map:
         m.sort_values(col), lat="latitude", lon="longitude", color="status", size="size", size_max=9,
         color_discrete_map={"Stayed authorized": "#9a9890", "Exited within 12 months": exit_color},
         category_orders={"status": ["Stayed authorized", "Exited within 12 months"]},
-        hover_name="store_name", hover_data={"store_type": True, "county": True, "impact": True, "status": False, "size": False, "latitude": False, "longitude": False},
-        labels={"impact": "miles to next grocery (exits)"},
+        hover_name="store_name", hover_data={"store_type": True, "county": True, IMPACT_COL: True, "status": False, "size": False, "latitude": False, "longitude": False},
+        labels={"store_type": "Type", "county": "County"},
         center={"lat": 35.23, "lon": -80.84} if charlotte else {"lat": 35.6, "lon": -79.4}, zoom=10.2 if charlotte else 6.0,
         map_style="carto-positron", height=620,
     )
     fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 0}, legend={"orientation": "h", "y": 0.01, "x": 0.01, "bgcolor": "rgba(255,255,255,0.8)"})
     st.plotly_chart(fig, width="stretch")
     st.caption(f"Each dot is a grocery-type store authorized on Jan 1, {year}; larger dots exited by Dec 31. "
+               f"\"{IMPACT_COL}\" is the distance from an exited store to the nearest other grocery still authorized after the exit; "
+               f"stores that stayed show \"{STILL_ACTIVE}\" because there is no exit to measure. "
                "Use the Area filter for the Charlotte-Mecklenburg view. Data through " + DATA_THROUGH + ".")
     with st.expander("Table view of the map"):
-        st.dataframe(m[["store_name", "store_type", "county", "status", "impact"]].rename(columns={"impact": "miles to next grocery"}), hide_index=True, width="stretch")
+        tbl = (m.sort_values([col, "impact"], ascending=[False, False])[["store_name", "store_type", "county", "status", "impact"]]
+                .rename(columns={"impact": IMPACT_COL}))
+        # numbers stay numeric (sorting works); the placeholder is display-only
+        st.dataframe(tbl.style.format({IMPACT_COL: "{:.2f}"}, na_rep=STILL_ACTIVE), hide_index=True, width="stretch")
 
 # --------------------------------------------------------------------------- exit rates -----------------------------------
 with tab_trend:
