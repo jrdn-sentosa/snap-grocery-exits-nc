@@ -8,7 +8,8 @@ Writes: data/processed/store_year_trainval.parquet, store_year_test.parquet
         docs/feature_missingness.md, docs/column_inventory.csv
 
 The two panel files go through the SAME feature code separately. No feature uses a label, and nothing
-here prints exit counts or rates. Deferred (not built here): Food Access Atlas, RUCA-as-feature.
+here prints exit counts or rates. Deferred (not built here): Food Access Atlas, RUCA-as-feature (RUCA is carried through as a
+grouping column only).
 
 Timing (hard rule 2), enforced by assertions at the end:
   * ACS: the latest 5-year vintage whose cited release date is before Jan 1 of t, joined on the tract
@@ -50,7 +51,10 @@ IDS = ["record_id", "spell_id", "year", "split"]
 DESCRIPTORS = ["store_name", "county", "latitude", "longitude", "tract_geoid_2010", "tract_geoid_2020"] + ACS_META
 LABELS = ["exit_12m", "exit_12m_strict", "exit_is_batch"]
 OUTCOME_SIDE = ["impact_dist_nearest_other_grocery_mi", "qa_coord_invalid", "qa_tract_unmatched", "qa_ownership_change_in_year", "qa_spell_end"]
-ALL_COLUMNS = IDS + FEATURES + BIAS + ACS_META + DESCRIPTORS[:6] + LABELS + OUTCOME_SIDE
+# RUCA urban-rural grouping (from 04). A GROUPING column for slicing results and the dashboard, never a feature: the files we
+# hold were last updated 2019-07-03 (RUCA 2010) and 2025-07-31 (RUCA 2020), after most cohort years (see ruca_release_date).
+RUCA = ["ruca_primary", "ruca_group", "ruca_vintage", "ruca_release_date"]
+ALL_COLUMNS = IDS + FEATURES + BIAS + ACS_META + DESCRIPTORS[:6] + RUCA + LABELS + OUTCOME_SIDE
 
 
 def role_of(col: str) -> str:
@@ -293,7 +297,7 @@ def main() -> None:
     periods = pd.read_parquet(INTERIM / "periods_spells.parquet")
     acs = Acs()
     keep_from_panel = ["record_id", "spell_id", "year", "split", "store_type", "store_name", "name_std", "county", "latitude", "longitude",
-                       "tract_geoid_2010", "tract_geoid_2020", *LABELS, *OUTCOME_SIDE]
+                       "tract_geoid_2010", "tract_geoid_2020", *RUCA, *LABELS, *OUTCOME_SIDE]
     results = {}
     for name in ("trainval", "test"):
         panel = pd.read_parquet(INTERIM / f"panel_{name}.parquet")

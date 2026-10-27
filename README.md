@@ -77,4 +77,23 @@ uv run python src/eda/label_rates.py
 uv run python src/eda/panel_summary.py
 ```
 
-Not built yet: `06_load_supabase.py`, the Streamlit app and the Modal deployment.
+## Dashboard (Supabase, Streamlit, Modal)
+
+The dashboard shows data through 2021-12-31 only (train and validation cohorts; the 2022-2024 test cohorts are reserved and
+never loaded). It reads from Supabase with the publishable key and refuses to run with a secret / service-role key.
+
+```bash
+# 1. once: run supabase/schema.sql in the Supabase SQL editor (creates store_year, snap_retailers_nc, cleaning_log, data_meta)
+# 2. .env needs SUPABASE_URL, SUPABASE_KEY (publishable) and SUPABASE_SERVICE_ROLE_KEY (loader only); see .env.example
+uv run python src/prep/06_load_supabase.py --dry-run   # check the tables without touching Supabase
+uv run python src/prep/06_load_supabase.py             # load; run it again and it inserts 0 rows
+uv run streamlit run app/streamlit_app.py              # http://localhost:8501
+```
+
+Deploy on Modal (the secret holds only the URL and the publishable key, never the service-role key):
+
+```bash
+uv run modal setup
+uv run modal secret create snap-supabase SUPABASE_URL=https://<project>.supabase.co SUPABASE_KEY=<publishable key>
+uv run modal deploy app/modal_app.py
+```

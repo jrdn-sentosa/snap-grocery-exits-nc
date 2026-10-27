@@ -39,6 +39,10 @@ latitude,float64,grouping,0.0,0.0,0.0
 longitude,float64,grouping,0.0,0.0,0.0
 tract_geoid_2010,str,grouping,0.0,0.0,0.0
 tract_geoid_2020,str,grouping,0.0,0.0,0.0
+ruca_primary,Int8,grouping,0.0,0.0,0.0
+ruca_group,str,grouping,0.0,0.0,0.0
+ruca_vintage,int16,grouping,0.0,0.0,0.0
+ruca_release_date,datetime64[us],grouping,0.0,0.0,0.0
 exit_12m,int8,label,0.0,0.0,0.0
 exit_12m_strict,Int8,label,2.2,1.3,0.5
 exit_is_batch,boolean,label,95.9,96.2,97.2
