@@ -46,7 +46,18 @@ ADDRESS_TOKENS = {
     "PLACE": "PL", "SQUARE": "SQ", "TRAIL": "TRL", "TERRACE": "TER", "PLAZA": "PLZ",
     "EXTENSION": "EXT", "NORTH": "N", "SOUTH": "S", "EAST": "E", "WEST": "W",
     "NORTHEAST": "NE", "NORTHWEST": "NW", "SOUTHEAST": "SE", "SOUTHWEST": "SW",
+    # common misspelled / variant suffixes seen in the USDA file
+    "AV": "AVE", "AVENU": "AVE", "BLV": "BLVD", "BOUL": "BLVD", "BOULV": "BLVD", "DRV": "DR", "HIWAY": "HWY", "HWAY": "HWY",
+    "PKY": "PKWY", "PARKWY": "PKWY", "CRT": "CT", "CIRCL": "CIR", "TRAILS": "TRL", "ROUTE": "RTE",
 }
+# "FIFTH ST" and "5TH ST" are the same street: ordinal words become numerals.
+ORDINAL_WORDS = {"FIRST": "1ST", "SECOND": "2ND", "THIRD": "3RD", "FOURTH": "4TH", "FIFTH": "5TH", "SIXTH": "6TH",
+                 "SEVENTH": "7TH", "EIGHTH": "8TH", "NINTH": "9TH", "TENTH": "10TH"}
+DIRECTION_TOKENS = {"N", "S", "E", "W", "NE", "NW", "SE", "SW"}
+SUFFIX_TOKENS = {"ST", "RD", "AVE", "BLVD", "DR", "HWY", "PKWY", "LN", "CT", "CIR", "PL", "SQ", "TRL", "TER", "PLZ", "EXT", "WAY"}
+# Suite/unit text can sit in the street name ("... RD STE G"), in Additional Address, or as a letter on the number ("4816-B").
+UNIT_RE = re.compile(r"(?:\b(?:STE|SUITE|UNIT|APT|APARTMENT|BLDG|BUILDING|SPACE|RM|ROOM|FLOOR)\b\.?\s*#?\s*|#\s*)([A-Z0-9][A-Z0-9-]*)")
+NUMBER_RE = re.compile(r"^(\d+)[- ]?([A-Z]{1,2})?$")
 CITY_TOKENS = {"MT": "MOUNT", "MTN": "MOUNTAIN", "FT": "FORT"}
 NAME_SUFFIX_WORDS = r"\b(INC|LLC|LTD|CORP|CORPORATION|CO)\b"
 
@@ -60,15 +71,54 @@ def normalize_city(raw: str) -> str:
     return " ".join(CITY_TOKENS.get(t, t) for t in c.split())
 
 
-def std_address(number: str | None, street: str) -> str | None:
-    """'123' + 'Main Street' -> '123 MAIN ST'. None without a street number: a street name
-    alone cannot identify a storefront, so it must not drive ownership-change matching."""
+def std_address(number: str | None, street: str, additional: str | None = None) -> tuple[str | None, str | None, str | None]:
+    """Returns (address_std, unit_std, address_core).
+
+    address_std: digits of the street number + street name with ordinals as numerals and USPS suffix / direction
+                 abbreviations ('305 FIFTH STREET' -> '305 5TH ST'). Unit text is taken out of it.
+    unit_std   : the suite / unit identifier wherever it was written (street text, Additional Address, or a letter after
+                 the number), upper case without punctuation, or None.
+    address_core: address_std without direction and suffix words ('550 S MARTIN LUTHER KING JR DR' and
+                 '550 MARTIN LUTHER KING JR DR' share one core). Only used together with a distance limit, never alone.
+    All None without a street number: a street name alone cannot identify a storefront.
+    """
     if number is None or pd.isna(number):
-        return None
-    tokens = re.sub(r"[^A-Z0-9 ]", " ", street.upper()).split()
-    tokens = [ADDRESS_TOKENS.get(t, t) for t in tokens]
-    num = re.sub(r"[^A-Z0-9-]", "", number.upper())
-    return f"{num} {' '.join(tokens)}" if num and tokens else None
+        return None, None, None
+    street_u = street.upper()
+    units = []
+    m = UNIT_RE.search(street_u)
+    if m:
+        without = street_u[:m.start()] + " " + street_u[m.end():]
+        if re.search(r"[A-Z0-9]", without):  # never let unit extraction empty the street name itself
+            units.append(m.group(1))
+            street_u = without
+    if additional is not None and not pd.isna(additional) and additional.strip():
+        add = additional.upper()
+        m2 = UNIT_RE.search(add)
+        if m2:
+            units.append(m2.group(1))
+        else:
+            t = re.sub(r"[^A-Z0-9]", "", add)
+            if 0 < len(t) <= 6:  # a bare unit like 'A' or '12B'; longer text is a description, not a unit
+                units.append(t)
+    num_raw = re.sub(r"[^A-Z0-9 -]", "", number.upper()).strip()
+    nm = NUMBER_RE.match(num_raw)
+    if nm:
+        num = nm.group(1)
+        if nm.group(2):
+            units.append(nm.group(2))
+    else:
+        num = re.sub(r"[^A-Z0-9]", "", num_raw)
+    tokens = re.sub(r"[^A-Z0-9 ]", " ", street_u).split()
+    tokens = [ORDINAL_WORDS.get(t, ADDRESS_TOKENS.get(t, t)) for t in tokens]
+    if not num or not tokens:
+        return None, None, None
+    unit = re.sub(r"[^A-Z0-9]", "", units[0]).lstrip("0") or None if units else None
+    core = [t for t in tokens if t not in DIRECTION_TOKENS]
+    if core and core[-1] in SUFFIX_TOKENS:
+        core = core[:-1]
+    core = core or tokens
+    return f"{num} {' '.join(tokens)}", unit, f"{num} {' '.join(core)}"
 
 
 def std_name(name: str) -> str:
@@ -206,12 +256,18 @@ def main() -> None:
              "Observations are grocery stores; convenience stores feed the food-swamp ratio",
              len(df), len(df), int(df["is_grocery"].sum()))
 
-    # 12. Standardized address for ownership-change matching (Additional Address / suites ignored
-    #     because they are inconsistently filled for the same storefront).
-    df["address_std"] = [std_address(a, b) for a, b in zip(df["street_number"], df["street_name"])]
+    # 12. Standardized address for ownership-change matching. Unit text is separated from the street address
+    #     (it used to be ignored, which could not tell a replacement from a second tenant in the same building).
+    parts = [std_address(a, b, c) for a, b, c in zip(df["street_number"], df["street_name"], df["additional_address"])]
+    df["address_std"] = [p[0] for p in parts]
+    df["unit_std"] = [p[1] for p in parts]
+    df["address_core"] = [p[2] for p in parts]
     df["address_key"] = (df["address_std"] + "|" + df["zip5"]).where(df["address_std"].notna() & df["zip5"].notna())
-    log_step(SCRIPT, "address_std", "address_std = number + USPS-abbreviated street; address_key = address_std|zip5; missing without street number",
-             "Ownership-change rule needs a storefront identity; street name alone is ambiguous",
+    log_step(SCRIPT, "address_std",
+             "address_std = street-number digits + street with ordinals as numerals (FIFTH ST = 5TH ST) and USPS suffix/direction abbreviations; "
+             "unit_std = suite/unit from the street text, Additional Address or a letter after the number; address_core = address_std without direction and suffix words; "
+             f"address_key = address_std|zip5; all missing without a street number ({int(df['unit_std'].notna().sum()):,} periods carry a unit)",
+             "Ownership-change rule needs a storefront identity including the unit; street name alone is ambiguous",
              len(df), len(df), int(df["address_key"].isna().sum()))
 
     # 13. Names: normalized form for chain detection; flag unusable names.
@@ -252,7 +308,7 @@ def main() -> None:
 
     out = df[[
         "record_id", "period_seq", "store_name", "name_std", "store_type", "is_grocery", "is_convenience",
-        "street_number", "street_name", "additional_address", "address_std", "address_key",
+        "street_number", "street_name", "additional_address", "address_std", "unit_std", "address_core", "address_key",
         "city", "city_raw", "zip5", "zip4", "county", "latitude", "longitude",
         "auth_date", "auth_date_placeholder", "end_date",
         "qa_batch_end", "qa_coord_invalid", "qa_name_malformed",

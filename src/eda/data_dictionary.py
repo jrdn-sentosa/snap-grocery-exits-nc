@@ -33,7 +33,7 @@ STORE_YEAR = {
     "store_age_years": ("derived, 05_features", "Years from the spell's authorization date to Jan 1 of t. Missing when the true start is unknown (USDA placeholder date 1/1/1930, see `auth_date_placeholder`).", "years, >= 0"),
     "auth_date_placeholder": (FNS, "True if the spell's first period carried the USDA placeholder authorization date 1/1/1930. Such stores are treated as authorized before the data window.", "true / false"),
     "n_prior_spells_same_id": ("derived, 03/05", "Number of earlier spells of the same Record ID (re-authorizations after a gap of more than 90 days).", "integer >= 0 (max 2)"),
-    "n_prior_ownership_changes": ("derived, 03/05", "Ownership transfers in this store's lineage whose predecessor ended before Jan 1 of t. A transfer = a different Record ID at the same standardized address authorized from 30 days before to 90 days after the predecessor's end.", "integer >= 0 (max 6)"),
+    "n_prior_ownership_changes": ("derived, 03/05", "Ownership transfers in this store's lineage whose predecessor ended before Jan 1 of t. A transfer = a successor under the ownership-change rule of `03_spells.py` (a different Record ID within 0.15 mile with a similar name authorized 365 days before to 90 days after the predecessor's end, or the identical street address including the unit authorized 30 days before to 90 days after).", "integer >= 0 (max 6)"),
     "chain_size": ("derived, 05_features", "Number of authorization periods of any store type, active on Jan 1 of t anywhere in NC, whose standardized store name (`name_std`: upper case, no accents or punctuation, store numbers and INC/LLC removed) equals this store's. **Caveat: it is name-based, not ownership-based.** Generic names ('Mi Tienda', 'Food Mart') merge unrelated stores, and name variants split one chain, so treat it as a rough proxy (maximum 512); consider a log transform in D3.", "integer >= 1; missing when the name is empty"),
     "n_grocery_05mi": ("derived, 05_features", "Other grocery-type stores authorized on Jan 1 of t within 0.5 mile (distance in EPSG:32119 State Plane metres); excludes the store itself.", "integer >= 0"),
     "n_grocery_1mi": ("derived, 05_features", "Same as `n_grocery_05mi`, within 1 mile.", "integer >= 0"),
@@ -77,6 +77,8 @@ STORE_YEAR = {
     "qa_tract_unmatched": ("derived, 04_panel", "Valid coordinates but no tract matched.", "true / false"),
     "qa_ownership_change_in_year": ("derived, 03/04", "The spell ended in year t as an ownership change (label 0 in both labels).", "true / false"),
     "qa_spell_end": ("derived, 03/04", "End date of the spell, kept to audit the labels. An outcome date, never a feature.", "date"),
+    "qa_reentered_later": ("derived, 03/04", "For exits only: the same Record ID is authorized again in a later spell (necessarily after a gap of more than 90 days). **Uses events up to the end of the data (Dec 2025), i.e. future information: never a feature.** Not loaded to Supabase.", "true / false; missing for non-exits"),
+    "qa_reentry_gap_days": ("derived, 03/04", "For exits that re-enter later: days from the exit to the start of the later spell. Future information, never a feature. Not loaded to Supabase.", "days > 90; missing otherwise"),
 }
 
 # columns of retailers_nc_clean.parquet (all NC SNAP retailers, one row per authorization period)
@@ -91,7 +93,9 @@ RETAILERS = {
     "street_number": ("Street number as supplied; blank for 99 periods (their `address_key` is missing).", "text"),
     "street_name": ("Street name as supplied.", "text"),
     "additional_address": ("Suite / unit text; mostly blank and not used for address matching.", "text"),
-    "address_std": ("Street number + street name with USPS abbreviations and no punctuation.", "text, e.g. `123 MAIN ST`"),
+    "address_std": ("Digits of the street number + street name with ordinals as numerals (FIFTH ST = 5TH ST), USPS suffix and direction abbreviations, no punctuation; unit text is taken out into `unit_std`.", "text, e.g. `123 MAIN ST`"),
+    "unit_std": ("Suite / unit identifier wherever it was written (street text, Additional Address, or a letter after the number such as `4816-B`), upper case, no punctuation; part of the 'identical address including unit' successor test.", "text, e.g. `G`, `18N`; missing if none"),
+    "address_core": ("`address_std` without direction and suffix words (`550 S MARTIN LUTHER KING JR DR` and `550 MARTIN LUTHER KING JR DR` share a core). Only ever compared together with a distance limit in the ownership-change rule.", "text; missing without a street number"),
     "address_key": ("`address_std|zip5`: the storefront identity used to link ownership changes. Missing when the street number is blank.", "text"),
     "city": ("City, upper case, near-duplicate spellings merged within a ZIP (e.g. WINSTONSALEM -> WINSTON SALEM).", "text"),
     "city_raw": ("City exactly as supplied (whitespace-trimmed).", "text"),
@@ -160,7 +164,7 @@ def main() -> None:
         "- `exit_12m` (primary): 1 if a true exit (an end that is not an ownership change) falls in [Jan 1 t, Dec 31 t], batch ends included.",
         "- `exit_12m_strict`: same, but a batch-end exit makes the label missing, so those rows drop out of strict analyses. The historical-rate baseline and every model must be evaluated on the same rows.",
         "- `exit_is_batch`: for exits only, whether the end was an administrative batch day.",
-        "- An **ownership change** (not an exit) is a different Record ID at the same standardized address, authorized from 30 days before to 90 days after the end date. Same-Record-ID periods 90 days apart or less form one spell.", "",
+        "- An **ownership change** (not an exit) is a successor: a different Record ID within 0.15 mile that either has a similar store name (similarity >= 0.80, store numbers removed) and was authorized 365 days before to 90 days after the end, or has the identical standardized street address including the unit and was authorized 30 days before to 90 days after the end (`docs/label_rule_change.md`). Same-Record-ID periods 90 days apart or less form one spell.", "",
         "**Known gaps and caveats.**",
         "- **ACS starts with the 2012 cohort.** The first usable vintage (2006-2010) was released 2011-12-08, so every 2008-2011 row has missing ACS features (33.6% of train rows). Compare baseline and models on 2012 onward (14,982 train store-years).",
         "- **Unemployment gap.** `unemployment_rate` is missing for the entire 2012 cohort (the 2006-2010 vintage has no table B23025): 13.8% of the train rows from 2012 on.",

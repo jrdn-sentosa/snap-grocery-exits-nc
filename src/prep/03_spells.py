@@ -8,8 +8,10 @@ Writes: data/interim/spells.parquet           one row per continuous spell per R
 Rules (all logged via common.log_step):
   * Same-Record-ID periods separated by <= 90 days (or overlapping) are ONE spell; a longer gap
     ends the spell and the later period starts a new one (exit, then re-entry).
-  * Ownership change: a DIFFERENT Record ID at the same address_key whose spell starts from
-    30 days before to 90 days after this spell's end. The end is then NOT an exit.
+  * Ownership change: a DIFFERENT Record ID within 0.15 mile whose spell is authorized (a) from 365 days before to
+    90 days after this spell's end AND has a similar store name (store numbers removed), or (b) from 30 days before
+    to 90 days after AND has the identical standardized street address including the unit. The end is then NOT an
+    exit. (Definitions and thresholds: matching.py. Replaces the earlier same-address-key, -30/+90-day rule.)
   * true_exit = spell has an end date and is not an ownership change.
   * exit_is_batch = qa_batch_end for true exits (missing otherwise). Never a model feature.
 
@@ -19,14 +21,71 @@ only for end dates through DATA_THROUGH (2021-12-31). Per-row classifications ar
 years because 04 needs them to build labels; nobody summarizes them for 2022+.
 """
 
+import geopandas as gpd
+import numpy as np
 import pandas as pd
 
 from common import DATA_THROUGH, GROCERY_TYPES, INTERIM, ensure_dirs, log_step, start_log
+from matching import ADDRESS_LOOKBACK_DAYS, AFTER_DAYS, NAME_LOOKBACK_DAYS, NAME_SIM, RADIUS_MI, name_sim
 
 SCRIPT = "03_spells"
 MERGE_GAP_DAYS = 90
-OWNERSHIP_WINDOW = (-30, 90)  # successor start minus predecessor end, in days
 CUTOFF = pd.Timestamp(DATA_THROUGH)
+CRS_GEO, CRS_PROJ, M_PER_MI = "EPSG:4269", "EPSG:32119", 1609.344
+
+
+def project(lat: pd.Series, lon: pd.Series) -> tuple[np.ndarray, np.ndarray]:
+    """State Plane (metres) coordinates; NaN where a coordinate is missing."""
+    x, y = np.full(len(lat), np.nan), np.full(len(lat), np.nan)
+    ok = (lat.notna() & lon.notna()).to_numpy()
+    if ok.any():
+        g = gpd.GeoSeries(gpd.points_from_xy(lon[ok], lat[ok]), crs=CRS_GEO).to_crs(CRS_PROJ)
+        x[ok], y[ok] = g.x.to_numpy(), g.y.to_numpy()
+    return x, y
+
+
+def _unit(v) -> str | None:
+    return v if isinstance(v, str) and v else None
+
+
+def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
+    """For every ended spell, the best successor under the ownership-change rule (see the module docstring), if any.
+
+    Candidates are spells of OTHER Record IDs with a known start within [end - 365 days, end + 90 days] and within RADIUS_MI
+    of the ended spell. Rule (a): name similarity >= NAME_SIM (any start in that window). Rule (b): identical address_core
+    and unit_std and a start no earlier than 30 days before the end. Preference: address match, then name similarity, then
+    the smallest |gap|, then Record ID.
+    """
+    ended = spells[spells["spell_end"].notna() & spells["latitude"].notna()].reset_index(drop=True)
+    cand = spells[spells["spell_start"].notna() & spells["latitude_first"].notna()].sort_values("spell_start").reset_index(drop=True)
+    ex_x, ex_y = project(ended["latitude"], ended["longitude"])
+    cd_x, cd_y = project(cand["latitude_first"], cand["longitude_first"])
+    starts = cand["spell_start"].to_numpy()
+    c_rec, c_name, c_core = cand["record_id"].to_numpy(), cand["name_std_first"].to_numpy(object), cand["address_core_first"].to_numpy(object)
+    c_unit, c_id, c_type = cand["unit_first"].to_numpy(object), cand["spell_id"].to_numpy(object), cand["store_type_first"].to_numpy(object)
+    out = []
+    for i, e in enumerate(ended.itertuples()):
+        end = np.datetime64(e.spell_end)
+        a = np.searchsorted(starts, end - np.timedelta64(NAME_LOOKBACK_DAYS, "D"), "left")
+        b = np.searchsorted(starts, end + np.timedelta64(AFTER_DAYS, "D"), "right")
+        if b <= a:
+            continue
+        dist = np.hypot(cd_x[a:b] - ex_x[i], cd_y[a:b] - ex_y[i]) / M_PER_MI
+        for j in np.where((dist <= RADIUS_MI) & (c_rec[a:b] != e.record_id))[0] + a:
+            gap = int((starts[j] - end) / np.timedelta64(1, "D"))
+            same_addr = isinstance(e.address_core_last, str) and c_core[j] == e.address_core_last and _unit(c_unit[j]) == _unit(e.unit_last)
+            by_addr = bool(same_addr and gap >= -ADDRESS_LOOKBACK_DAYS)
+            sim = name_sim(e.name_std, c_name[j])
+            by_name = sim >= NAME_SIM
+            if by_addr or by_name:
+                out.append((e.spell_id, c_id[j], int(c_rec[j]), gap, c_type[j], "both" if by_addr and by_name else "address" if by_addr else "name",
+                            sim, float(dist[j - a]), by_addr))
+    cols = ["spell_id", "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type",
+            "successor_basis", "successor_name_sim", "successor_distance_mi", "_addr"]
+    m = pd.DataFrame(out, columns=cols)
+    m["_abs"] = m["successor_gap_days"].abs()
+    best = m.sort_values(["spell_id", "_addr", "successor_name_sim", "_abs", "successor_record_id"], ascending=[True, False, False, True, True])
+    return best.drop_duplicates("spell_id").drop(columns=["_addr", "_abs"])
 
 
 def assign_spells(p: pd.DataFrame) -> tuple[pd.DataFrame, list[tuple[str, pd.Timestamp]], dict[str, int]]:
@@ -113,7 +172,17 @@ def main() -> None:
         "latitude": last["latitude"],
         "longitude": last["longitude"],
         "qa_batch_end": last["qa_batch_end"],
+        # what the ownership-change rule compares: the ended spell's LAST period against a candidate's FIRST period
+        "address_core_last": last["address_core"], "unit_last": last["unit_std"],
+        "name_std_first": first["name_std"], "address_core_first": first["address_core"], "unit_first": first["unit_std"],
+        "latitude_first": first["latitude"], "longitude_first": first["longitude"],
     }).reset_index()
+    # Re-entry: the same Record ID is authorized again in a LATER spell (so after a gap of more than 90 days). It looks at events up to
+    # the end of the data (Dec 2025), i.e. it uses information from after the exit: a QA flag, never a model feature.
+    next_start = spells.groupby("record_id")["spell_start"].shift(-1)
+    has_next = spells.groupby("record_id").cumcount(ascending=False) > 0
+    spells["qa_reentered_later"] = has_next
+    spells["qa_reentry_gap_days"] = ((next_start - spells["spell_end"]).dt.days).astype("Int64").where(has_next)
     # qa_batch_end is taken from the last period; make sure that period is the one that sets the end.
     end_mismatch = int((last["_run_end"].values != last["end_date"].values)[
         ~(last["_run_end"].isna().values & last["end_date"].isna().values)
@@ -136,22 +205,10 @@ def main() -> None:
              "Shows how many re-authorizations the 90-day bridge absorbs versus how many it splits",
              len(in_scope), len(in_scope), int(counts.get("overlap", 0) + counts.get("bridged_0_90", 0)))
 
-    # 3. Ownership change: different Record ID, same address_key, successor starts -30..+90 days
-    #    around this spell's end. Nearest start date wins; ties go to the lower gap, then Record ID.
-    ended = spells.loc[spells["spell_end"].notna() & spells["address_key_last"].notna(),
-                       ["spell_id", "record_id", "address_key_last", "spell_end"]]
-    cand = spells.loc[spells["spell_start"].notna() & spells["address_key_first"].notna(),
-                      ["spell_id", "record_id", "store_type_first", "address_key_first", "spell_start"]]
-    m = ended.merge(cand, left_on="address_key_last", right_on="address_key_first", suffixes=("", "_succ"))
-    m = m[m["record_id"] != m["record_id_succ"]].copy()
-    m["gap"] = (m["spell_start"] - m["spell_end"]).dt.days
-    m = m[m["gap"].between(*OWNERSHIP_WINDOW)]
-    m["abs_gap"] = m["gap"].abs()
-    best = (m.sort_values(["spell_id", "abs_gap", "gap", "record_id_succ"])
-             .drop_duplicates("spell_id")
-             .rename(columns={"spell_id_succ": "successor_spell_id", "record_id_succ": "successor_record_id",
-                              "gap": "successor_gap_days", "store_type_first": "successor_store_type"})
-             [["spell_id", "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type"]])
+    # 3. Ownership change under the combined rule (module docstring). A renamed or re-registered store opens a new Record ID
+    #    near, and often months BEFORE, the old one ends (e.g. Earth Fare, authorized 252 days before the old record ended),
+    #    which a same-address-key window of -30/+90 days could not see.
+    best = find_successors(spells)
     spells = spells.merge(best, on="spell_id", how="left")
     spells["successor_is_grocery"] = spells["successor_store_type"].isin(GROCERY_TYPES).where(spells["successor_spell_id"].notna())
     spells["ownership_change"] = spells["successor_spell_id"].notna()
@@ -162,9 +219,12 @@ def main() -> None:
     scope = spells["spell_end"].notna() & (spells["spell_end"] <= CUTOFF)
     n_ended, n_own = int(scope.sum()), int((scope & spells["ownership_change"]).sum())
     many = spells.loc[scope & spells["ownership_change"], "successor_spell_id"].value_counts()
+    basis = spells.loc[scope & spells["ownership_change"], "successor_basis"].value_counts().to_dict()
     log_step(SCRIPT, "ownership_change",
-             f"successor = different Record ID, same address_key, starts {OWNERSHIP_WINDOW[0]}..+{OWNERSHIP_WINDOW[1]} days from spell end; "
-             f"spells ended through {DATA_THROUGH}; {int((many > 1).sum())} successors are claimed by more than one predecessor",
+             f"successor = different Record ID within {RADIUS_MI} mile that (a) has a similar name (>= {NAME_SIM}, store numbers removed) and was authorized "
+             f"from {NAME_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after the end, or (b) has the identical street address incl. unit and was authorized from "
+             f"{ADDRESS_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after; spells ended through {DATA_THROUGH}: basis name={basis.get('name', 0)}, "
+             f"address={basis.get('address', 0)}, both={basis.get('both', 0)}; {int((many > 1).sum())} successors are claimed by more than one predecessor",
              "Ownership transfers are not loss of access; they must not count as exits",
              n_ended, n_ended - n_own, n_own)
 
@@ -181,7 +241,9 @@ def main() -> None:
         "store_name", "name_std", "street_number", "street_name", "city", "zip5", "county",
         "latitude", "longitude",
         "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type",
+        "successor_basis", "successor_name_sim", "successor_distance_mi",
         "successor_is_grocery", "ownership_change", "true_exit", "qa_batch_end", "exit_is_batch",
+        "qa_reentered_later", "qa_reentry_gap_days",
     ]]
     spells.to_parquet(INTERIM / "spells.parquet", index=False)
     # Location/name columns ride along so 04 can take them from the period in force on a given

@@ -27,7 +27,8 @@ EARLIEST = pd.Timestamp("1900-01-01")
 
 def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.DataFrame:
     # Only what membership and labels need from the spell; name/location come from the period in force.
-    spells = spells[["spell_id", "record_id", "spell_start", "spell_end", "true_exit", "ownership_change", "qa_batch_end"]]
+    spells = spells[["spell_id", "record_id", "spell_start", "spell_end", "true_exit", "ownership_change", "qa_batch_end",
+                     "qa_reentered_later", "qa_reentry_gap_days"]]
     attrs = ["store_name", "name_std", "address_key", "zip5", "county", "latitude", "longitude"]
     per = periods[["spell_id", "auth_date", "store_type", *attrs]].copy()
     per["key"] = per["auth_date"].fillna(EARLIEST).astype("datetime64[us]")
@@ -62,6 +63,9 @@ def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.
         "exit_is_batch": batch.astype("boolean").where(exit_in_year),
         "qa_ownership_change_in_year": ends_in_year & sy["ownership_change"],
         "qa_spell_end": sy["spell_end"],
+        # exits only: the same Record ID is authorized again in a later spell (uses events after the exit; never a feature)
+        "qa_reentered_later": sy["qa_reentered_later"].astype("boolean").where(exit_in_year),
+        "qa_reentry_gap_days": sy["qa_reentry_gap_days"].astype("Int64").where(exit_in_year),
     }).sort_values(["year", "record_id"]).reset_index(drop=True)
     if out.duplicated(["record_id", "year"]).any():
         raise ValueError("A Record ID has two active spells on the same Jan 1")

@@ -50,7 +50,8 @@ ACS_META = ["acs_available", "acs_vintage", "acs_release_date", "acs_tract_vinta
 IDS = ["record_id", "spell_id", "year", "split"]
 DESCRIPTORS = ["store_name", "county", "latitude", "longitude", "tract_geoid_2010", "tract_geoid_2020"] + ACS_META
 LABELS = ["exit_12m", "exit_12m_strict", "exit_is_batch"]
-OUTCOME_SIDE = ["impact_dist_nearest_other_grocery_mi", "qa_coord_invalid", "qa_tract_unmatched", "qa_ownership_change_in_year", "qa_spell_end"]
+OUTCOME_SIDE = ["impact_dist_nearest_other_grocery_mi", "qa_coord_invalid", "qa_tract_unmatched", "qa_ownership_change_in_year", "qa_spell_end",
+                "qa_reentered_later", "qa_reentry_gap_days"]
 # RUCA urban-rural grouping (from 04). A GROUPING column for slicing results and the dashboard, never a feature: the files we
 # hold were last updated 2019-07-03 (RUCA 2010) and 2025-07-31 (RUCA 2020), after most cohort years (see ruca_release_date).
 RUCA = ["ruca_primary", "ruca_group", "ruca_vintage", "ruca_release_date"]

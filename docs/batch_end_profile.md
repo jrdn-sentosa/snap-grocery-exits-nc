@@ -69,14 +69,14 @@ Grocery subtypes:
 
 Scope: ends on or before 2021-10-02 (so the +90-day window closes by 2021-12-31); successor = a different
 Record ID of any store type at the same `address_key` (standardized number + street + ZIP5) authorized in the window.
-Ends without an address_key are excluded (90 of 10,859 ends in scope). -30..+90 is the approved ownership-change window; 0..+90 is shown for comparison.
+Ends without an address_key are excluded (90 of 10,859 ends in scope). -30..+90 days is the earlier ownership-change window and 0..+90 is shown for comparison. This is a descriptive same-address check, independent of the labels, which now use the combined rule in `03_spells.py` (`docs/label_rule_change.md`).
 
 | Types | Ends | Ends with address_key | Successor -30..+90d | Share -30..+90d | Successor 0..+90d | Share 0..+90d |
 |---|---|---|---|---|---|---|
-| All types | batch end | 3481 | 113 | 3.2% | 108 | 3.1% |
-| All types | non-batch end | 7288 | 2549 | 35.0% | 2384 | 32.7% |
-| Grocery (5 types) | batch end | 670 | 20 | 3.0% | 19 | 2.8% |
-| Grocery (5 types) | non-batch end | 1370 | 457 | 33.4% | 374 | 27.3% |
+| All types | batch end | 3481 | 118 | 3.4% | 112 | 3.2% |
+| All types | non-batch end | 7288 | 2600 | 35.7% | 2427 | 33.3% |
+| Grocery (5 types) | batch end | 670 | 22 | 3.3% | 21 | 3.1% |
+| Grocery (5 types) | non-batch end | 1370 | 481 | 35.1% | 392 | 28.6% |
 
 ## 4. Concentration by year
 

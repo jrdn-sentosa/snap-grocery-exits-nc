@@ -134,7 +134,8 @@ def main() -> None:
         f"Scope: ends on or before {SUCCESSOR_CUTOFF.date()} (so the +90-day window closes by {DATA_THROUGH}); successor = a different",
         "Record ID of any store type at the same `address_key` (standardized number + street + ZIP5) authorized in the window.",
         f"Ends without an address_key are excluded ({int((~e3['has_key']).sum()):,} of {len(e3):,} ends in scope). "
-        "-30..+90 is the approved ownership-change window; 0..+90 is shown for comparison.",
+        "-30..+90 days is the earlier ownership-change window and 0..+90 is shown for comparison. This is a descriptive same-address check, independent of the "
+        "labels, which now use the combined rule in `03_spells.py` (`docs/label_rule_change.md`).",
         "",
         md_table(pd.DataFrame(rows)),
         "",
