@@ -19,3 +19,27 @@ __pycache__/
 # OS / editor
 .DS_Store
 .vscode/
+
+# Secrets: any local env variant, but keep the template
+.env.*
+!.env.example
+
+# Local tool settings
+.claude/settings.local.json
+
+# Stray artifacts: a hand-made raw-data zip in the repo, logs
+*.zip
+*.log
+
+# Caches and build output
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+
+# Windows / editor
+Thumbs.db
+desktop.ini
+.idea/
