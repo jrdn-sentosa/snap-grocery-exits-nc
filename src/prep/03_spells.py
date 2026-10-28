@@ -26,7 +26,8 @@ import numpy as np
 import pandas as pd
 
 from common import DATA_THROUGH, GROCERY_TYPES, INTERIM, ensure_dirs, log_step, start_log
-from matching import ADDRESS_LOOKBACK_DAYS, AFTER_DAYS, MERGE_GAP_DAYS, NAME_LOOKBACK_DAYS, NAME_SIM, RADIUS_MI, name_sim
+from matching import (ADDRESS_LOOKBACK_DAYS, AFTER_DAYS, MERGE_GAP_DAYS, NAME_LOOKBACK_DAYS, NAME_SIM, RADIUS_MI, SAME_STORE_RADIUS_MI, name_scores,
+                      name_sim)
 
 SCRIPT = "03_spells"
 CUTOFF = pd.Timestamp(DATA_THROUGH)
@@ -47,7 +48,7 @@ def _unit(v) -> str | None:
     return v if isinstance(v, str) and v else None
 
 
-def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
+def find_successors(spells: pd.DataFrame, refined: bool = False, lift_for_any_name_match: bool = False) -> pd.DataFrame:
     """For every ended spell, the best successor under the ownership-change rule (see the module docstring), if any.
 
     Candidates are spells of OTHER Record IDs with a known start within [end - 365 days, end + 90 days]. Rule (a): within RADIUS_MI
@@ -55,6 +56,13 @@ def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
     compatible (equal, or listed on only one side), a start no earlier than 30 days before the end, any distance (the same street
     address with distant geocodes is a geocoding error) and no coordinates needed. Preference: address match, then name
     similarity, then the smallest |gap|, then Record ID.
+
+    refined=True (a PROPOSAL, evaluated by src/eda/successor_refinement.py; the pipeline default is False): (1) "similar name" also
+    means one cleaned name contains the other or the token-set similarity is >= 0.90 (matching.name_scores); (2) the 365-day
+    co-tenant exclusion is lifted for a strong name match within SAME_STORE_RADIUS_MI (or the identical address): the candidate may
+    have been authorized any time before the end, but must still be authorized after it (not ended before it), because otherwise it
+    is an earlier, finished record and not a successor. lift_for_any_name_match=True (sensitivity only) lifts it for any name match
+    within RADIUS_MI instead.
     """
     ended = spells[spells["spell_end"].notna()].reset_index(drop=True)
     cand = spells[spells["spell_start"].notna()].sort_values("spell_start").reset_index(drop=True)
@@ -64,6 +72,7 @@ def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
     c_rec, c_name, c_core = cand["record_id"].to_numpy(), cand["name_std_first"].to_numpy(object), cand["address_core_first"].to_numpy(object)
     c_unit, c_id, c_type = cand["unit_first"].to_numpy(object), cand["spell_id"].to_numpy(object), cand["store_type_first"].to_numpy(object)
     c_zip = cand["zip5_first"].to_numpy(object)
+    c_end = cand["spell_end"].to_numpy()                      # NaT = still authorized; only used as "authorized after this end?"
     by_addr_key: dict[tuple, list[int]] = {}      # (address_core, zip5) -> candidate rows: rule (b) needs no coordinates
     for j, (core, z) in enumerate(zip(c_core, c_zip)):
         if isinstance(core, str):
@@ -73,12 +82,19 @@ def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
         end = np.datetime64(e.spell_end)
         a = np.searchsorted(starts, end - np.timedelta64(NAME_LOOKBACK_DAYS, "D"), "left")
         b = np.searchsorted(starts, end + np.timedelta64(AFTER_DAYS, "D"), "right")
-        if b <= a:
+        lo = 0 if refined else a      # refined: candidates authorized long before the end are looked at too (kept only if "the same store")
+        if b <= lo:
             continue
-        dist = np.hypot(cd_x[a:b] - ex_x[i], cd_y[a:b] - ex_y[i]) / M_PER_MI       # NaN comparisons are False: no name match without coordinates
-        idxs = set((np.where(dist <= RADIUS_MI)[0] + a).tolist())
+        dist_all = np.hypot(cd_x[lo:b] - ex_x[i], cd_y[lo:b] - ex_y[i]) / M_PER_MI       # NaN comparisons are False: no name match without coordinates
+        dist = dist_all[a - lo:]
+        idxs = set((np.where(dist <= RADIUS_MI)[0] + a).tolist()) if b > a else set()
         if isinstance(e.address_core_last, str):
             idxs.update(j for j in by_addr_key.get((e.address_core_last, e.zip5), []) if a <= j < b)
+        if refined:
+            far = dist_all[:max(a - lo, 0)]
+            idxs.update((np.where(far <= (RADIUS_MI if lift_for_any_name_match else SAME_STORE_RADIUS_MI))[0] + lo).tolist())
+            if isinstance(e.address_core_last, str):
+                idxs.update(j for j in by_addr_key.get((e.address_core_last, e.zip5), []) if lo <= j < a)
         for j in idxs:
             if c_rec[j] == e.record_id:
                 continue
@@ -87,12 +103,21 @@ def find_successors(spells: pd.DataFrame) -> pd.DataFrame:
             # (b) identical street address (same ZIP): any distance (a far geocode is a data error), and a unit listed on only one side is a match
             same_addr = isinstance(e.address_core_last, str) and c_core[j] == e.address_core_last and c_zip[j] == e.zip5 and (u1 is None or u2 is None or u1 == u2)
             by_addr = bool(same_addr and gap >= -ADDRESS_LOOKBACK_DAYS)
-            d = float(dist[j - a])
-            sim = name_sim(e.name_std, c_name[j])
-            by_name = bool(d <= RADIUS_MI and sim >= NAME_SIM)
-            if by_addr or by_name:
-                out.append((e.spell_id, c_id[j], int(c_rec[j]), gap, c_type[j], "both" if by_addr and by_name else "address" if by_addr else "name",
-                            sim, d, by_addr))
+            d = float(dist_all[j - lo])
+            if not refined:
+                sim = name_sim(e.name_std, c_name[j])
+                by_name = bool(d <= RADIUS_MI and sim >= NAME_SIM)
+                same_store = False
+            else:
+                sim, names_ok, strong = name_scores(e.name_std, c_name[j])
+                still_on = bool(pd.isna(c_end[j]) or c_end[j] > end)
+                by_name = bool(d <= RADIUS_MI and names_ok and gap >= -NAME_LOOKBACK_DAYS)
+                # the same store registered twice, or re-registered: a strong name match this close (or at the identical address), whatever the overlap
+                near = (d <= (RADIUS_MI if lift_for_any_name_match else SAME_STORE_RADIUS_MI)) or same_addr
+                same_store = bool((strong or (lift_for_any_name_match and names_ok)) and near and still_on and not (by_addr or by_name))
+            if by_addr or by_name or same_store:
+                out.append((e.spell_id, c_id[j], int(c_rec[j]), gap, c_type[j],
+                            "same store" if same_store else "both" if by_addr and by_name else "address" if by_addr else "name", sim, d, by_addr))
     cols = ["spell_id", "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type",
             "successor_basis", "successor_name_sim", "successor_distance_mi", "_addr"]
     m = pd.DataFrame(out, columns=cols)

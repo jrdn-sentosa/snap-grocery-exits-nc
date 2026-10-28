@@ -20,6 +20,12 @@ GENERIC_NAME_WORDS = {"FOOD", "FOODS", "MARKET", "MARKETS", "STORE", "STORES", "
                       "SHOP", "DELI", "MINI", "THE", "OF", "AND", "INC", "LLC", "CORP", "CO", "CENTER", "SUPERCENTER"}
 MERGE_GAP_DAYS = 90          # same-Record-ID periods this close (or overlapping) are one spell
 
+# --- proposed refinement (03_spells.py find_successors(refined=True); NOT applied to the labels until decided) ---------------------
+TOKEN_SET_SIM = 0.90         # names also match when their token-set similarity is at least this ...
+STRONG_SIM = 0.90            # ... a "strong" name match: containment, token-set >= 0.90 or plain similarity >= 0.90
+SAME_STORE_RADIUS_MI = 0.05  # strong name match this close (or the identical address) = the same store, however long the records overlapped
+MIN_CONTAINED_CHARS = 3      # a contained name must have at least this many characters ("BP" inside "BP FOOD MART" proves nothing)
+
 
 def ownership_rule_text() -> str:
     """The rule in words, written to Supabase (data_meta) so the dashboard shows it without hard-coding numbers."""
@@ -40,3 +46,40 @@ def name_sim(a: str | None, b: str | None) -> float:
     if not ca or not cb:
         return 0.0
     return 1.0 if ca == cb else SequenceMatcher(None, ca, cb).ratio()
+
+
+def _tokens(name: str | None) -> list[str]:
+    return [t for t in (name or "").split() if t not in GENERIC_NAME_WORDS]
+
+
+def name_contains(a: str | None, b: str | None) -> bool:
+    """One cleaned name contains the other as whole words ('COMPARE' in 'COMPARE NORTH TRYON'), so 'chain' matches 'chain + location'.
+    Generic words are ignored and the shorter name needs MIN_CONTAINED_CHARS characters, so 'FOOD MART' alone never matches anything."""
+    ta, tb = _tokens(a), _tokens(b)
+    if not ta or not tb:
+        return False
+    short, long_ = (ta, tb) if len(ta) <= len(tb) else (tb, ta)
+    if len(" ".join(short)) < MIN_CONTAINED_CHARS:
+        return False
+    return f" {' '.join(short)} " in f" {' '.join(long_)} "
+
+
+def token_set_sim(a: str | None, b: str | None) -> float:
+    """Token-set similarity of the cleaned names (word order and extra words matter little): 1.0 if every word of one name is in the other."""
+    ta, tb = set(_tokens(a)), set(_tokens(b))
+    inter = " ".join(sorted(ta & tb))
+    if not inter:
+        return 0.0
+    s1 = f"{inter} {' '.join(sorted(ta - tb))}".strip()
+    s2 = f"{inter} {' '.join(sorted(tb - ta))}".strip()
+    r = lambda x, y: SequenceMatcher(None, x, y).ratio()  # noqa: E731
+    return max(r(inter, s1), r(inter, s2), r(s1, s2))
+
+
+def name_scores(a: str | None, b: str | None) -> tuple[float, bool, bool]:
+    """(best similarity, names match, strong match) under the refined rule. Match = ratio >= NAME_SIM, or containment, or token-set >= TOKEN_SET_SIM;
+    strong = containment, token-set >= TOKEN_SET_SIM or ratio >= STRONG_SIM."""
+    ratio, contains, tset = name_sim(a, b), name_contains(a, b), token_set_sim(a, b)
+    match = ratio >= NAME_SIM or contains or tset >= TOKEN_SET_SIM
+    strong = contains or tset >= TOKEN_SET_SIM or ratio >= STRONG_SIM
+    return max(ratio, tset, 1.0 if contains else 0.0), match, strong

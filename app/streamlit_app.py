@@ -168,6 +168,14 @@ def rates(d: pd.DataFrame, by: str) -> pd.DataFrame:
     return t
 
 
+def title_county(c: str | None) -> str | None:
+    """'MECKLENBURG' -> 'Mecklenburg', 'MCDOWELL' -> 'McDowell' (county names are stored in capitals)."""
+    if not isinstance(c, str):
+        return c
+    t = c.title()
+    return t[:2] + t[2].upper() + t[3:] if t.startswith("Mc") and len(t) > 2 else t
+
+
 def gap_classes(lg: pd.DataFrame) -> list[str]:
     """Gap classes from the shortest to the longest gap, 'no re-authorization' last. The order comes from the days in the data, not a fixed list."""
     first = lg.groupby("gap_class")["gap_days"].min()
@@ -350,6 +358,7 @@ with tab_map:
     strict = label == STRICT_LABEL
     col = "exit_12m_strict" if strict else "exit_12m"
     m = d[(d["year"] == year) & d[col].notna() & d["latitude"].notna()].copy()
+    m["county"] = m["county"].map(title_county)
     m["status"] = m[col].map({0: "Stayed authorized", 1: "Exited within 12 months"})
     m["size"] = m[col].map({0: 4, 1: 9})
     m["impact"] = m["impact_dist_nearest_other_grocery_mi"].round(2)
@@ -377,10 +386,11 @@ with tab_map:
         color_discrete_map={"Stayed authorized": "#9a9890", "Exited within 12 months": exit_color},
         category_orders={"status": ["Stayed authorized", "Exited within 12 months"]},
         hover_name="store_name", hover_data={"store_type": True, "county": True, IMPACT_COL: True, "status": False, "size": False, "latitude": False, "longitude": False},
-        labels={"store_type": "Type", "county": "County"},
         center={"lat": 35.23, "lon": -80.84} if charlotte else {"lat": 35.6, "lon": -79.4}, zoom=10.2 if charlotte else 6.0,
         map_style="carto-positron",
     )
+    # plain tooltip: "Store type: Supermarket", not "store_type=Supermarket" (customdata order = the hover_data order above)
+    fig.update_traces(hovertemplate="<b>%{hovertext}</b><br>Store type: %{customdata[0]}<br>County: %{customdata[1]}<br>" + IMPACT_COL + ": %{customdata[2]}<extra></extra>")
     finish(fig, f"SNAP grocery stores in {WHERE}, January 1, {year}",
            f"{len(m):,} stores; {n_exit:,} lost SNAP authorization within 12 months ({label})", height=640, bottom=56)
     fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 56}, legend_title_text="")
