@@ -190,7 +190,7 @@ def main() -> None:
         f"The first ten 0.01-mile bins hold {', '.join(str(int(v)) for v in h_all[:10])} exits; the average bin from 0.20 to 0.50 mile holds {h_all[20:50].mean():.1f}. "
         f"The 0.00-0.01 bin alone holds {int(h_all[0])} exits; by class: " + ", ".join(f"{k}: {v}" for k, v in spike.items()) + ".", "",
         "## 2. Exits with another grocery within 0.15 mile", "",
-        f"Neighbour = another grocery-type store authorized after the exit date (the definition behind `impact_dist_nearest_other_grocery_mi`; recomputed here and checked equal to the panel). "
+        f"Neighbour = another grocery store still authorized on the exit date (the definition behind `impact_dist_nearest_other_grocery_mi`; recomputed here and checked equal to the panel). "
         f"**Same store** = a neighbour with a similar name (cleaned-name similarity >= {NAME_SIM}) or the identical standardized street address including the unit; "
         f"**different store, same plaza** = no such neighbour, but one on the same street with a clearly different name (similarity < {PLAZA_MAX_SIM}); **unclear** = the rest.", "",
         md(ex["class"].value_counts().rename_axis("class").reset_index(name="exits")), "",

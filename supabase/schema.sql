@@ -114,6 +114,7 @@ create table if not exists cleaning_log (
   script text not null,
   seq integer not null,
   step text not null,
+  step_type text check (step_type in ('filter', 'transform', 'flag', 'audit', 'build')),   -- rows_before / rows_after are null for audit and build steps
   rule text,
   why text,
   rows_before bigint,
@@ -121,6 +122,8 @@ create table if not exists cleaning_log (
   rows_affected bigint,
   primary key (script, seq)
 );
+-- a table created before step_type existed gets the column here (safe to re-run)
+alter table cleaning_log add column if not exists step_type text;
 
 -- data_meta: key/value facts the dashboard shows on every page (data_through, cohort years, ...)
 create table if not exists data_meta (

@@ -277,7 +277,9 @@ def main() -> None:
              f"(same ZIP; a unit listed on only one side counts as a match; any distance) and was authorized from {ADDRESS_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after, "
              f"or (c) 'same store': a strong name match within {SAME_STORE_RADIUS_MI} mile or at the identical address, still authorized after the end, any overlap; "
              f"{len(ov_table)} reviewed pairs are never successors; spells ended through {DATA_THROUGH}: basis name={basis.get('name', 0)}, "
-             f"address={basis.get('address', 0)}, both={basis.get('both', 0)}, same store={basis.get('same store', 0)}; {int((many > 1).sum())} successors are claimed by more than one predecessor",
+             f"address={basis.get('address', 0)}, both={basis.get('both', 0)}, same store={basis.get('same store', 0)}; {int((many > 1).sum())} successors are claimed by more than one predecessor "
+             f"(at most {int(many.max())} each): two ended records taken over by the same later record, usually duplicate records of one store (spelling variants, or a store registered twice) "
+             "that ended together, so each one is still an ownership change but together they are one store that was taken over, not two that left",
              "Ownership transfers are not loss of access; they must not count as exits",
              n_ended, n_ended - n_own, n_own)
 

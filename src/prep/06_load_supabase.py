@@ -29,7 +29,7 @@ import sys
 
 import pandas as pd
 
-from common import DATA_THROUGH, INTERIM, PROCESSED, ROOT, VAL_END_YEAR, ensure_dirs, load_env, log_step, start_log
+from common import DATA_THROUGH, INTERIM, PIPELINE_ORDER, PROCESSED, ROOT, VAL_END_YEAR, ensure_dirs, load_env, log_step, start_log
 from matching import MERGE_GAP_DAYS, ownership_rule_text
 
 SCRIPT = "06_load_supabase"
@@ -98,7 +98,13 @@ def build_frames(log: bool) -> dict[str, pd.DataFrame]:
                  "Hard rule 1: the public dashboard must not show test-period (2022-2024) exits", n1, n1, n_blanked)
 
     # --- cleaning_log (read after the two rows above were appended) and data_meta ---
-    cl = pd.read_csv(INTERIM / "cleaning_log.csv")[cols["cleaning_log"]]
+    cl = pd.read_csv(INTERIM / "cleaning_log.csv")
+    # the log must describe the current run of every script: start_log drops a script's rows and all later ones when it starts
+    missing = [x for x in PIPELINE_ORDER[:-1] if x not in set(cl["script"])]
+    if missing or cl["step_type"].isna().any():
+        raise SystemExit(f"data/interim/cleaning_log.csv is incomplete (no rows for {missing or 'none'}, step_type missing: {int(cl['step_type'].isna().sum())}); "
+                         "rerun the prep scripts 01-05b in order, then load")
+    cl = cl[cols["cleaning_log"]]
     meta = pd.DataFrame([
         ("data_through", str(DATA_THROUGH)),
         ("cohort_years_loaded", "2008-2021 (train 2008-2018, validation 2019-2021)"),

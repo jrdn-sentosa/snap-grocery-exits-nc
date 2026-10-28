@@ -127,7 +127,11 @@ def load_end_dates() -> pd.DataFrame:
 
 @st.cache_data(ttl=3600)
 def load_cleaning_log() -> pd.DataFrame:
-    return fetch_all("cleaning_log", ["script", "seq", "step", "rule", "why", "rows_before", "rows_after", "rows_affected"], ["script", "seq"])
+    cols = ["script", "seq", "step", "step_type", "rule", "why", "rows_before", "rows_after", "rows_affected"]
+    try:
+        return fetch_all("cleaning_log", cols, ["script", "seq"])
+    except Exception:       # a database loaded before step_type existed: show the log without the type column
+        return fetch_all("cleaning_log", [c for c in cols if c != "step_type"], ["script", "seq"])
 
 
 @st.cache_data(ttl=3600)
@@ -395,7 +399,7 @@ with tab_map:
            f"{len(m):,} stores; {n_exit:,} lost SNAP authorization within 12 months ({label})", height=640, bottom=56)
     fig.update_layout(margin={"l": 0, "r": 0, "t": 0, "b": 56}, legend_title_text="")
     show(fig)
-    st.caption(f"\"{IMPACT_COL}\" is the distance from an exited store to the nearest other grocery still authorized after the exit; "
+    st.caption(f"\"{IMPACT_COL}\" is the distance from an exited store to the nearest other grocery store still authorized on the exit date; "
                f"stores that stayed show \"{STILL_ACTIVE}\" because there is no exit to measure. Use the Area filter for the Charlotte-Mecklenburg view."
                + (" Stores whose exit was a batch deauthorization are left off this map." if strict else ""))
     st.markdown(far_summary(base_all) + " " + CAVEATS)
@@ -573,9 +577,13 @@ with tab_quality:
     log = load_cleaning_log()
     script = st.selectbox("Script", ["all"] + sorted(log["script"].unique()))
     view = log if script == "all" else log[log["script"] == script]
-    table(view, {"script": st.column_config.TextColumn("Script"), "step": st.column_config.TextColumn("Step"), "rule": st.column_config.TextColumn("Rule", width="large"),
+    table(view, {"script": st.column_config.TextColumn("Script"), "step": st.column_config.TextColumn("Step"),
+                 "step_type": st.column_config.TextColumn("Type", help="filter = drops rows; transform = rewrites or derives values; flag = adds a marker or classification; audit = counts or checks only; build = creates a table"),
+                 "rule": st.column_config.TextColumn("Rule", width="large"),
                  "rows_before": n_col("Rows before"), "rows_after": n_col("Rows after"), "rows_affected": n_col("Rows changed")},
-          ["script", "step", "rule", "rows_before", "rows_after", "rows_affected"], height=420)
+          [c for c in ("script", "step", "step_type", "rule", "rows_before", "rows_after", "rows_affected") if c in view.columns], height=420)
+    st.caption("Type: filter drops rows, transform rewrites or derives values, flag adds a marker or classification, audit only counts or checks, build creates a table. "
+               "Rows before and after are blank for audit and build steps; rows changed is the number of rows dropped, changed, flagged or merged.")
     with st.expander("Why each cleaning rule exists"):
         table(view, {"step": st.column_config.TextColumn("Step"), "why": st.column_config.TextColumn("Why", width="large")}, ["step", "why"], height=420)
 

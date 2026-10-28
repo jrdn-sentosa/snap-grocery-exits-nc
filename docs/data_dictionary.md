@@ -127,7 +127,7 @@ Missingness is the percent of rows with a missing value in the train split (2008
 
 | column | type | source | definition | units / allowed values | % missing (train / validation) |
 |---|---|---|---|---|---|
-| `impact_dist_nearest_other_grocery_mi` | decimal | derived, 04_panel | For exits (`exit_12m` = 1) only: miles from the exiting store to the nearest OTHER grocery-type store still authorized after the exit date (stores ending the same day excluded). Measured at the exit, after Jan 1, so never a predictor. | miles >= 0; missing for non-exits | 96.2 / 96.5 |
+| `impact_dist_nearest_other_grocery_mi` | decimal | derived, 04_panel | For exits (`exit_12m` = 1) only: miles from the exiting store to the nearest OTHER grocery store still authorized on the exit date (stores ending the same day excluded). Measured at the exit, after Jan 1, so never a predictor. | miles >= 0; missing for non-exits | 96.2 / 96.5 |
 
 ## Table 2: `snap_retailers_nc`
 

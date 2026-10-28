@@ -50,7 +50,7 @@ def tract_ids(locs: pd.DataFrame, shp: str, geoid: str) -> pd.Series:
 
 
 def nearest_other_grocery_mi(exits: pd.DataFrame, periods: pd.DataFrame) -> pd.Series:
-    """Miles from each exiting store to the nearest OTHER grocery-type store still authorized after
+    """Miles from each exiting store to the nearest OTHER grocery store still authorized on
     its exit date (start <= exit date < end, or no end). Others ending the same day do not count,
     so a batch of stores closing together is not credited as remaining access."""
     oth = periods[periods["is_grocery"] & periods["latitude"].notna()]
@@ -137,7 +137,7 @@ def main() -> None:
     sy.loc[ex.index, "impact_dist_nearest_other_grocery_mi"] = nearest_other_grocery_mi(ex, periods)
     ex_scope = sy["exit_12m"].eq(1) & (sy["year"] <= VAL_END_YEAR)  # counts limited to train + validation
     log_step(SCRIPT, "impact_dist",
-             "impact_dist_nearest_other_grocery_mi = miles (EPSG:32119) to the nearest other grocery-type store authorized after the exit date; "
+             "impact_dist_nearest_other_grocery_mi = miles (EPSG:32119) to the nearest other grocery store still authorized on the exit date (stores ending the same day do not count); "
              f"counts below are exits in years <= {VAL_END_YEAR}: no coordinates={int((ex_scope & ~valid).sum())}, "
              f"no other grocery found={int((ex_scope & valid & sy['impact_dist_nearest_other_grocery_mi'].isna()).sum())}",
              "Not every exit reduces access; this measures how much",
