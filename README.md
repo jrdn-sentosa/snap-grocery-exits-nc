@@ -70,11 +70,17 @@ uv run python src/prep/02_clean.py      # cleaning rules, all NC retailers
 uv run python src/prep/03_spells.py     # authorization periods -> spells, ownership changes
 uv run python src/prep/04_panel.py      # store-years, tracts, labels, train/validation vs reserved test split
 uv run python src/prep/05_features.py   # Jan-1 features -> data/processed/store_year_*.parquet
+uv run python src/prep/05b_location_gaps.py   # days each store location went without SNAP after a grocery record ended (through 2021 only)
 
 # 4. reports (outcome statistics use train and validation years only)
 uv run python src/eda/batch_end_profile.py
 uv run python src/eda/label_rates.py
 uv run python src/eda/panel_summary.py
+uv run python src/eda/exit_proximity.py
+uv run python src/eda/reentry_gap.py
+uv run python src/eda/location_gap_report.py
+# look up one store (censored after 2021-12-31; lifting that is logged in docs/test_reservation_log.md):
+#   from src.eda.lookup import history
 ```
 
 ## Dashboard (Supabase, Streamlit, Modal)
@@ -83,7 +89,7 @@ The dashboard shows data through 2021-12-31 only (train and validation cohorts; 
 never loaded). It reads from Supabase with the publishable key and refuses to run with a secret / service-role key.
 
 ```bash
-# 1. once: run supabase/schema.sql in the Supabase SQL editor (creates store_year, snap_retailers_nc, cleaning_log, data_meta)
+# 1. once: run supabase/schema.sql in the Supabase SQL editor (creates store_year, snap_retailers_nc, cleaning_log, data_meta, location_gap; safe to re-run)
 # 2. .env needs SUPABASE_URL, SUPABASE_KEY (publishable) and SUPABASE_SERVICE_ROLE_KEY (loader only); see .env.example
 uv run python src/prep/06_load_supabase.py --dry-run   # check the tables without touching Supabase
 uv run python src/prep/06_load_supabase.py             # load; run it again and it inserts 0 rows

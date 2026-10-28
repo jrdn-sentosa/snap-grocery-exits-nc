@@ -28,24 +28,24 @@ authorized after the exit date (others ending the same day excluded). Outcome-si
 
 | split | label | region | exits | with distance | median mi | p25-p75 mi | within 0.5 mi |
 |---|---|---|---|---|---|---|---|
-| train | exit_12m (all true exits) | Mecklenburg | 110 | 110 | 0.20 | 0.09-0.47 | 75% |
-| train | exit_12m (all true exits) | Rest of NC | 764 | 764 | 0.38 | 0.15-1.05 | 57% |
-| train | exit_12m (all true exits) | All NC | 874 | 874 | 0.36 | 0.13-0.96 | 59% |
-| train | exit_12m_strict (non-batch exits) | Mecklenburg | 54 | 54 | 0.22 | 0.11-0.42 | 80% |
-| train | exit_12m_strict (non-batch exits) | Rest of NC | 345 | 345 | 0.31 | 0.12-0.85 | 63% |
-| train | exit_12m_strict (non-batch exits) | All NC | 399 | 399 | 0.29 | 0.12-0.81 | 65% |
+| train | exit_12m (all true exits) | Mecklenburg | 108 | 108 | 0.20 | 0.09-0.49 | 75% |
+| train | exit_12m (all true exits) | Rest of NC | 753 | 753 | 0.39 | 0.15-1.05 | 57% |
+| train | exit_12m (all true exits) | All NC | 861 | 861 | 0.36 | 0.13-0.96 | 59% |
+| train | exit_12m_strict (non-batch exits) | Mecklenburg | 52 | 52 | 0.22 | 0.10-0.41 | 79% |
+| train | exit_12m_strict (non-batch exits) | Rest of NC | 335 | 335 | 0.31 | 0.11-0.86 | 63% |
+| train | exit_12m_strict (non-batch exits) | All NC | 387 | 387 | 0.29 | 0.11-0.81 | 65% |
 | validation | exit_12m (all true exits) | Mecklenburg | 25 | 25 | 0.19 | 0.10-0.35 | 80% |
-| validation | exit_12m (all true exits) | Rest of NC | 209 | 209 | 0.34 | 0.13-0.87 | 61% |
-| validation | exit_12m (all true exits) | All NC | 234 | 234 | 0.32 | 0.11-0.79 | 63% |
+| validation | exit_12m (all true exits) | Rest of NC | 206 | 206 | 0.34 | 0.12-0.85 | 61% |
+| validation | exit_12m (all true exits) | All NC | 231 | 231 | 0.31 | 0.11-0.78 | 63% |
 | validation | exit_12m_strict (non-batch exits) | Mecklenburg | 21 | 21 | 0.20 | 0.10-0.38 | 76% |
-| validation | exit_12m_strict (non-batch exits) | Rest of NC | 134 | 134 | 0.30 | 0.12-0.67 | 66% |
-| validation | exit_12m_strict (non-batch exits) | All NC | 155 | 155 | 0.27 | 0.11-0.64 | 68% |
-| train + validation | exit_12m (all true exits) | Mecklenburg | 135 | 135 | 0.19 | 0.09-0.45 | 76% |
-| train + validation | exit_12m (all true exits) | Rest of NC | 973 | 973 | 0.37 | 0.14-1.01 | 58% |
-| train + validation | exit_12m (all true exits) | All NC | 1108 | 1108 | 0.35 | 0.13-0.90 | 60% |
-| train + validation | exit_12m_strict (non-batch exits) | Mecklenburg | 75 | 75 | 0.20 | 0.10-0.42 | 79% |
-| train + validation | exit_12m_strict (non-batch exits) | Rest of NC | 479 | 479 | 0.31 | 0.12-0.82 | 64% |
-| train + validation | exit_12m_strict (non-batch exits) | All NC | 554 | 554 | 0.29 | 0.11-0.75 | 66% |
+| validation | exit_12m_strict (non-batch exits) | Rest of NC | 131 | 131 | 0.28 | 0.12-0.66 | 67% |
+| validation | exit_12m_strict (non-batch exits) | All NC | 152 | 152 | 0.26 | 0.11-0.61 | 68% |
+| train + validation | exit_12m (all true exits) | Mecklenburg | 133 | 133 | 0.19 | 0.09-0.46 | 76% |
+| train + validation | exit_12m (all true exits) | Rest of NC | 959 | 959 | 0.38 | 0.14-1.01 | 58% |
+| train + validation | exit_12m (all true exits) | All NC | 1092 | 1092 | 0.35 | 0.13-0.90 | 60% |
+| train + validation | exit_12m_strict (non-batch exits) | Mecklenburg | 73 | 73 | 0.20 | 0.10-0.41 | 78% |
+| train + validation | exit_12m_strict (non-batch exits) | Rest of NC | 466 | 466 | 0.31 | 0.11-0.81 | 64% |
+| train + validation | exit_12m_strict (non-batch exits) | All NC | 539 | 539 | 0.29 | 0.11-0.74 | 66% |
 
 ## 4. Exits with no other grocery within 1 mi and within 10 mi (train + validation, 2008-2021)
 
@@ -55,24 +55,24 @@ grocery was more than 1 mile away. Counts are exits with a distance; the label r
 
 | dimension | group | label | exits | > 1 mi (n) | > 1 mi (%) | > 10 mi (n) | > 10 mi (%) |
 |---|---|---|---|---|---|---|---|
-| RUCA group | urban | exit_12m (all true exits) | 673 | 92 | 13.7% | 0 | 0.0% |
-| RUCA group | urban | exit_12m_strict (non-batch exits) | 351 | 45 | 12.8% | 0 | 0.0% |
+| RUCA group | urban | exit_12m (all true exits) | 662 | 91 | 13.7% | 0 | 0.0% |
+| RUCA group | urban | exit_12m_strict (non-batch exits) | 341 | 44 | 12.9% | 0 | 0.0% |
 | RUCA group | metro fringe | exit_12m (all true exits) | 109 | 60 | 55.0% | 2 | 1.8% |
 | RUCA group | metro fringe | exit_12m_strict (non-batch exits) | 45 | 18 | 40.0% | 0 | 0.0% |
-| RUCA group | small town | exit_12m (all true exits) | 280 | 82 | 29.3% | 5 | 1.8% |
-| RUCA group | small town | exit_12m_strict (non-batch exits) | 136 | 28 | 20.6% | 3 | 2.2% |
+| RUCA group | small town | exit_12m (all true exits) | 275 | 79 | 28.7% | 3 | 1.1% |
+| RUCA group | small town | exit_12m_strict (non-batch exits) | 131 | 25 | 19.1% | 1 | 0.8% |
 | RUCA group | rural | exit_12m (all true exits) | 45 | 20 | 44.4% | 7 | 15.6% |
 | RUCA group | rural | exit_12m_strict (non-batch exits) | 21 | 9 | 42.9% | 3 | 14.3% |
 | RUCA group | unclassified | exit_12m (all true exits) | 1 | 0 | 0.0% | 0 | 0.0% |
 | RUCA group | unclassified | exit_12m_strict (non-batch exits) | 1 | 0 | 0.0% | 0 | 0.0% |
-| RUCA group | All NC | exit_12m (all true exits) | 1108 | 254 | 22.9% | 14 | 1.3% |
-| RUCA group | All NC | exit_12m_strict (non-batch exits) | 554 | 100 | 18.1% | 6 | 1.1% |
-| Region | Mecklenburg | exit_12m (all true exits) | 135 | 7 | 5.2% | 0 | 0.0% |
-| Region | Mecklenburg | exit_12m_strict (non-batch exits) | 75 | 2 | 2.7% | 0 | 0.0% |
-| Region | Rest of NC | exit_12m (all true exits) | 973 | 247 | 25.4% | 14 | 1.4% |
-| Region | Rest of NC | exit_12m_strict (non-batch exits) | 479 | 98 | 20.5% | 6 | 1.3% |
-| Region | All NC | exit_12m (all true exits) | 1108 | 254 | 22.9% | 14 | 1.3% |
-| Region | All NC | exit_12m_strict (non-batch exits) | 554 | 100 | 18.1% | 6 | 1.1% |
+| RUCA group | All NC | exit_12m (all true exits) | 1092 | 250 | 22.9% | 12 | 1.1% |
+| RUCA group | All NC | exit_12m_strict (non-batch exits) | 539 | 96 | 17.8% | 4 | 0.7% |
+| Region | Mecklenburg | exit_12m (all true exits) | 133 | 7 | 5.3% | 0 | 0.0% |
+| Region | Mecklenburg | exit_12m_strict (non-batch exits) | 73 | 2 | 2.7% | 0 | 0.0% |
+| Region | Rest of NC | exit_12m (all true exits) | 959 | 243 | 25.3% | 12 | 1.3% |
+| Region | Rest of NC | exit_12m_strict (non-batch exits) | 466 | 94 | 20.2% | 4 | 0.9% |
+| Region | All NC | exit_12m (all true exits) | 1092 | 250 | 22.9% | 12 | 1.1% |
+| Region | All NC | exit_12m_strict (non-batch exits) | 539 | 96 | 17.8% | 4 | 0.7% |
 
 ## 5. Train store-years and exits: 2008-2011 vs 2012-2018 (train split only)
 
@@ -81,6 +81,6 @@ models must be compared on the same rows in D3, so the comparison sample is like
 
 | train years | store-years | exit_12m exits | exit_12m rate | strict n | strict exits | exit_12m_strict rate |
 |---|---|---|---|---|---|---|
-| 2008-2011 (no ACS) | 7,572 | 222 | 2.9% | 7,457 | 107 | 1.4% |
-| 2012-2018 (ACS available) | 14,982 | 652 | 4.4% | 14,622 | 292 | 2.0% |
-| 2008-2018 (all train) | 22,554 | 874 | 3.9% | 22,079 | 399 | 1.8% |
+| 2008-2011 (no ACS) | 7,572 | 220 | 2.9% | 7,457 | 105 | 1.4% |
+| 2012-2018 (ACS available) | 14,982 | 641 | 4.3% | 14,623 | 282 | 1.9% |
+| 2008-2018 (all train) | 22,554 | 861 | 3.8% | 22,080 | 387 | 1.8% |

@@ -45,11 +45,11 @@ ruca_vintage,int16,grouping,0.0,0.0,0.0
 ruca_release_date,datetime64[us],grouping,0.0,0.0,0.0
 exit_12m,int8,label,0.0,0.0,0.0
 exit_12m_strict,Int8,label,2.1,1.2,0.5
-exit_is_batch,boolean,label,96.1,96.3,97.3
-impact_dist_nearest_other_grocery_mi,float64,impact_,96.1,96.3,97.3
+exit_is_batch,boolean,label,96.2,96.4,97.3
+impact_dist_nearest_other_grocery_mi,float64,impact_,96.2,96.4,97.3
 qa_coord_invalid,bool,qa_,0.0,0.0,0.0
 qa_tract_unmatched,bool,qa_,0.0,0.0,0.0
 qa_ownership_change_in_year,bool,qa_,0.0,0.0,0.0
 qa_spell_end,datetime64[us],qa_,63.0,79.8,88.8
-qa_reentered_later,boolean,qa_,96.1,96.3,97.3
+qa_reentered_later,boolean,qa_,96.2,96.4,97.3
 qa_reentry_gap_days,Int64,qa_,99.9,99.5,99.8

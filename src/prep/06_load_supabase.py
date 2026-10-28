@@ -1,15 +1,16 @@
 """06: load the dashboard tables into Supabase (data through 2021-12-31 only).
 
 Reads : data/processed/store_year_trainval.parquet   (the reserved test file is never opened)
-        data/interim/retailers_nc_clean.parquet, data/interim/cleaning_log.csv
+        data/processed/location_gap.parquet (05b), data/interim/retailers_nc_clean.parquet, data/interim/cleaning_log.csv
         supabase/schema.sql                           (column lists, checked against the frames)
         .env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY (the key that may write; never used by the dashboard)
-Writes: Supabase tables store_year, snap_retailers_nc, cleaning_log, data_meta
+Writes: Supabase tables store_year, snap_retailers_nc, cleaning_log, data_meta, location_gap
         (create them first by running supabase/schema.sql in the Supabase SQL editor).
 
   uv run python src/prep/06_load_supabase.py             # insert what is missing (a second run inserts 0)
   uv run python src/prep/06_load_supabase.py --dry-run   # build and check every table, no network
-  uv run python src/prep/06_load_supabase.py --replace   # delete the four tables' rows, then reload
+  uv run python src/prep/06_load_supabase.py --replace   # delete the rows of the selected tables, then reload
+  uv run python src/prep/06_load_supabase.py --tables location_gap   # only some tables (also works with --replace)
 
 Rows go in as batched upserts of 500 on each table's primary key with duplicates ignored, so re-runs are safe
 (gacha pattern). Because existing rows are left alone, changed data needs --replace.
@@ -29,6 +30,7 @@ import sys
 import pandas as pd
 
 from common import DATA_THROUGH, INTERIM, PROCESSED, ROOT, VAL_END_YEAR, ensure_dirs, load_env, log_step, start_log
+from matching import MERGE_GAP_DAYS, ownership_rule_text
 
 SCRIPT = "06_load_supabase"
 SCHEMA = ROOT / "supabase" / "schema.sql"
@@ -39,9 +41,10 @@ PKS = {
     "snap_retailers_nc": ["record_id", "period_seq"],
     "cleaning_log": ["script", "seq"],
     "data_meta": ["key"],
+    "location_gap": ["spell_id"],
 }
 # a value that matches no real row, for the delete-everything filter of --replace
-DELETE_FILTER = {"store_year": ("record_id", -1), "snap_retailers_nc": ("record_id", -1), "cleaning_log": ("seq", -1), "data_meta": ("key", "")}
+DELETE_FILTER = {"store_year": ("record_id", -1), "snap_retailers_nc": ("record_id", -1), "cleaning_log": ("seq", -1), "data_meta": ("key", ""), "location_gap": ("end_year", -1)}
 
 
 def schema_columns() -> dict[str, list[str]]:
@@ -101,8 +104,16 @@ def build_frames(log: bool) -> dict[str, pd.DataFrame]:
         ("cohort_years_loaded", "2008-2021 (train 2008-2018, validation 2019-2021)"),
         ("test_set", "The 2022-2024 cohorts are reserved and not loaded; end dates after 2021-12-31 are blank in snap_retailers_nc."),
         ("sources", "USDA FNS SNAP Retailer Locator 2005-2025; ACS 5-year tract tables; USDA ERS RUCA; Census TIGER/Line tracts."),
+        # the rule in words and its one structural constant, so the dashboard states them without hard-coding numbers
+        ("ownership_rule", ownership_rule_text()),
+        ("merge_gap_days", str(MERGE_GAP_DAYS)),
     ], columns=cols["data_meta"])
-    return {"store_year": sy, "snap_retailers_nc": ret, "cleaning_log": cl, "data_meta": meta}
+
+    # --- location_gap: ended grocery records, ends through the cut-off only (built by 05b_location_gaps.py) ---
+    lg = pd.read_parquet(PROCESSED / "location_gap.parquet")
+    assert lg["end_date"].max() <= CUTOFF and lg["end_year"].max() <= VAL_END_YEAR, "a date after the cut-off in location_gap"
+    lg = lg[cols["location_gap"]]
+    return {"store_year": sy, "snap_retailers_nc": ret, "cleaning_log": cl, "data_meta": meta, "location_gap": lg}
 
 
 def check_frames(frames: dict[str, pd.DataFrame]) -> None:
@@ -122,12 +133,19 @@ def db_count(client, table: str) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--dry-run", action="store_true", help="build and check the tables, do not touch Supabase")
-    ap.add_argument("--replace", action="store_true", help="delete all rows of the four tables first, then load")
+    ap.add_argument("--replace", action="store_true", help="delete all rows of the selected tables first, then load")
+    ap.add_argument("--tables", help="comma-separated subset of tables to load (default: all)")
     args = ap.parse_args()
     ensure_dirs()
     if not args.dry_run:
         start_log(SCRIPT)
     frames = build_frames(log=not args.dry_run)
+    if args.tables:
+        wanted = [t.strip() for t in args.tables.split(",")]
+        unknown = [t for t in wanted if t not in frames]
+        if unknown:
+            raise SystemExit(f"Unknown table(s) {unknown}; known: {list(frames)}")
+        frames = {t: frames[t] for t in wanted}
     check_frames(frames)
     if args.dry_run:
         return 0
@@ -147,7 +165,7 @@ def main() -> int:
                              "Run supabase/schema.sql in the Supabase SQL editor first.") from None
 
     if args.replace:
-        for t, (col, sentinel) in DELETE_FILTER.items():
+        for t, (col, sentinel) in ((t, DELETE_FILTER[t]) for t in frames):
             client.table(t).delete().neq(col, sentinel).execute()
             print(f"  deleted existing rows of {t}")
 

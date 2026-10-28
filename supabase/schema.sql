@@ -128,7 +128,27 @@ create table if not exists data_meta (
   value text not null
 );
 
+-- location_gap: one row per grocery-type record that ENDED between 2008-01-01 and 2021-12-31, with the days its location (address) went
+-- without any SNAP authorization under any Record ID until the next one started. A location whose next authorization came after
+-- 2021-12-31 is 'not re-authorized by 2021-12-31', so no post-cut-off fact is stored. Built by src/prep/05b_location_gaps.py.
+create table if not exists location_gap (
+  spell_id text primary key,
+  record_id bigint not null,
+  store_name text,
+  store_type text not null,
+  county text,
+  end_date date not null check (end_date <= date '2021-12-31'),
+  end_year smallint not null check (end_year between 2008 and 2021),
+  split text not null check (split in ('train', 'validation')),
+  is_batch boolean,
+  end_kind text check (end_kind in ('exit', 'ownership change')),
+  gap_days integer check (gap_days is null or gap_days >= 0),
+  gap_class text not null check (gap_class in ('0 days', '1-90 days', '91-365 days', 'more than 365 days', 'not re-authorized by 2021-12-31')),
+  reauth_same_id boolean
+);
+
 -- indexes for the dashboard's filters
+create index if not exists idx_location_gap_county_type on location_gap (county, store_type);
 create index if not exists idx_store_year_year_type on store_year (year, store_type);
 create index if not exists idx_store_year_county on store_year (county);
 create index if not exists idx_snap_retailers_end_date on snap_retailers_nc (end_date);
@@ -138,6 +158,10 @@ alter table store_year enable row level security;
 alter table snap_retailers_nc enable row level security;
 alter table cleaning_log enable row level security;
 alter table data_meta enable row level security;
+alter table location_gap enable row level security;
+
+drop policy if exists "Allow public read access" on location_gap;
+create policy "Allow public read access" on location_gap for select using (true);
 
 drop policy if exists "Allow public read access" on store_year;
 drop policy if exists "Allow public read access" on snap_retailers_nc;
@@ -148,4 +172,4 @@ create policy "Allow public read access" on snap_retailers_nc for select using (
 create policy "Allow public read access" on cleaning_log for select using (true);
 create policy "Allow public read access" on data_meta for select using (true);
 
-grant select on store_year, snap_retailers_nc, cleaning_log, data_meta to anon, authenticated;
+grant select on store_year, snap_retailers_nc, cleaning_log, data_meta, location_gap to anon, authenticated;
