@@ -104,6 +104,8 @@ def build_frames(log: bool) -> dict[str, pd.DataFrame]:
     if missing or cl["step_type"].isna().any():
         raise SystemExit(f"data/interim/cleaning_log.csv is incomplete (no rows for {missing or 'none'}, step_type missing: {int(cl['step_type'].isna().sum())}); "
                          "rerun the prep scripts 01-05b in order, then load")
+    for c in ("seq", "rows_before", "rows_after", "rows_affected"):   # blanks (audit/build steps) make pandas read floats; the table wants bigint, not "22845.0"
+        cl[c] = pd.to_numeric(cl[c]).astype("Int64")
     cl = cl[cols["cleaning_log"]]
     meta = pd.DataFrame([
         ("data_through", str(DATA_THROUGH)),
