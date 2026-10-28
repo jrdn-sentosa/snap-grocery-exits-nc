@@ -67,7 +67,7 @@ uv run python src/prep/00_download_acs.py
 # 3. prepare the data
 uv run python src/prep/01_load.py       # SNAP CSV -> NC; RUCA tract tables
 uv run python src/prep/02_clean.py      # cleaning rules, all NC retailers
-uv run python src/prep/03_spells.py     # authorization periods -> spells, ownership changes
+uv run python src/prep/03_spells.py     # authorization periods -> spells, ownership changes (reads data/reference/successor_overrides.csv)
 uv run python src/prep/04_panel.py      # store-years, tracts, labels, train/validation vs reserved test split
 uv run python src/prep/05_features.py   # Jan-1 features -> data/processed/store_year_*.parquet
 uv run python src/prep/05b_location_gaps.py   # days each store location went without SNAP after a grocery record ended (through 2021 only)
@@ -79,6 +79,7 @@ uv run python src/eda/panel_summary.py
 uv run python src/eda/exit_proximity.py
 uv run python src/eda/reentry_gap.py
 uv run python src/eda/location_gap_report.py
+uv run python src/eda/successor_revision3.py   # what the ownership-change rule revision 3 changed (needs data/reference/successor_overrides.csv)
 # look up one store (censored after 2021-12-31; lifting that is logged in docs/test_reservation_log.md):
 #   from src.eda.lookup import history
 ```

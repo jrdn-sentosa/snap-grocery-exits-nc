@@ -8,10 +8,13 @@ Writes: data/interim/spells.parquet           one row per continuous spell per R
 Rules (all logged via common.log_step):
   * Same-Record-ID periods separated by <= 90 days (or overlapping) are ONE spell; a longer gap
     ends the spell and the later period starts a new one (exit, then re-entry).
-  * Ownership change: a DIFFERENT Record ID that is authorized (a) from 365 days before to 90 days after this spell's end,
-    within 0.15 mile, with a similar store name (store numbers removed), or (b) from 30 days before to 90 days after with the
-    identical standardized street address (same ZIP, a unit listed on only one side counts as a match) at ANY distance. The
-    end is then NOT an exit. (Definitions and thresholds: matching.py. Replaces the earlier same-address-key, -30/+90-day rule.)
+  * Ownership change (revision 3): a DIFFERENT Record ID that is authorized (a) from 365 days before to 90 days after this spell's end,
+    within 0.15 mile, with a matching store name (similar, or one contains the other; store numbers removed), or (b) from 30 days
+    before to 90 days after with the identical standardized street address (same ZIP, a unit listed on only one side counts as a
+    match) at ANY distance, or (c) a strong name match within 0.05 mile / at the identical address that is still authorized after the
+    end, however long the two overlapped. The end is then NOT an exit. Pairs in data/reference/successor_overrides.csv are never
+    successors (logged one by one). (Definitions and thresholds: matching.py; history in docs/label_rule_change.md.)
+  * qa_successor_type_change: the successor's store type differs from the ended spell's (e.g. grocery -> convenience). Never a feature.
   * true_exit = spell has an end date and is not an ownership change.
   * exit_is_batch = qa_batch_end for true exits (missing otherwise). Never a model feature.
 
@@ -26,8 +29,8 @@ import numpy as np
 import pandas as pd
 
 from common import DATA_THROUGH, GROCERY_TYPES, INTERIM, ensure_dirs, log_step, start_log
-from matching import (ADDRESS_LOOKBACK_DAYS, AFTER_DAYS, MERGE_GAP_DAYS, NAME_LOOKBACK_DAYS, NAME_SIM, RADIUS_MI, SAME_STORE_RADIUS_MI, name_scores,
-                      name_sim)
+from matching import (ADDRESS_LOOKBACK_DAYS, AFTER_DAYS, MERGE_GAP_DAYS, NAME_LOOKBACK_DAYS, NAME_SIM, RADIUS_MI, SAME_STORE_RADIUS_MI, load_overrides,
+                      name_scores, name_sim)
 
 SCRIPT = "03_spells"
 CUTOFF = pd.Timestamp(DATA_THROUGH)
@@ -48,7 +51,7 @@ def _unit(v) -> str | None:
     return v if isinstance(v, str) and v else None
 
 
-def find_successors(spells: pd.DataFrame, refined: bool = False, lift_for_any_name_match: bool = False) -> pd.DataFrame:
+def find_successors(spells: pd.DataFrame, refined: bool = True, lift_for_any_name_match: bool = False, overrides: set | None = None) -> pd.DataFrame:
     """For every ended spell, the best successor under the ownership-change rule (see the module docstring), if any.
 
     Candidates are spells of OTHER Record IDs with a known start within [end - 365 days, end + 90 days]. Rule (a): within RADIUS_MI
@@ -57,12 +60,13 @@ def find_successors(spells: pd.DataFrame, refined: bool = False, lift_for_any_na
     address with distant geocodes is a geocoding error) and no coordinates needed. Preference: address match, then name
     similarity, then the smallest |gap|, then Record ID.
 
-    refined=True (a PROPOSAL, evaluated by src/eda/successor_refinement.py; the pipeline default is False): (1) "similar name" also
+    refined=True (revision 3, the pipeline rule; refined=False reproduces revision 2 for src/eda/successor_refinement.py): (1) "similar name" also
     means one cleaned name contains the other or the token-set similarity is >= 0.90 (matching.name_scores); (2) the 365-day
     co-tenant exclusion is lifted for a strong name match within SAME_STORE_RADIUS_MI (or the identical address): the candidate may
     have been authorized any time before the end, but must still be authorized after it (not ended before it), because otherwise it
     is an earlier, finished record and not a successor. lift_for_any_name_match=True (sensitivity only) lifts it for any name match
-    within RADIUS_MI instead.
+    within RADIUS_MI instead. overrides = {frozenset({record_id, successor_record_id})}: reviewed pairs that are never successors; a pair
+    the rule would have accepted is recorded in the result's attrs["blocked"] so the caller can log it.
     """
     ended = spells[spells["spell_end"].notna()].reset_index(drop=True)
     cand = spells[spells["spell_start"].notna()].sort_values("spell_start").reset_index(drop=True)
@@ -77,7 +81,7 @@ def find_successors(spells: pd.DataFrame, refined: bool = False, lift_for_any_na
     for j, (core, z) in enumerate(zip(c_core, c_zip)):
         if isinstance(core, str):
             by_addr_key.setdefault((core, z), []).append(j)
-    out = []
+    out, blocked = [], []
     for i, e in enumerate(ended.itertuples()):
         end = np.datetime64(e.spell_end)
         a = np.searchsorted(starts, end - np.timedelta64(NAME_LOOKBACK_DAYS, "D"), "left")
@@ -116,14 +120,19 @@ def find_successors(spells: pd.DataFrame, refined: bool = False, lift_for_any_na
                 near = (d <= (RADIUS_MI if lift_for_any_name_match else SAME_STORE_RADIUS_MI)) or same_addr
                 same_store = bool((strong or (lift_for_any_name_match and names_ok)) and near and still_on and not (by_addr or by_name))
             if by_addr or by_name or same_store:
-                out.append((e.spell_id, c_id[j], int(c_rec[j]), gap, c_type[j],
-                            "same store" if same_store else "both" if by_addr and by_name else "address" if by_addr else "name", sim, d, by_addr))
+                basis_ = "same store" if same_store else "both" if by_addr and by_name else "address" if by_addr else "name"
+                if overrides and frozenset((int(e.record_id), int(c_rec[j]))) in overrides:
+                    blocked.append((e.spell_id, int(e.record_id), int(c_rec[j]), basis_))
+                    continue
+                out.append((e.spell_id, c_id[j], int(c_rec[j]), gap, c_type[j], basis_, sim, d, by_addr))
     cols = ["spell_id", "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type",
             "successor_basis", "successor_name_sim", "successor_distance_mi", "_addr"]
     m = pd.DataFrame(out, columns=cols)
     m["_abs"] = m["successor_gap_days"].abs()
     best = m.sort_values(["spell_id", "_addr", "successor_name_sim", "_abs", "successor_record_id"], ascending=[True, False, False, True, True])
-    return best.drop_duplicates("spell_id").drop(columns=["_addr", "_abs"])
+    best = best.drop_duplicates("spell_id").drop(columns=["_addr", "_abs"])
+    best.attrs["blocked"] = pd.DataFrame(blocked, columns=["spell_id", "record_id", "successor_record_id", "basis"])
+    return best
 
 
 def assign_spells(p: pd.DataFrame) -> tuple[pd.DataFrame, list[tuple[str, pd.Timestamp]], dict[str, int]]:
@@ -246,11 +255,15 @@ def main() -> None:
     # 3. Ownership change under the combined rule (module docstring). A renamed or re-registered store opens a new Record ID
     #    near, and often months BEFORE, the old one ends (e.g. Earth Fare, authorized 252 days before the old record ended),
     #    which a same-address-key window of -30/+90 days could not see.
-    best = find_successors(spells)
+    ov_table, ov_pairs = load_overrides()
+    best = find_successors(spells, overrides=ov_pairs)
+    blocked = best.attrs["blocked"]
     spells = spells.merge(best, on="spell_id", how="left")
     spells["successor_is_grocery"] = spells["successor_store_type"].isin(GROCERY_TYPES).where(spells["successor_spell_id"].notna())
     spells["ownership_change"] = spells["successor_spell_id"].notna()
     spells["true_exit"] = spells["spell_end"].notna() & ~spells["ownership_change"]
+    # QA only (never a feature): the successor is a different store type than the ended spell (e.g. grocery -> convenience)
+    spells["qa_successor_type_change"] = (spells["successor_store_type"] != spells["store_type_last"]).astype("boolean").where(spells["ownership_change"])
     # exit_is_batch: only defined for true exits; nullable so non-exits are missing, not False.
     spells["exit_is_batch"] = spells["qa_batch_end"].astype("boolean").where(spells["true_exit"])
 
@@ -259,13 +272,35 @@ def main() -> None:
     many = spells.loc[scope & spells["ownership_change"], "successor_spell_id"].value_counts()
     basis = spells.loc[scope & spells["ownership_change"], "successor_basis"].value_counts().to_dict()
     log_step(SCRIPT, "ownership_change",
-             f"successor = different Record ID that (a) is within {RADIUS_MI} mile, has a similar name (>= {NAME_SIM}, store numbers removed) and was authorized "
-             f"from {NAME_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after the end, or (b) has the identical street address (same ZIP; a unit listed on only one side "
-             f"counts as a match; any distance) and was authorized from "
-             f"{ADDRESS_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after; spells ended through {DATA_THROUGH}: basis name={basis.get('name', 0)}, "
-             f"address={basis.get('address', 0)}, both={basis.get('both', 0)}; {int((many > 1).sum())} successors are claimed by more than one predecessor",
+             f"successor = different Record ID that (a) is within {RADIUS_MI} mile, has a matching name (similarity >= {NAME_SIM}, or one name contains the other, or token-set >= 0.90; "
+             f"store numbers removed) and was authorized from {NAME_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after the end, or (b) has the identical street address "
+             f"(same ZIP; a unit listed on only one side counts as a match; any distance) and was authorized from {ADDRESS_LOOKBACK_DAYS} days before to {AFTER_DAYS} days after, "
+             f"or (c) 'same store': a strong name match within {SAME_STORE_RADIUS_MI} mile or at the identical address, still authorized after the end, any overlap; "
+             f"{len(ov_table)} reviewed pairs are never successors; spells ended through {DATA_THROUGH}: basis name={basis.get('name', 0)}, "
+             f"address={basis.get('address', 0)}, both={basis.get('both', 0)}, same store={basis.get('same store', 0)}; {int((many > 1).sum())} successors are claimed by more than one predecessor",
              "Ownership transfers are not loss of access; they must not count as exits",
              n_ended, n_ended - n_own, n_own)
+
+    # hand-reviewed pairs that must not be successors (data/reference/successor_overrides.csv): one log line each
+    for o in ov_table.itertuples():
+        hit = blocked[((blocked["record_id"] == o.record_id) & (blocked["successor_record_id"] == o.successor_record_id))
+                      | ((blocked["record_id"] == o.successor_record_id) & (blocked["successor_record_id"] == o.record_id))]
+        now = spells[spells["spell_id"].isin(hit["spell_id"])]
+        after = "; the end is now " + ", ".join(f"an ownership change to record {int(r.successor_record_id)}" if r.ownership_change else "an exit" for r in now.itertuples())
+        log_step(SCRIPT, f"override_{o.record_id}_{o.successor_record_id}",
+                 f"override: record {o.record_id} ({o.store_name}) and record {o.successor_record_id} ({o.successor_name}) are NOT successors (either direction); "
+                 + (f"the rule would have matched them {len(hit)} time(s){after}" if len(hit) else "a stale override: the rule matches nothing here any more"),
+                 str(o.reason), len(hit), 0, len(hit))
+        if not len(hit):
+            print(f"  WARNING: override {o.record_id} / {o.successor_record_id} blocks nothing (stale?)")
+    own = scope & spells["ownership_change"]
+    chg = int((own & spells["qa_successor_type_change"].fillna(False)).sum())
+    to_non = int((own & spells["store_type_last"].isin(GROCERY_TYPES) & ~spells["successor_store_type"].isin(GROCERY_TYPES)).sum())
+    log_step(SCRIPT, "successor_type_change",
+             f"qa_successor_type_change = the successor's store type differs from the ended spell's; ownership changes ended through {DATA_THROUGH}: {chg} of {int(own.sum())} "
+             f"(grocery -> non-grocery {to_non})",
+             "A re-registration as a different kind of store (e.g. a grocery that became a convenience store) is worth a second look; QA only, never a feature",
+             int(own.sum()), int(own.sum()), chg)
 
     te = scope & spells["true_exit"]
     n_batch = int((te & spells["exit_is_batch"].fillna(False)).sum())
@@ -281,7 +316,7 @@ def main() -> None:
         "latitude", "longitude",
         "successor_spell_id", "successor_record_id", "successor_gap_days", "successor_store_type",
         "successor_basis", "successor_name_sim", "successor_distance_mi",
-        "successor_is_grocery", "ownership_change", "true_exit", "qa_batch_end", "exit_is_batch",
+        "successor_is_grocery", "ownership_change", "true_exit", "qa_batch_end", "exit_is_batch", "qa_successor_type_change",
         "qa_reentered_later", "qa_reentry_gap_days",
     ]]
     spells.to_parquet(INTERIM / "spells.parquet", index=False)

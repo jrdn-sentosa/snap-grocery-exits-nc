@@ -28,7 +28,7 @@ EARLIEST = pd.Timestamp("1900-01-01")
 def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.DataFrame:
     # Only what membership and labels need from the spell; name/location come from the period in force.
     spells = spells[["spell_id", "record_id", "spell_start", "spell_end", "true_exit", "ownership_change", "qa_batch_end",
-                     "qa_reentered_later", "qa_reentry_gap_days"]]
+                     "qa_reentered_later", "qa_reentry_gap_days", "qa_successor_type_change"]]
     attrs = ["store_name", "name_std", "address_key", "zip5", "county", "latitude", "longitude"]
     per = periods[["spell_id", "auth_date", "store_type", *attrs]].copy()
     per["key"] = per["auth_date"].fillna(EARLIEST).astype("datetime64[us]")
@@ -62,6 +62,8 @@ def build_store_years(spells: pd.DataFrame, periods: pd.DataFrame, years) -> pd.
         "exit_12m_strict": exit_in_year.astype("Int8").mask(exit_in_year & batch),
         "exit_is_batch": batch.astype("boolean").where(exit_in_year),
         "qa_ownership_change_in_year": ends_in_year & sy["ownership_change"],
+        # ownership changes only: the successor is a different store type (e.g. grocery -> convenience); QA, never a feature
+        "qa_successor_type_change": sy["qa_successor_type_change"].astype("boolean").where(ends_in_year & sy["ownership_change"]),
         "qa_spell_end": sy["spell_end"],
         # exits only: the same Record ID is authorized again in a later spell (uses events after the exit; never a feature)
         "qa_reentered_later": sy["qa_reentered_later"].astype("boolean").where(exit_in_year),

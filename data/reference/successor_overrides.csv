@@ -1,0 +1,6 @@
+record_id,store_name,successor_record_id,successor_name,reason
+769554,LA PROVIDENCIA INC,888563,La Providencia Carniceria y Taqueria,"Reviewed 2026-10-28 (proposal list #10): the two records overlapped for about ten years (the successor was authorized 3,605 days before the end); a long concurrent overlap means two separate businesses at one site, not a re-registration"
+857195,Halal Market Inc.,976622,Halal International,"Reviewed 2026-10-28 (#15): the only shared word is the generic 'Halal' and the records overlapped for about 1,000 days; different businesses"
+602288,FAMILY FOODS 02,1164387,Discount Family Foods Inc,"Reviewed 2026-10-28 (#11): weak match on the single word 'Family' (a Large Grocery Store vs a convenience store); not shown to be the same store"
+1270506,Jackson Grocery,1302022,Jackson Minit Serv,"Reviewed 2026-10-28 (#19): the shared word is a place name ('Jackson'); a grocery and a convenience store with different names"
+602288,FAMILY FOODS 02,1059577,Family Dollar 8797,"Added 2026-10-28 while applying revision 3: with the pair above blocked, the rule fell through to this Family Dollar store (0.03 mile away, authorized 887 days before the end), again matched only on the single word 'Family'; same decision as #11"

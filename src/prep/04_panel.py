@@ -151,7 +151,7 @@ def main() -> None:
         "exit_12m", "exit_12m_strict", "exit_is_batch",
         "impact_dist_nearest_other_grocery_mi",
         "qa_coord_invalid", "qa_tract_unmatched", "qa_ownership_change_in_year", "qa_spell_end",
-        "qa_reentered_later", "qa_reentry_gap_days",
+        "qa_reentered_later", "qa_reentry_gap_days", "qa_successor_type_change",
     ]
     sy = sy[cols]
     trainval = sy[sy["year"] <= VAL_END_YEAR].reset_index(drop=True)
