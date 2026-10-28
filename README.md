@@ -28,8 +28,15 @@ and verifies the SHA-256 of every file. It exits non-zero on any mismatch and ne
 | TIGER/Line tract shapefile, 2020, NC | `tl_2020_37_tract.*` (7 files) | same page | Script (zip) |
 | Proximity to a Grocery Store, Mecklenburg neighborhoods (Quality of Life Explorer) | `Proximity to a Grocery Store.csv` | [Quality of Life Explorer](https://explore.charlottenc.gov/), variable [m45](https://maps.mecklenburgcountync.gov/qol/data/meta/m45.html) | **Manual export, no stable URL**; Release fallback only |
 
-Only files the pipeline reads are kept: the ZIP-level RUCA files, the 2025 SNAP-authorized Retailer Access Map and the
-tract relationship-file explanation were removed from `data/raw/` and the manifest.
+Not every file in the manifest is used yet. The pipeline reads the SNAP retailer CSV, the two RUCA tract files and the two
+tract shapefiles (plus the ACS tables below). The three Food Access Research Atlas workbooks, their two documentation PDFs and
+`Proximity to a Grocery Store.csv` are downloaded and verified but **not read by any script** (the Atlas features are deferred;
+the Charlotte proximity file covers Mecklenburg only). The ZIP-level RUCA files, the 2025 SNAP-authorized Retailer Access Map and
+the tract relationship-file explanation were removed from `data/raw/` and the manifest.
+
+Hand-made reference files that are committed (they are decisions, not raw data): `data/reference/successor_overrides.csv`
+(record pairs that are never ownership-change successors, each with a reason; read by `03_spells.py` and logged) and
+`src/prep/reference/release_dates.csv` (release dates of the datasets, used by the feature-timing assertion in `05_features.py`).
 
 ACS 5-year tract tables (2006-2010 through 2018-2022) are not in the manifest: `00_download_acs.py` pulls them from the
 Census API into `data/raw/acs/` and records each vintage's release date and source in `data/raw/acs/manifest.json`
@@ -80,9 +87,16 @@ uv run python src/eda/exit_proximity.py
 uv run python src/eda/reentry_gap.py
 uv run python src/eda/location_gap_report.py
 uv run python src/eda/successor_revision3.py   # what the ownership-change rule revision 3 changed (needs data/reference/successor_overrides.csv)
-# look up one store (censored after 2021-12-31; lifting that is logged in docs/test_reservation_log.md):
-#   from src.eda.lookup import history
+uv run python src/eda/plots.py                 # figures/*.png and figures/data/*.csv (train and validation rows only)
+uv run python src/eda/data_dictionary.py       # docs/data_dictionary.md (from docs/column_inventory.csv, written by 05_features.py)
+
+# look up one store or chain; everything after 2021-12-31 is censored (lifting that needs a reason and is logged in docs/test_reservation_log.md)
+uv run python src/eda/lookup.py --name "earth fare"
+uv run python src/eda/lookup.py --record 740603
 ```
+
+The reserved test cohorts (2022-2024) are written to `data/processed/store_year_test.parquet`. That file stays local: it is
+never loaded to Supabase and no outcome statistic, plot or summary is computed from it.
 
 ## Dashboard (Supabase, Streamlit, Modal)
 
@@ -94,6 +108,8 @@ never loaded). It reads from Supabase with the publishable key and refuses to ru
 # 2. .env needs SUPABASE_URL, SUPABASE_KEY (publishable) and SUPABASE_SERVICE_ROLE_KEY (loader only); see .env.example
 uv run python src/prep/06_load_supabase.py --dry-run   # check the tables without touching Supabase
 uv run python src/prep/06_load_supabase.py             # load; run it again and it inserts 0 rows
+uv run python src/prep/06_load_supabase.py --replace   # after the labels or the rule change: delete the rows first, then load
+uv run python src/prep/06_load_supabase.py --tables location_gap   # load only some tables (comma-separated)
 uv run streamlit run app/streamlit_app.py              # http://localhost:8501
 ```
 
