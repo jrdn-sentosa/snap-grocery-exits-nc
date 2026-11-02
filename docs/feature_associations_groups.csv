@@ -1,0 +1,135 @@
+group,n,exits,rate,kind,feature,scope
+Large Grocery Store,638,25,0.03918495297805643,category,store_type,all
+Medium Grocery Store,1563,97,0.062060140754958415,category,store_type,all
+Small Grocery Store,2027,321,0.15836211149481993,category,store_type,all
+Super Store,3924,78,0.019877675840978593,category,store_type,all
+Supermarket,6830,111,0.016251830161054172,category,store_type,all
+Q1: 0.00274 to 3.32,2926,268,0.09159261790840738,quintile,store_age_years,all
+Q2: 3.32 to 8.14,2926,154,0.05263157894736842,quintile,store_age_years,all
+Q3: 8.14 to 13.6,2922,73,0.024982888432580425,quintile,store_age_years,all
+Q4: 13.6 to 23.3,2923,57,0.019500513171399246,quintile,store_age_years,all
+Q5: 23.3 to 51.1,2924,72,0.024623803009575923,quintile,store_age_years,all
+False,14621,624,0.04267833937487176,category,auth_date_placeholder,all
+True,361,8,0.0221606648199446,category,auth_date_placeholder,all
+0,14925,629,0.042144053601340034,category,n_prior_spells_same_id,all
+1,57,3,0.05263157894736842,category,n_prior_spells_same_id,all
+0,13677,540,0.03948234261899539,category,n_prior_ownership_changes,all
+1,1019,70,0.06869479882237488,category,n_prior_ownership_changes,all
+2+,286,22,0.07692307692307693,category,n_prior_ownership_changes,all
+Q1: 1 to 12,6121,486,0.0793987910472145,quintile,chain_size,all
+Q2: 13 to 58,2900,104,0.03586206896551724,quintile,chain_size,all
+Q3: 59 to 496,3428,25,0.007292882147024504,quintile,chain_size,all
+Q4: 497 to 512,2533,17,0.006711409395973154,quintile,chain_size,all
+Q1: 0 to 1,11384,436,0.03829936753338018,quintile,n_grocery_05mi,all
+Q2: 2 to 2,1966,107,0.05442522889114954,quintile,n_grocery_05mi,all
+Q3: 3 to 11,1632,89,0.0545343137254902,quintile,n_grocery_05mi,all
+Q1: 0 to 1,7720,273,0.03536269430051813,quintile,n_grocery_1mi,all
+Q2: 2 to 2,2547,109,0.04279544562230075,quintile,n_grocery_1mi,all
+Q3: 3 to 3,1828,91,0.049781181619256015,quintile,n_grocery_1mi,all
+Q4: 4 to 16,2887,159,0.055074471770003464,quintile,n_grocery_1mi,all
+Q1: 0 to 1,5074,161,0.03173039022467481,quintile,n_convenience_1mi,all
+Q2: 2 to 2,2707,102,0.03768008865903214,quintile,n_convenience_1mi,all
+Q3: 3 to 3,2098,75,0.03574833174451859,quintile,n_convenience_1mi,all
+Q4: 4 to 5,2483,111,0.04470398711236408,quintile,n_convenience_1mi,all
+Q5: 6 to 24,2620,183,0.06984732824427481,quintile,n_convenience_1mi,all
+Q1: 0 to 0.333,3310,121,0.036555891238670694,quintile,convenience_to_grocery_ratio_1mi,all
+Q2: 0.357 to 0.75,2892,113,0.039073305670816044,quintile,convenience_to_grocery_ratio_1mi,all
+Q3: 0.765 to 1,3399,141,0.04148278905560459,quintile,convenience_to_grocery_ratio_1mi,all
+Q4: 1.07 to 2,3419,151,0.0441649605147704,quintile,convenience_to_grocery_ratio_1mi,all
+Q5: 2.17 to 23,1962,106,0.05402650356778797,quintile,convenience_to_grocery_ratio_1mi,all
+0,13013,524,0.040267424882809495,category,n_grocery_ends_1mi_prior12m,all
+1,1626,89,0.054735547355473556,category,n_grocery_ends_1mi_prior12m,all
+2+,343,19,0.05539358600583091,category,n_grocery_ends_1mi_prior12m,all
+"Q1: 0 to 3,279",2998,151,0.05036691127418279,quintile,acs_population,all
+"Q2: 3,281 to 4,243",2995,133,0.04440734557595993,quintile,acs_population,all
+"Q3: 4,244 to 5,150",2999,140,0.04668222740913638,quintile,acs_population,all
+"Q4: 5,154 to 6,419",2995,108,0.03606010016694491,quintile,acs_population,all
+"Q5: 6,421 to 16,788",2995,100,0.0333889816360601,quintile,acs_population,all
+Q1: 0 to 231,2997,143,0.04771438104771438,quintile,pop_density_sqmi,all
+Q2: 231 to 631,2998,98,0.03268845897264843,quintile,pop_density_sqmi,all
+"Q3: 631 to 1,304",2994,108,0.036072144288577156,quintile,pop_density_sqmi,all
+"Q4: 1,305 to 2,293",2996,139,0.046395193591455275,quintile,pop_density_sqmi,all
+"Q5: 2,293 to 10,558",2997,144,0.04804804804804805,quintile,pop_density_sqmi,all
+Q1: 0 to 0.0908,2998,71,0.023682454969979987,quintile,pct_poverty,all
+Q2: 0.0908 to 0.148,2992,110,0.03676470588235294,quintile,pct_poverty,all
+Q3: 0.148 to 0.208,2994,127,0.04241816967267869,quintile,pct_poverty,all
+Q4: 0.208 to 0.286,2996,148,0.049399198931909215,quintile,pct_poverty,all
+Q5: 0.286 to 0.793,2992,176,0.058823529411764705,quintile,pct_poverty,all
+"Q1: 8,775 to 30,697",2995,172,0.057429048414023375,quintile,median_hh_income,all
+"Q2: 30,702 to 37,274",2999,142,0.047349116372124044,quintile,median_hh_income,all
+"Q3: 37,276 to 45,313",2995,130,0.04340567612687813,quintile,median_hh_income,all
+"Q4: 45,321 to 56,779",2989,104,0.03479424556707929,quintile,median_hh_income,all
+"Q5: 56,802 to 219,750",2994,84,0.028056112224448898,quintile,median_hh_income,all
+Q1: 0 to 0.0273,2996,93,0.031041388518024033,quintile,pct_no_vehicle,all
+Q2: 0.0273 to 0.0519,2993,111,0.037086535248914136,quintile,pct_no_vehicle,all
+Q3: 0.0519 to 0.0802,2994,126,0.04208416833667335,quintile,pct_no_vehicle,all
+Q4: 0.0802 to 0.131,2998,124,0.04136090727151434,quintile,pct_no_vehicle,all
+Q5: 0.131 to 0.533,2991,178,0.0595118689401538,quintile,pct_no_vehicle,all
+Q1: 0 to 0.0568,2995,78,0.02604340567612688,quintile,pct_snap_hh,all
+Q2: 0.0568 to 0.105,2994,102,0.03406813627254509,quintile,pct_snap_hh,all
+Q3: 0.106 to 0.161,2995,133,0.04440734557595993,quintile,pct_snap_hh,all
+Q4: 0.161 to 0.237,2993,145,0.048446374874707654,quintile,pct_snap_hh,all
+Q5: 0.237 to 0.761,2995,174,0.05809682804674458,quintile,pct_snap_hh,all
+Q1: 0 to 0.232,2995,106,0.035392320534223705,quintile,pct_renter,all
+Q2: 0.232 to 0.329,2996,111,0.03704939919893191,quintile,pct_renter,all
+Q3: 0.33 to 0.434,2999,124,0.041347115705235075,quintile,pct_renter,all
+Q4: 0.434 to 0.568,2989,124,0.04148544663767146,quintile,pct_renter,all
+Q5: 0.568 to 0.993,2993,167,0.0557968593384564,quintile,pct_renter,all
+Q1: 0 to 0.0887,2995,139,0.04641068447412354,quintile,pct_age_65_plus,all
+Q2: 0.0887 to 0.122,2994,123,0.041082164328657314,quintile,pct_age_65_plus,all
+Q3: 0.122 to 0.151,2995,142,0.04741235392320534,quintile,pct_age_65_plus,all
+Q4: 0.151 to 0.188,2994,124,0.041416165664662656,quintile,pct_age_65_plus,all
+Q5: 0.188 to 0.523,2994,104,0.03473613894455578,quintile,pct_age_65_plus,all
+Q1: 0 to 0.0602,2584,90,0.0348297213622291,quintile,unemployment_rate,all
+Q2: 0.0602 to 0.0849,2584,83,0.03212074303405573,quintile,unemployment_rate,all
+Q3: 0.0849 to 0.111,2584,117,0.045278637770897835,quintile,unemployment_rate,all
+Q4: 0.111 to 0.149,2583,139,0.05381339527680991,quintile,unemployment_rate,all
+Q5: 0.149 to 0.422,2584,164,0.06346749226006192,quintile,unemployment_rate,all
+1,3222,385,0.11949099937926753,category,chain_size,small/medium grocery
+2,254,25,0.0984251968503937,category,chain_size,small/medium grocery
+3+,114,8,0.07017543859649122,category,chain_size,small/medium grocery
+Q1: 0.00274 to 1.13,702,94,0.1339031339031339,quintile,store_age_years,small/medium grocery
+Q2: 1.14 to 2.65,702,112,0.15954415954415954,quintile,store_age_years,small/medium grocery
+Q3: 2.66 to 4.73,701,94,0.1340941512125535,quintile,store_age_years,small/medium grocery
+Q4: 4.74 to 8.47,701,54,0.07703281027104136,quintile,store_age_years,small/medium grocery
+Q5: 8.48 to 48.7,702,61,0.0868945868945869,quintile,store_age_years,small/medium grocery
+Q1: 0.00615 to 0.14,722,90,0.12465373961218837,quintile,pct_poverty,small/medium grocery
+Q2: 0.14 to 0.203,715,81,0.11328671328671329,quintile,pct_poverty,small/medium grocery
+Q3: 0.203 to 0.261,719,87,0.12100139082058414,quintile,pct_poverty,small/medium grocery
+Q4: 0.261 to 0.34,716,76,0.10614525139664804,quintile,pct_poverty,small/medium grocery
+Q5: 0.34 to 0.793,718,84,0.116991643454039,quintile,pct_poverty,small/medium grocery
+Q1: 0 to 0.0943,718,83,0.11559888579387187,quintile,pct_snap_hh,small/medium grocery
+Q2: 0.0943 to 0.149,722,85,0.11772853185595568,quintile,pct_snap_hh,small/medium grocery
+Q3: 0.149 to 0.206,714,90,0.12605042016806722,quintile,pct_snap_hh,small/medium grocery
+Q4: 0.206 to 0.287,718,65,0.0905292479108635,quintile,pct_snap_hh,small/medium grocery
+Q5: 0.287 to 0.761,718,95,0.13231197771587744,quintile,pct_snap_hh,small/medium grocery
+Q1: 0 to 1,988,105,0.1062753036437247,quintile,n_convenience_1mi,small/medium grocery
+Q2: 2 to 2,469,58,0.12366737739872068,quintile,n_convenience_1mi,small/medium grocery
+Q3: 3 to 4,712,78,0.10955056179775281,quintile,n_convenience_1mi,small/medium grocery
+Q4: 5 to 7,750,84,0.112,quintile,n_convenience_1mi,small/medium grocery
+Q5: 8 to 24,671,93,0.13859910581222057,quintile,n_convenience_1mi,small/medium grocery
+Q1: 1 to 11,2315,55,0.023758099352051837,quintile,chain_size,supermarket/super/large
+Q2: 12 to 36,2291,98,0.04277608031427324,quintile,chain_size,supermarket/super/large
+Q3: 39 to 99,2314,33,0.014261019878997408,quintile,chain_size,supermarket/super/large
+Q4: 128 to 497,2436,13,0.005336617405582923,quintile,chain_size,supermarket/super/large
+Q5: 507 to 512,2036,15,0.0073673870333988214,quintile,chain_size,supermarket/super/large
+Q1: 0.00548 to 5.98,2223,61,0.027440395861448492,quintile,store_age_years,supermarket/super/large
+Q2: 5.99 to 11.2,2224,21,0.009442446043165468,quintile,store_age_years,supermarket/super/large
+Q3: 11.2 to 16.3,2224,38,0.0170863309352518,quintile,store_age_years,supermarket/super/large
+Q4: 16.3 to 25.6,2219,42,0.01892744479495268,quintile,store_age_years,supermarket/super/large
+Q5: 25.7 to 51.1,2223,47,0.02114260008996851,quintile,store_age_years,supermarket/super/large
+Q1: 0 to 0.0811,2277,33,0.014492753623188406,quintile,pct_poverty,supermarket/super/large
+Q2: 0.0812 to 0.132,2278,40,0.01755926251097454,quintile,pct_poverty,supermarket/super/large
+Q3: 0.132 to 0.191,2276,42,0.01845342706502636,quintile,pct_poverty,supermarket/super/large
+Q4: 0.191 to 0.264,2274,45,0.01978891820580475,quintile,pct_poverty,supermarket/super/large
+Q5: 0.264 to 0.793,2277,54,0.023715415019762844,quintile,pct_poverty,supermarket/super/large
+Q1: 0 to 0.0464,2277,35,0.015371102327624066,quintile,pct_snap_hh,supermarket/super/large
+Q2: 0.0465 to 0.092,2282,33,0.014460999123575811,quintile,pct_snap_hh,supermarket/super/large
+Q3: 0.0921 to 0.146,2270,42,0.018502202643171806,quintile,pct_snap_hh,supermarket/super/large
+Q4: 0.147 to 0.222,2277,50,0.021958717610891524,quintile,pct_snap_hh,supermarket/super/large
+Q5: 0.222 to 0.761,2276,54,0.023725834797891036,quintile,pct_snap_hh,supermarket/super/large
+Q1: 0 to 1,4086,56,0.013705335291238374,quintile,n_convenience_1mi,supermarket/super/large
+Q2: 2 to 2,2238,44,0.01966041108132261,quintile,n_convenience_1mi,supermarket/super/large
+Q3: 3 to 3,1707,38,0.022261277094317515,quintile,n_convenience_1mi,supermarket/super/large
+Q4: 4 to 5,1873,37,0.019754404698344902,quintile,n_convenience_1mi,supermarket/super/large
+Q5: 6 to 21,1488,39,0.02620967741935484,quintile,n_convenience_1mi,supermarket/super/large
