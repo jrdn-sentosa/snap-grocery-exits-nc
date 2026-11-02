@@ -5,11 +5,13 @@ Modal secret holds just SUPABASE_URL and SUPABASE_KEY. The service-role key used
 write the tables is never put in Modal (and the app refuses to run if SUPABASE_KEY is a secret / service-role key).
 
 Setup (one-time), from the repository root:
-    uv run modal setup                                  # authenticate this machine
-    uv run modal secret create snap-supabase SUPABASE_URL=https://<project>.supabase.co SUPABASE_KEY=<publishable key>
+    uv run python -m modal setup                        # authenticate this machine
+    uv run python -m modal secret create snap-supabase SUPABASE_URL=https://<project>.supabase.co SUPABASE_KEY=<publishable key>
 
 Deploy:
-    uv run modal deploy app/modal_app.py
+    uv run python -m modal deploy app/modal_app.py
+
+Windows: if Smart App Control blocks an .exe launcher, use python -m <tool> instead.
 """
 
 import subprocess

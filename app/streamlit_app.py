@@ -5,7 +5,8 @@ src/prep/06_load_supabase.py uses to write is never read here, and the app refus
 Data through 2021-12-31: train (2008-2018) and validation (2019-2021) cohorts only; the 2022-2024 test cohorts are
 reserved and not in the database.
 
-Run locally:  uv run streamlit run app/streamlit_app.py     (settings from .env; on Modal they come from a secret)
+Run locally:  uv run python -m streamlit run app/streamlit_app.py     (settings from .env; on Modal they come from a secret)
+Windows: if Smart App Control blocks an .exe launcher, use python -m <tool> instead.
 """
 
 import base64

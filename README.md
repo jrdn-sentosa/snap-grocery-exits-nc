@@ -110,13 +110,15 @@ uv run python src/prep/06_load_supabase.py --dry-run   # check the tables withou
 uv run python src/prep/06_load_supabase.py             # load; run it again and it inserts 0 rows
 uv run python src/prep/06_load_supabase.py --replace   # after the labels or the rule change: delete the rows first, then load
 uv run python src/prep/06_load_supabase.py --tables location_gap   # load only some tables (comma-separated)
-uv run streamlit run app/streamlit_app.py              # http://localhost:8501
+uv run python -m streamlit run app/streamlit_app.py    # http://localhost:8501
 ```
 
 Deploy on Modal (the secret holds only the URL and the publishable key, never the service-role key):
 
 ```bash
-uv run modal setup
-uv run modal secret create snap-supabase SUPABASE_URL=https://<project>.supabase.co SUPABASE_KEY=<publishable key>
-uv run modal deploy app/modal_app.py
+uv run python -m modal setup
+uv run python -m modal secret create snap-supabase SUPABASE_URL=https://<project>.supabase.co SUPABASE_KEY=<publishable key>
+uv run python -m modal deploy app/modal_app.py
 ```
+
+Windows: if Smart App Control blocks an .exe launcher, use `python -m <tool>` instead.
