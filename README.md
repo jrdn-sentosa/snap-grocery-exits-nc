@@ -8,6 +8,29 @@ with a fixed chronological split (train 2008-2018, validation 2019-2021, test 20
 Project rules, labels and feature-timing rules are in [`CLAUDE.md`](CLAUDE.md); the cleaning log is in
 [`docs/cleaning_log.md`](docs/cleaning_log.md).
 
+## Repository structure
+
+```
+app/        Streamlit dashboard (streamlit_app.py) and Modal deployment (modal_app.py)
+data/       sources.yaml: every raw file with its download URL and SHA-256 checksum
+  raw/        downloaded source files (gitignored; fetched by src/prep/download_raw.py)
+  interim/    cleaned retailer, spell and panel tables (gitignored; rebuilt by scripts)
+  processed/  store-year train/validation and reserved test files (gitignored; rebuilt)
+  reference/  successor_overrides.csv, the committed decision list of non-successor pairs
+docs/       cleaning log, data dictionary, label-rule revisions, batch/gap/feature-association
+            reports, plot interpretations, D1 proposal, test-reservation log
+figures/    EDA plots (PNG); figures/data/ holds the CSV behind each plot
+src/prep/   pipeline scripts 00-06 in run order (00_download_acs ... 06_load_supabase),
+            plus shared modules; reference/release_dates.csv has the ACS release dates
+src/eda/    plots and report scripts, and lookup.py (censors the test period)
+supabase/   schema.sql, the database schema
+.streamlit/ Streamlit config (config.toml); secrets.toml is gitignored
+.claude/    local Claude Code settings (settings.local.json is gitignored)
+```
+
+Root files: `CLAUDE.md` (project rules), `pyproject.toml` and `uv.lock` (uv environment),
+`.env.example` (template for the gitignored `.env`), `.python-version`. Also gitignored: `.venv/`.
+
 ## Data
 
 Raw data is not stored in git (`data/raw/` is gitignored). [`data/sources.yaml`](data/sources.yaml) is the manifest:
