@@ -6,7 +6,7 @@ historical exit rate for their store type? Charlotte-Mecklenburg is the focus ar
 with a fixed chronological split (train 2008-2018, validation 2019-2021, test 2022-2024, reserved).
 
 Project rules, labels and feature-timing rules are in [`CLAUDE.md`](CLAUDE.md); the cleaning log is in
-[`docs/cleaning_log.md`](docs/cleaning_log.md).
+[`docs/cleaning_log.md`](docs/cleaning_log.md). The D2 data note is [`docs/data_note_d2.md`](docs/data_note_d2.md).
 
 ## Repository structure
 
