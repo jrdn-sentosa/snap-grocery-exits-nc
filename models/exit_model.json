@@ -1,0 +1,75 @@
+{
+  "model": "exit_12m gradient-boosted trees (frozen D4 model)",
+  "label": "exit_12m",
+  "estimator": "sklearn.ensemble.HistGradientBoostingClassifier",
+  "hyperparameters": {
+    "learning_rate": 0.1,
+    "max_leaf_nodes": 2,
+    "min_samples_leaf": 100,
+    "l2_regularization": 0.0,
+    "max_iter": 300,
+    "early_stopping": false,
+    "random_state": 2026
+  },
+  "features": [
+    "store_type",
+    "store_age_years",
+    "auth_date_placeholder",
+    "n_prior_spells_same_id",
+    "n_prior_ownership_changes",
+    "chain_size",
+    "n_grocery_05mi",
+    "n_grocery_1mi",
+    "n_convenience_1mi",
+    "convenience_to_grocery_ratio_1mi",
+    "n_grocery_ends_1mi_prior12m",
+    "acs_population",
+    "pop_density_sqmi",
+    "pct_poverty",
+    "median_hh_income",
+    "pct_no_vehicle",
+    "pct_snap_hh",
+    "pct_renter",
+    "pct_age_65_plus",
+    "unemployment_rate"
+  ],
+  "request_only_fields": {
+    "cohort_year": "selects the income reference; dropped before the model, never a feature"
+  },
+  "income_reference_cohorts": [
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021
+  ],
+  "unemployment_rate_median_imputed": 0.09815668202764977,
+  "train_cohorts": [
+    2012,
+    2018
+  ],
+  "train_rows": 14982,
+  "train_exits": 632,
+  "validation_cohorts": [
+    2019,
+    2021
+  ],
+  "validation_rows": 6348,
+  "validation_exits": 225,
+  "validation_pr_auc": 0.1494883742559908,
+  "validation_pr_auc_docs_model_results": 0.1494883742559908,
+  "versions": {
+    "python": "3.13.15",
+    "scikit-learn": "1.9.1",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
+    "joblib": "1.6.0"
+  },
+  "git_commit": "fd86b76",
+  "joblib_sha256": "f8ddcdf61d6110a91031783beaee4ff4efb8306697a5a8b769ba9dbf1964d1d6"
+}
