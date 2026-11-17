@@ -10,12 +10,17 @@ Project rules, labels and feature-timing rules are in [`CLAUDE.md`](CLAUDE.md); 
 D3 model results are in [`docs/model_results.md`](docs/model_results.md) and
 [`docs/model_error_analysis.md`](docs/model_error_analysis.md); the D3 model note is
 [`docs/model_note_d3.md`](docs/model_note_d3.md). Post-D3 fixes and their effect on the results are in
-[`docs/changes_since_d3.md`](docs/changes_since_d3.md).
+[`docs/changes_since_d3.md`](docs/changes_since_d3.md). The D4 prediction API is described under
+[Prediction API (D4)](#prediction-api-d4).
+
+**Live API:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run ·
+**Docs:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run/docs
 
 ## Repository structure
 
 ```
-app/        Streamlit dashboard (streamlit_app.py) and Modal deployment (modal_app.py)
+app/        Streamlit dashboard (streamlit_app.py, deployed by modal_app.py) and the D4
+            prediction API (api.py, FastAPI; deployed by modal_api.py)
 data/       sources.yaml: every raw file with its download URL and SHA-256 checksum
   raw/        downloaded source files (gitignored; fetched by src/prep/download_raw.py)
   interim/    cleaned retailer, spell and panel tables (gitignored; rebuilt by scripts)
@@ -27,7 +32,9 @@ figures/    EDA plots (PNG); figures/data/ holds the CSV behind each plot
 src/prep/   pipeline scripts 00-06 in run order (00_download_acs ... 06_load_supabase),
             plus shared modules; reference/release_dates.csv has the ACS release dates
 src/eda/    plots and report scripts, and lookup.py (censors the test period)
-src/model/  D3 model evaluation: store-type baseline vs logistic regression vs gradient-boosted trees
+src/model/  D3 model evaluation: store-type baseline vs logistic regression vs gradient-boosted trees;
+            D4: transformers.py (custom preprocessing), 04_fit_final.py, 05_verify_api.py
+models/     exit_model.joblib (the fitted D4 Pipeline, committed) and exit_model.json (its metadata)
 supabase/   schema.sql, the database schema
 .streamlit/ Streamlit config (config.toml); secrets.toml is gitignored
 .claude/    local Claude Code settings (settings.local.json is gitignored)
@@ -156,3 +163,56 @@ uv run python -m modal deploy app/modal_app.py
 ```
 
 Windows: if Smart App Control blocks an .exe launcher, use `python -m <tool>` instead.
+
+## Prediction API (D4)
+
+- **API:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run
+- **Interactive docs:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run/docs
+- **Endpoints:** `GET /health`, `GET /model-info`, `POST /predict`.
+
+The API serves the frozen D4 model: gradient-boosted trees for `exit_12m` (learning rate 0.1, `max_leaf_nodes` 2,
+`min_samples_leaf` 100, l2 0, 300 iterations), fit on train cohorts 2012-2018. Its validation PR-AUC is 0.149, the
+same as in `docs/model_results.md`. It is saved as one scikit-learn Pipeline:
+`StoreYearPreprocessor` ([`src/model/transformers.py`](src/model/transformers.py)) followed by
+`HistGradientBoostingClassifier`.
+
+The transformer does all the preprocessing:
+- It keeps only the inventory feature columns and refuses `year`, `qa_*`, `impact_*`, `exit_*` and `bias_*` columns.
+- It treats `store_type` as a categorical limited to the five grocery types.
+- It median-imputes `unemployment_rate`, with the median fitted on the training rows.
+- It converts `median_hh_income` to the store's percentile within its cohort year, as D3/D4 did. To do that for a single
+  request it stores each cohort's income values (2012-2021; feature values only, no outcomes). Each request therefore
+  carries a `cohort_year`, which is used only to look up that reference and is never a model feature. Cohorts after 2021
+  are rejected.
+
+`POST /predict` takes `{"records": [...]}` with 1-1000 store-year records containing the raw Jan-1 features, plus an
+optional `record_id`. Shares such as `pct_poverty` are proportions from 0 to 1. Missing values are sent as `null`.
+Unknown fields are rejected. The API reads no database and has no secrets.
+
+**Model file.** `models/exit_model.joblib` is committed (134 KB), so the API runs and deploys without rebuilding the
+data. `models/exit_model.json` records the scikit-learn version (1.9.1), features, training rows (14,982 / 632 exits),
+validation PR-AUC and the file's SHA-256. To rebuild it (needs `data/processed/store_year_trainval.parquet` from the
+Reproduce steps above):
+
+```bash
+uv run python src/model/04_fit_final.py   # refits and asserts the result equals 01_evaluate's model and docs/model_results.csv
+```
+
+The rebuild is deterministic: the same data and package versions give a byte-identical file.
+
+```bash
+# run the API locally (then open http://127.0.0.1:8000/docs); `uv run python -m fastapi dev app/api.py` also works
+uv run fastapi dev app/api.py
+
+# deploy on Modal (a separate app from the dashboard; no secret needed). The image pins scikit-learn,
+# pandas, numpy and joblib to the versions in models/exit_model.json
+uv run python -m modal setup              # once per machine
+uv run python -m modal deploy app/modal_api.py
+
+# check that the deployed API matches the local Pipeline (writes docs/api_verification.md)
+uv run python src/model/05_verify_api.py                                  # deployed URL
+uv run python src/model/05_verify_api.py --url http://127.0.0.1:8000      # or a local server
+```
+
+[`docs/api_verification.md`](docs/api_verification.md) shows the latest check: the deployed API returned the same
+probability as the local Pipeline for all 20 validation store-years, bit for bit.
