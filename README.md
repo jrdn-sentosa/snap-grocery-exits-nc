@@ -6,21 +6,21 @@ historical exit rate for their store type? Charlotte-Mecklenburg is the focus ar
 with a fixed chronological split (train 2008-2018, validation 2019-2021, test 2022-2024, reserved).
 
 Project rules, labels and feature-timing rules are in [`CLAUDE.md`](CLAUDE.md); the cleaning log is in
-[`docs/cleaning_log.md`](docs/cleaning_log.md). The D2 data note is [`docs/data_note_d2.md`](docs/data_note_d2.md).
-D3 model results are in [`docs/model_results.md`](docs/model_results.md) and
-[`docs/model_error_analysis.md`](docs/model_error_analysis.md); the D3 model note is
-[`docs/model_note_d3.md`](docs/model_note_d3.md). Post-D3 fixes and their effect on the results are in
+[`docs/cleaning_log.md`](docs/cleaning_log.md). The data note is [`docs/data_note_d2.md`](docs/data_note_d2.md).
+Model evaluation results are in [`docs/model_results.md`](docs/model_results.md) and
+[`docs/model_error_analysis.md`](docs/model_error_analysis.md); the model evaluation note is
+[`docs/model_note_d3.md`](docs/model_note_d3.md). Later fixes and their effect on the results are in
 [`docs/changes_since_d3.md`](docs/changes_since_d3.md).
 
-**D4 summary.** The model is frozen. Under the pre-set rule (mean rolling-fold PR-AUC inside 2012-2018, label `exit_12m`)
+**Final model.** The model is frozen. Under the pre-set rule (mean rolling-fold PR-AUC inside 2012-2018, label `exit_12m`)
 **gradient-boosted trees** are selected (fold PR-AUC 0.155 vs 0.147 for logistic regression), with the settings found in that rerun:
 learning rate 0.1, `max_leaf_nodes` 2, `min_samples_leaf` 100, l2 0, 300 iterations, `unemployment_rate` median-imputed. Nothing was
 re-tuned or re-selected on validation. The final model is **refit on cohorts 2012-2021** and saved as **one fitted sklearn Pipeline,
 `StoreFeaturePrep` -> `HistGradientBoostingClassifier`** (`models/pipeline.joblib`, gitignored, rebuilt deterministically). The refit
-model cannot be evaluated on validation; its only evaluation is the single test run (2022-2024) in D6.
+model cannot be evaluated on validation; it is evaluated once, on the reserved 2022-2024 test years, after all modeling choices are fixed.
 - Model spec (inputs, units, outputs, tiers, versions): [`docs/model_spec_d4.md`](docs/model_spec_d4.md)
 - Fixed example inputs and expected outputs: [`docs/model_examples_d4.json`](docs/model_examples_d4.json)
-- Post-D3 changes and pre-registered D4 analyses: [`docs/changes_since_d3.md`](docs/changes_since_d3.md)
+- Changes after the model evaluation, and pre-registered follow-up analyses: [`docs/changes_since_d3.md`](docs/changes_since_d3.md)
 
 ## Repository structure
 
@@ -33,16 +33,16 @@ data/       sources.yaml: every raw file with its download URL and SHA-256 check
   processed/  store-year train/validation and reserved test files (gitignored; rebuilt)
   reference/  successor_overrides.csv, the committed decision list of non-successor pairs
 docs/       cleaning log, data dictionary, label-rule revisions, batch/gap/feature-association
-            reports, plot interpretations, D1 proposal, test-reservation log
+            reports, plot interpretations, project proposal, test-reservation log
 figures/    EDA plots (PNG); figures/data/ holds the CSV behind each plot
 src/prep/   pipeline scripts 00-06 in run order (00_download_acs ... 06_load_supabase),
             plus shared modules; reference/release_dates.csv has the ACS release dates
 src/eda/    plots and report scripts, and lookup.py (censors the test period)
-src/model/  01-02 D3 evaluation (baseline vs logistic regression vs trees); 03-09 post-D3 analysis and the final refit, plus shared modules:
+src/model/  01-02 model evaluation (baseline vs logistic regression vs trees); 03-09 follow-up analyses and the final refit, plus shared modules:
               store_prep.py  StoreFeaturePrep, the input-preparation transformer (first step of the saved Pipeline; must be importable to unpickle it)
               explain.py     exact per-feature contributions and top reasons for the trees model
               impact.py      Jan-1 access-impact score (percentile ranks against a fixed reference)
-              serving.py     loads models/pipeline.joblib, scores store-years, runs the startup self-check (used by 09 and the D4 API)
+              serving.py     loads models/pipeline.joblib, scores store-years, runs the startup self-check (used by 09 and the API)
               common_model.py, spec_writer.py   shared evaluation helpers; writer of docs/model_spec_d4.md
 supabase/   schema.sql, the database schema
 .streamlit/ Streamlit config (config.toml); secrets.toml is gitignored
@@ -78,8 +78,7 @@ Which files are read:
 - **`05c_new_features.py`** also reads the three Food Access Research Atlas workbooks and the 17 BLS LAUS county files
   (`data/raw/bls_laus/`). These are candidate features tested in the pre-registered ablation and **not adopted into the frozen model**.
 - **The two Atlas documentation PDFs** are documentation only; no script reads them.
-- **`Proximity to a Grocery Store.csv`** (Mecklenburg only) is downloaded and verified but **not read by any script**. The D2 data note
-  said the dashboard uses it; that was inaccurate, and it will be corrected in the final report.
+- **`Proximity to a Grocery Store.csv`** (Mecklenburg only) is downloaded and verified but **not read by any script**. The dashboard does not use it.
 
 The ZIP-level RUCA files, the 2025 SNAP-authorized Retailer Access Map and the tract relationship-file explanation were removed from
 `data/raw/` and the manifest.
@@ -130,7 +129,7 @@ uv run python src/prep/03_spells.py     # authorization periods -> spells, owner
 uv run python src/prep/04_panel.py      # store-years, tracts, labels, train/validation vs reserved test split
 uv run python src/prep/05_features.py   # Jan-1 features -> data/processed/store_year_*.parquet
 uv run python src/prep/05b_location_gaps.py   # days each store location went without SNAP after a grocery record ended (through 2021 only)
-uv run python src/prep/05c_new_features.py   # D4 candidate features (not in the frozen model)
+uv run python src/prep/05c_new_features.py   # candidate features (not in the frozen model)
 uv run python src/prep/05d_context_columns.py   # Jan-1 distance to the nearest other grocery (role `context`, impact score only)
 
 # 4. reports (outcome statistics use train and validation years only)
@@ -149,11 +148,11 @@ uv run python src/eda/data_dictionary.py       # docs/data_dictionary.md (from d
 uv run python src/eda/lookup.py --name "earth fare"
 uv run python src/eda/lookup.py --record 740603
 
-# 5. D3 model evaluation: fit on train 2012-2018, score validation 2019-2021 (the test file is never read)
+# 5. Model evaluation: fit on train 2012-2018, score validation 2019-2021 (the test file is never read)
 uv run python src/model/01_evaluate.py         # docs/model_results.md/.csv, figures/model_pr_curves.png
 uv run python src/model/02_error_analysis.py   # docs/model_error_analysis.md/.csv (needs 01 first)
 
-# 6. Post-D3 analysis and final model (frozen trees; run in this order; needs 05d to have run)
+# 6. Follow-up analyses and final model (frozen trees; run in this order; needs 05d to have run)
 uv run python src/model/03_feature_ablation.py   # candidate-feature ablation on the rolling folds inside 2012-2018 (validation not scored)
 uv run python src/model/04_fairness_variant.py   # trees with vs without tract demographic features; group false-positive rates (report only)
 uv run python src/model/05_calibration.py        # calibration diagnosis of the validation predictions (docs/calibration.md)
@@ -172,9 +171,9 @@ never loaded to Supabase and no outcome statistic, plot or summary is computed f
 feature and context columns for the test rows, using only information available on January 1 of each year; no feature code reads a
 label, end date or outcome column (05 carries the panel's label columns through to the file without examining them). The one direct read
 of the test file for modeling is `year` and `median_hh_income`, used by `09_final_refit.py` to build the income references for the
-2012-2024 cohorts, logged in [`docs/test_reservation_log.md`](docs/test_reservation_log.md). The test years are evaluated once, in D6.
+2012-2024 cohorts, logged in [`docs/test_reservation_log.md`](docs/test_reservation_log.md). The test years are evaluated once, after all modeling choices are fixed.
 
-## D4 API
+## Prediction API
 
 - **API (canonical):** https://jrdn-sentosa--snap-grocery-exits-api.us-east.modal.run
 - **Interactive docs:** https://jrdn-sentosa--snap-grocery-exits-api.us-east.modal.run/docs
