@@ -1,6 +1,6 @@
 """Verify the D4 API, locally and deployed, against the fixed examples in docs/model_examples_d4.json.
 
-    uv run --group api python app/verify_api.py
+    uv run --group api python app/verify_api.py --deployed-url <url>      # or set API_URL
     uv run --group api python app/verify_api.py --local-url http://127.0.0.1:8000   # use a running server
 
 For each target (a local server, which this script starts on a free port unless --local-url is given, and the deployed Modal URL):
@@ -26,10 +26,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import requests
+from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parents[1]
+load_dotenv(ROOT / ".env")  # API_URL may live in .env
 EXAMPLES = json.loads((ROOT / "docs" / "model_examples_d4.json").read_text(encoding="utf-8"))
-DEPLOYED_URL = "https://hgmccall--snap-grocery-exits-api.us-east.modal.run"
 OUT = ROOT / "docs" / "api_verification.md"
 TOL = 1e-9
 NUMERIC = ("raw_score", "probability", "impact", "priority")
@@ -167,8 +168,12 @@ def write_report(results: list[dict], all_ok: bool, unavailable: dict):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--local-url", help="use a running local server instead of starting one")
-    ap.add_argument("--deployed-url", default=DEPLOYED_URL)
+    ap.add_argument("--deployed-url", default=os.environ.get("API_URL"),
+                    help="deployed API base URL (or set API_URL in the environment or .env); there is no default")
     args = ap.parse_args()
+    if not args.deployed_url:
+        raise SystemExit("No deployed API URL: pass --deployed-url or set API_URL (e.g. in .env), "
+                         "https://<modal-workspace>--snap-grocery-exits-api.us-east.modal.run")
 
     proc = None
     if args.local_url:

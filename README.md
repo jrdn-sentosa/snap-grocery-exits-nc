@@ -176,8 +176,10 @@ of the test file for modeling is `year` and `median_hh_income`, used by `09_fina
 
 ## D4 API
 
-- **API:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run
-- **Interactive docs:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run/docs
+- **API (canonical):** https://jrdn-sentosa--snap-grocery-exits-api.us-east.modal.run
+- **Interactive docs:** https://jrdn-sentosa--snap-grocery-exits-api.us-east.modal.run/docs
+
+Deploying from another Modal workspace gives a different URL (`https://<modal-workspace>--snap-grocery-exits-api.us-east.modal.run`).
 - **Endpoints:** `GET /health` (startup self-check result), `GET /model-info` (bundle metadata and the model's limits),
   `POST /predict`
 
@@ -209,10 +211,11 @@ FastAPI is in the `api` dependency group of `pyproject.toml` (locked in `uv.lock
 uv run --group api fastapi dev app/api.py
 
 # 3. deploy on Modal (one-time setup: uv run python -m modal setup)
+#    on Windows, set PYTHONUTF8=1 if modal deploy shows a cp932 encoding error
 uv run python -m modal deploy app/modal_api.py
 
 # 4. verify local and deployed against the fixed examples (writes docs/api_verification.md)
-uv run --group api python app/verify_api.py
+uv run --group api python app/verify_api.py --deployed-url <url>   # or set API_URL in .env
 ```
 
 The verifier starts a local server itself; pass `--local-url http://127.0.0.1:8000` to use one that is already running. It checks

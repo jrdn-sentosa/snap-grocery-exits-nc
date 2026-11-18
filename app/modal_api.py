@@ -8,7 +8,7 @@ Build the model first (models/ is gitignored; the bundle is baked into the image
     uv run python src/model/09_final_refit.py           # after the README "Reproduce" steps
 Deploy, from the repository root:
     uv run python -m modal deploy app/modal_api.py
-URL: https://hgmccall--snap-grocery-exits-api.us-east.modal.run  (/docs, /health, /model-info, POST /predict)
+URL: https://<modal-workspace>--snap-grocery-exits-api.us-east.modal.run  (/docs, /health, /model-info, POST /predict)
 
 The image mirrors the repository layout (/root/app/api.py, /root/src/model/*.py, /root/models/pipeline.joblib), so api.py finds
 store_prep.py, serving.py, explain.py and impact.py on its import path and serving.Bundle finds the bundle. Package versions are pinned to
