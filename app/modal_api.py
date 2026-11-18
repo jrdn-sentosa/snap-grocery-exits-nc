@@ -24,7 +24,7 @@ APP_DIR = Path(__file__).resolve().parent
 ROOT = APP_DIR.parent
 MODEL_SRC = ROOT / "src" / "model"
 SKLEARN_PIN = "1.9.1"           # spec section 8
-FASTAPI_PIN = "0.163.1"         # same as the local run command in app/api.py
+FASTAPI_PIN = "0.163.1"         # same as the `api` dependency group in pyproject.toml
 
 app = modal.App("snap-grocery-exits-api")
 

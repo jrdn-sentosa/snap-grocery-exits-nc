@@ -21,6 +21,10 @@ dependencies = [
 ]
 
 [dependency-groups]
+api = [
+    "fastapi[standard]==0.163.1",
+    "requests>=2.34.2",
+]
 dev = [
     "modal>=1.6.2",
 ]

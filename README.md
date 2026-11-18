@@ -200,19 +200,19 @@ passes, and `/health` reports the result and any failure messages.
 - It pins `scikit-learn==1.9.1` and the other versions in spec section 8.
 - No secret is attached.
 
-FastAPI is not a project dependency, so the API commands add it with `uv run --with`:
+FastAPI is in the `api` dependency group of `pyproject.toml` (locked in `uv.lock`), so the API commands use `uv run --group api`:
 
 ```bash
 # 1. build the bundle (models/ is gitignored): the Reproduce steps above, through 09_final_refit.py
 
 # 2. run locally, then open http://127.0.0.1:8000/docs
-uv run --with "fastapi[standard]==0.163.1" fastapi dev app/api.py
+uv run --group api fastapi dev app/api.py
 
 # 3. deploy on Modal (one-time setup: uv run python -m modal setup)
 uv run python -m modal deploy app/modal_api.py
 
 # 4. verify local and deployed against the fixed examples (writes docs/api_verification.md)
-uv run --with "fastapi[standard]==0.163.1" python app/verify_api.py
+uv run --group api python app/verify_api.py
 ```
 
 The verifier starts a local server itself; pass `--local-url http://127.0.0.1:8000` to use one that is already running. It checks
@@ -220,6 +220,14 @@ both servers:
 - `/health` must show the self-check passed.
 - All 9 fixed examples must match `expected` within 1e-9, with tier and reasons matching exactly.
 - All 8 `invalid_examples` must return 422 (never 500).
+
+**CORS.** The API allows browser calls (GET and POST only, no credentials) from `http://localhost:3000` and from one more origin
+read from the `FRONTEND_ORIGIN` environment variable (our Vercel domain, e.g. `https://our-app.vercel.app`, no trailing slash). The
+default is the inert placeholder `https://placeholder.invalid`. To set it on Modal, add it to the `@app.function` in
+`app/modal_api.py` (`modal.Secret.from_dict({"FRONTEND_ORIGIN": ...})`; it is not a secret) and redeploy.
+
+The verifier also starts a throwaway local server with `MODEL_DIR` pointing at an empty temporary folder and checks that
+`/health` reports `self_check_passed = false` and that `POST /predict` returns 503, never 500. The deployed app is not touched for this.
 
 The latest run is in [`docs/api_verification.md`](docs/api_verification.md): **PASS** locally and deployed, with 9/9 examples
 identical to `expected` and 8/8 invalid requests rejected with 422.

@@ -7,8 +7,8 @@ explain.py and impact.py.
 Startup: load models/pipeline.joblib and run `Bundle.self_check()`. Until it passes, POST /predict answers 503; GET /health reports the result
 and the failure messages.
 
-Run locally, from the repository root (FastAPI is not a project dependency, so it is added for the command only):
-    uv run --with "fastapi[standard]==0.163.1" fastapi dev app/api.py      # http://127.0.0.1:8000/docs
+Run locally, from the repository root (FastAPI is in the `api` dependency group of pyproject.toml):
+    uv run --group api fastapi dev app/api.py      # http://127.0.0.1:8000/docs
 Deployed on Modal by app/modal_api.py.
 
 Request: POST /predict takes a JSON array of 1-1000 store-year records. Each record has every key in store_prep.FIELD_RULES
@@ -24,6 +24,7 @@ from typing import Annotated, Any, Literal
 import pandas as pd
 from annotated_types import Len
 from fastapi import Body, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -128,6 +129,14 @@ app = FastAPI(
         "trees refit on cohorts 2012-2021; contract in docs/model_spec_d4.md.\n\n**Limits:**\n\n" + "\n".join(f"- {s}" for s in LIMITS)
     ),
 )
+
+
+# CORS: a browser front end may call the API from the local dev server or from our Vercel site. The Vercel origin comes from the
+# FRONTEND_ORIGIN environment variable; the default is an inert placeholder (a reserved .invalid host), so nothing real is allowed
+# until it is set. Only GET and POST are allowed, and no credentials (the API has no cookies or auth).
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "https://placeholder.invalid").rstrip("/")
+app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:3000", FRONTEND_ORIGIN], allow_methods=["GET", "POST"],
+                   allow_headers=["Content-Type"], allow_credentials=False)
 
 
 def _require_model() -> serving.Bundle:

@@ -47,21 +47,27 @@ Batch ends (`qa_batch_end`) are ~32% of ended periods through 2021, ~33% of groc
 ```
 data/sources.yaml    # manifest of data/raw: official URL, size, SHA-256, citation (src/prep/download_raw.py verifies it)
 data/raw/            # downloaded files (gitignored); data/raw/acs/ is built by 00_download_acs.py
+data/reference/      # committed decision lists (successor_overrides.csv)
 data/interim/        # cleaned retailer + spell tables
-data/processed/      # store_year_trainval.parquet, store_year_test.parquet
-src/prep/            # 01_load.py, 02_clean.py, 03_spells.py, 04_panel.py, 05_features.py, 06_load_supabase.py
-src/eda/             # plots.py (writes figures/ PNGs)
-app/                 # streamlit_app.py (reads from Supabase), modal_app.py
-docs/                # data_dictionary.md, data_note.md, cleaning_log.md
+data/processed/      # store_year_trainval.parquet, store_year_test.parquet (test reserved)
+src/prep/            # 00-05d, 06_load_supabase.py; common.py, matching.py, store_years.py; reference/release_dates.csv
+src/eda/             # EDA reports, plots.py (figures/), lookup.py (censored store lookup), data_dictionary.py
+src/model/           # 01-09 (evaluate ... 09_final_refit.py); store_prep.py, serving.py, explain.py, impact.py, common_model.py
+models/              # pipeline.joblib + metadata.json (gitignored; built by 09_final_refit.py)
+app/                 # api.py (FastAPI), modal_api.py, verify_api.py; streamlit_app.py, modal_app.py (dashboard)
+supabase/            # schema.sql
+docs/                # data dictionary, cleaning log, model_spec_d4.md, model_examples_d4.json, api_verification.md, change logs
 figures/
+pyproject.toml       # uv; dependency groups: dev (modal), api (fastapi[standard]==0.163.1, requests)
 ```
+API commands use `uv run --group api ...` (never `uv run --with`). CORS allows GET/POST from http://localhost:3000 and `FRONTEND_ORIGIN`.
 
-## D2 deliverables checklist
-- [ ] Preparation code (scripts above), runnable end to end
-- [ ] Data dictionary (`docs/data_dictionary.md`): every column, type, source, definition, allowed values/units, missingness
-- [ ] Cleaning log with row counts per step
-- [ ] 3–5 interpreted plots (train/validation only for outcome plots)
-- [ ] Data-quality and sampling concerns written up
-- [ ] Test set reserved and documented
-- [ ] Supabase tables loaded; Streamlit dashboard reads from Supabase; deployed on Modal
-- [ ] 2–3 page data note
+## D4 checklist
+- [x] Model frozen (gradient-boosted trees, selected on 2012-2018 rolling folds); refit on 2012-2021 (`src/model/09_final_refit.py`)
+- [x] Spec (`docs/model_spec_d4.md`) and fixed examples (`docs/model_examples_d4.json`: 9 scored, 8 invalid)
+- [x] Risk tiers, reasons, impact score and priority (`serving.Bundle`)
+- [x] FastAPI `app/api.py` (/health, /model-info, POST /predict; 422 on invalid input, 503 until the self-check passes), CORS
+- [x] Deployed on Modal (`app/modal_api.py`), no secrets
+- [x] `app/verify_api.py`: local and deployed 9/9 and 8/8, plus the empty-MODEL_DIR 503 check -> `docs/api_verification.md`
+- [x] Reproducible environment (`api` dependency group, `uv.lock`)
+- [ ] Test years (2022-2024) evaluated once, in D6; never before
