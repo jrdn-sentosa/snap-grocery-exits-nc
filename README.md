@@ -174,11 +174,55 @@ label, end date or outcome column (05 carries the panel's label columns through 
 of the test file for modeling is `year` and `median_hh_income`, used by `09_final_refit.py` to build the income references for the
 2012-2024 cohorts, logged in [`docs/test_reservation_log.md`](docs/test_reservation_log.md). The test years are evaluated once, in D6.
 
-## D4 API (in progress)
+## D4 API
 
-Placeholder, to be filled in by the API builder: Modal URL, `/docs` URL and run commands (local and deploy). The request and response
-contract, input validation rules and examples are in [`docs/model_spec_d4.md`](docs/model_spec_d4.md) and
-[`docs/model_examples_d4.json`](docs/model_examples_d4.json); the scoring code is `src/model/serving.py`.
+- **API:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run
+- **Interactive docs:** https://hgmccall--snap-grocery-exits-api.us-east.modal.run/docs
+- **Endpoints:** `GET /health` (startup self-check result), `GET /model-info` (bundle metadata and the model's limits),
+  `POST /predict`
+
+The request and response contract, input validation rules and examples are in
+[`docs/model_spec_d4.md`](docs/model_spec_d4.md) and [`docs/model_examples_d4.json`](docs/model_examples_d4.json).
+
+**Scoring.** [`app/api.py`](app/api.py) is a FastAPI app built on `serving.Bundle` (`src/model/serving.py`) and reimplements no
+scoring. At startup it loads `models/pipeline.joblib` and runs `Bundle.self_check()`. `POST /predict` answers 503 until the check
+passes, and `/health` reports the result and any failure messages.
+
+**Requests.** `POST /predict` takes a JSON array of 1-1000 store-year records. Each record has every key in
+`store_prep.FIELD_RULES`: `year` (the cohort year), the 20 inputs (`median_hh_income` in dollars) and
+`dist_other_grocery_jan1_mi`. `null` is allowed only where the rule permits it.
+
+**Responses.** For each record the API returns `raw_score`, `probability`, `tier`, `impact`, `priority` and `reasons`, exactly as
+`Bundle.score` gives them. Invalid input gets a 422 that names the field.
+
+[`app/modal_api.py`](app/modal_api.py) serves it on Modal (HW4 pattern, `@modal.asgi_app()`):
+- The image contains `store_prep.py`, `serving.py`, `explain.py` and `impact.py` and the locally built `models/pipeline.joblib`.
+- It pins `scikit-learn==1.9.1` and the other versions in spec section 8.
+- No secret is attached.
+
+FastAPI is not a project dependency, so the API commands add it with `uv run --with`:
+
+```bash
+# 1. build the bundle (models/ is gitignored): the Reproduce steps above, through 09_final_refit.py
+
+# 2. run locally, then open http://127.0.0.1:8000/docs
+uv run --with "fastapi[standard]==0.163.1" fastapi dev app/api.py
+
+# 3. deploy on Modal (one-time setup: uv run python -m modal setup)
+uv run python -m modal deploy app/modal_api.py
+
+# 4. verify local and deployed against the fixed examples (writes docs/api_verification.md)
+uv run --with "fastapi[standard]==0.163.1" python app/verify_api.py
+```
+
+The verifier starts a local server itself; pass `--local-url http://127.0.0.1:8000` to use one that is already running. It checks
+both servers:
+- `/health` must show the self-check passed.
+- All 9 fixed examples must match `expected` within 1e-9, with tier and reasons matching exactly.
+- All 8 `invalid_examples` must return 422 (never 500).
+
+The latest run is in [`docs/api_verification.md`](docs/api_verification.md): **PASS** locally and deployed, with 9/9 examples
+identical to `expected` and 8/8 invalid requests rejected with 422.
 
 ## Dashboard (Supabase, Streamlit, Modal)
 
