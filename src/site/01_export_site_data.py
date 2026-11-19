@@ -236,7 +236,7 @@ def main() -> None:
     # past Mecklenburg exits that left a gap: nearest other grocery > 1 mile away at the exit (train + validation exits only)
     mex = tv[(tv["county"] == COUNTY) & (tv["exit_12m"] == 1) & (tv["year"] >= SHADE_YEARS[0])]
     known = mex["impact_dist_nearest_other_grocery_mi"].notna()
-    gap = {"exits": int(len(mex)), "with_distance": int(known.sum()), "gap_exits": int((mex.loc[known, "impact_dist_nearest_other_grocery_mi"] > 1).sum())}
+    gap = {"exits": int(len(mex)), "with_distance": int(known.sum()), "gap_exits": int((mex.loc[known, "impact_dist_nearest_other_grocery_mi"].round(2) > 1).sum())}   # same rule as the site: distance as shown (2 decimals) > 1
     gap["share"] = round(gap["gap_exits"] / gap["with_distance"], 4)
 
     # ------------------------------------------------------------------ pie: how grocery authorizations ended, through 2021

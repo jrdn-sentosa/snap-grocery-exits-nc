@@ -6,7 +6,7 @@ import { Barcode } from "@/components/site/barcode";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Row } from "@/lib/derived";
-import { GAP_MILES, TIER_LABEL, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, titleCase } from "@/lib/format";
+import { GAP_MILES, isGap, TIER_LABEL, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, titleCase } from "@/lib/format";
 import type { Tier } from "@/lib/types";
 
 const STAMP: Record<Tier, string> = {
@@ -43,7 +43,7 @@ export function Receipt({ row, scoresLoading }: { row: Row; scoresLoading?: bool
   const { store, pred, pct, typical } = row;
   const c = store.context;
   const dist = c.dist_next_grocery_mi;
-  const gap = dist != null && dist > GAP_MILES;
+  const gap = isGap(dist);
   const [copied, setCopied] = useState(false);
   const since = store.since_year ? `since ${store.since_year}` : "since before 2005 (exact year not recorded)";
   const owner = store.independent == null ? "ownership unknown" : store.independent ? "independent" : `chain of ${store.chain_size} in NC`;

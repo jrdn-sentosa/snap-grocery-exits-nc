@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Barcode } from "@/components/site/barcode";
 import type { Row } from "@/lib/derived";
-import { GAP_MILES, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
+import { isGap, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
 
 /** One outreach "shelf tag". Needs a scored row. */
 export function ShelfTag({ row, rank }: { row: Row; rank: number }) {
   const { store, pred, typical } = row;
   if (!pred) return null;
   const d = store.context.dist_next_grocery_mi;
-  const gap = d != null && d > GAP_MILES;
+  const gap = isGap(d);
   const alt = store.alternatives[0];
   const ratio = typical ? pred.probability / typical : null;
   return (

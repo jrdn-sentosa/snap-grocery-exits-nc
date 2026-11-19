@@ -11,7 +11,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { downloadText, outreachCsv } from "@/lib/csv";
 import { useRows, type Row } from "@/lib/derived";
-import { GAP_MILES, TIER_LABEL, TYPE_ORDER, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
+import { SUPPORT_NOTE } from "@/lib/site";
+import { GAP_MILES, isGap, TIER_LABEL, TYPE_ORDER, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
 
 type RankBy = "priority" | "risk";
 const TOP = 10;
@@ -45,7 +46,7 @@ export function HighestRisk() {
   }, [scored, rankBy, type, zip]);
 
   const cut = info.data?.metadata.tier_cutoffs;
-  const gapOf = (r: Row) => (r.store.context.dist_next_grocery_mi ?? 0) > GAP_MILES;
+  const gapOf = (r: Row) => isGap(r.store.context.dist_next_grocery_mi);
   const high = scored.filter((r) => r.pred!.tier === "high");
   const highGap = high.filter(gapOf);
   const top = ranked.slice(0, TOP);
@@ -66,18 +67,21 @@ export function HighestRisk() {
             For the Food Policy Council and partners. Ranked by each store’s predicted chance of losing SNAP authorization in the 12 months after Jan 1, 2024, weighted by how much access would be lost.
           </p>
         </div>
-        <div className="no-print flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={!ranked.length}
-            onClick={() => downloadText("grocery-watch-outreach-list-2024.csv", outreachCsv(ranked))}
-            className="inline-flex min-h-11 items-center gap-2 rounded-md border border-ink bg-paper-light px-4 hover:bg-paper disabled:opacity-50"
-          >
-            <Download className="size-4" aria-hidden /> Download CSV
-          </button>
-          <button type="button" onClick={() => window.print()} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-forest px-4 text-paper-light hover:bg-forest-dark">
-            <Printer className="size-4" aria-hidden /> Print outreach list
-          </button>
+        <div className="no-print max-w-sm">
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={!ranked.length}
+              onClick={() => downloadText("grocery-watch-outreach-list-2024.csv", outreachCsv(ranked))}
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-ink bg-paper-light px-4 hover:bg-paper disabled:opacity-50"
+            >
+              <Download className="size-4" aria-hidden /> Download CSV
+            </button>
+            <button type="button" onClick={() => window.print()} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-forest px-4 text-paper-light hover:bg-forest-dark">
+              <Printer className="size-4" aria-hidden /> Print outreach list
+            </button>
+          </div>
+          <p className="mt-2 text-xs leading-snug text-ink-2">{SUPPORT_NOTE}</p>
         </div>
       </div>
 
@@ -192,6 +196,11 @@ export function HighestRisk() {
         {rankBy === "priority"
           ? "Priority = predicted risk × access impact. Impact is half distance to the next SNAP grocery, a quarter the tract’s share of SNAP households and a quarter its share of households without a car."
           : "Ranked by predicted risk alone, ignoring how much access would be lost."}
+      </p>
+
+      {/* next to the list; this one also prints (the note beside the buttons is screen-only) */}
+      <p className="mt-3 border-l-4 border-forest pl-3 text-sm text-ink-2" role="note">
+        {SUPPORT_NOTE}
       </p>
 
       {loading && (
