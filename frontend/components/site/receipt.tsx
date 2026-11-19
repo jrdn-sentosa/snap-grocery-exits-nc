@@ -7,7 +7,7 @@ import { Barcode } from "@/components/site/barcode";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Row } from "@/lib/derived";
-import { GAP_MILES, isGap, TIER_LABEL, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, titleCase } from "@/lib/format";
+import { GAP_MILES, isGap, TIER_LABEL, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, fmtRate, titleCase } from "@/lib/format";
 import type { Tier } from "@/lib/types";
 
 const STAMP: Record<Tier, string> = {
@@ -85,7 +85,7 @@ export function Receipt({ row, scoresLoading }: { row: Row; scoresLoading?: bool
               <p className={`font-number text-6xl font-semibold leading-none ${TIER_TEXT[pred.tier]}`}>{fmtPct(pred.probability)}</p>
             </div>
             <div className="mt-3 space-y-1">
-              {typical != null && <Line label={`Typical ${TYPE_SHORT[store.store_type].toLowerCase()}`} value={fmtPct(typical)} />}
+              {typical != null && <Line label={`Typical ${TYPE_SHORT[store.store_type].toLowerCase()}`} value={fmtRate(typical)} />}
               {pct != null && <Line label="Riskier than" value={`${pct}% of Mecklenburg stores`} />}
             </div>
           </>

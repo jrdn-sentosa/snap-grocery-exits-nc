@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ApiError, predict } from "@/lib/api";
 import { FIELD_KEYS, FIELD_LABEL, ERROR_HOME, applyTract, asRecord, blankForm, buildRecord, buildVariants, formFromStore, typicalChainSize, type FieldKey, type FormState, type Variant } from "@/lib/check";
 import { useMeta, useScores, useStores, useTracts } from "@/lib/data";
-import { TIER_LABEL, TIER_TEXT, TYPE_ORDER, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
+import { TIER_LABEL, TIER_TEXT, TYPE_ORDER, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, fmtRate } from "@/lib/format";
 import { SCORE_YEAR } from "@/lib/site";
 import type { Prediction, StoreType } from "@/lib/types";
 
@@ -237,7 +237,7 @@ export function CheckForm() {
                   <label key={t} className={`cursor-pointer border px-3 py-2 text-center has-[:focus-visible]:outline-2 ${on ? "border-ink bg-paper-light" : "border-rule hover:bg-paper-light"}`}>
                     <input type="radio" name="store_type" value={t} checked={on} onChange={() => set("store_type", t)} className="sr-only" />
                     <span className="block font-medium">{TYPE_SHORT[t]}</span>
-                    <span className={`label-mono block ${on ? "text-tomato" : "text-ink-2"}`}>{typical(t) != null ? `${fmtPct(typical(t)!)} / yr` : "—"}</span>
+                    <span className={`label-mono block ${on ? "text-tomato" : "text-ink-2"}`}>{typical(t) != null ? `${fmtRate(typical(t)!)} / yr` : "—"}</span>
                   </label>
                 );
               })}
@@ -255,11 +255,16 @@ export function CheckForm() {
                   ] as const
                 ).map(([val, label]) => (
                   <label key={label} className={`min-h-11 cursor-pointer border border-rule px-4 py-2.5 first:rounded-l-md last:rounded-r-md has-[:focus-visible]:outline-2 ${form.chain === val ? "bg-forest text-paper-light" : "bg-paper-light"}`}>
-                    <input type="radio" name="ownership" checked={form.chain === val} onChange={() => setForm((f) => ({ ...f, chain: val, v: { ...f.v, chain_size: val && !f.v.chain_size ? "10" : f.v.chain_size } }))} className="sr-only" />
+                    <input type="radio" name="ownership" checked={form.chain === val} onChange={() => setForm((f) => ({ ...f, chainAssumed: false, chain: val, v: { ...f.v, chain_size: val && !f.v.chain_size ? "10" : f.v.chain_size } }))} className="sr-only" />
                     {label}
                   </label>
                 ))}
               </div>
+              {form.chainAssumed && !form.chain && (
+                <p className="mt-2 text-sm text-mustard-text" role="note">
+                  Assumed independent: chain size is missing in the USDA data for this store. Choose an option above if you know.
+                </p>
+              )}
               {form.chain && (
                 <div className="mt-3 max-w-xs">
                   <label htmlFor="f-chain_size" className="label-mono text-ink-2">
@@ -390,7 +395,7 @@ export function CheckForm() {
                 <h2 className="font-mono text-[0.9375rem] font-medium uppercase leading-snug">{startStore ? displayName(startStore.name) : "Entered store"}</h2>
                 <p className="label-mono mt-1 text-ink-2">{tractProps ? `${tractProps.name}, Mecklenburg Co.` : "No census tract chosen"}</p>
                 <p className="label-mono text-ink-2">
-                  {TYPE_SHORT[result.record.store_type as StoreType] ?? String(result.record.store_type)} · {Number(result.record.chain_size) > 1 ? `chain of ${result.record.chain_size}` : "independent"}
+                  {TYPE_SHORT[result.record.store_type as StoreType] ?? String(result.record.store_type)} · {Number(result.record.chain_size) > 1 ? `chain of ${result.record.chain_size}` : result.form.chainAssumed ? "independent (assumed: chain size missing)" : "independent"}
                 </p>
                 <hr className="my-4 border-dashed border-rule" />
                 <p className="label-mono">12-month exit risk</p>
@@ -402,7 +407,7 @@ export function CheckForm() {
                   {typical(String(result.record.store_type)) != null && (
                     <div className="flex justify-between gap-2">
                       <span className="label-mono">Typical {TYPE_SHORT[result.record.store_type as StoreType]?.toLowerCase()}</span>
-                      <span>{fmtPct(typical(String(result.record.store_type))!)}</span>
+                      <span>{fmtRate(typical(String(result.record.store_type))!)}</span>
                     </div>
                   )}
                   {allProbs.length > 0 && (

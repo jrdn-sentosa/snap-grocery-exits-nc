@@ -43,6 +43,8 @@ export function fmtPct(p: number): string {
   if (v < 10) return `${v.toFixed(1)}%`;
   return `${Math.round(v)}%`;
 }
+/** Historical rates (typical for a store type, 2012-2021) always keep one decimal, as in the design: 15.9%, 1.5%. */
+export const fmtRate = (p: number) => `${(p * 100).toFixed(1)}%`;
 export const fmtShare = (p: number | null | undefined, digits = 0) => (p == null ? "—" : `${(p * 100).toFixed(digits)}%`);
 export const fmtInt = (n: number | null | undefined) => (n == null ? "—" : Math.round(n).toLocaleString("en-US"));
 /** Distances always show two decimals, so the number on screen is the one the gap rule uses. */

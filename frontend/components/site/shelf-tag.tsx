@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Barcode } from "@/components/site/barcode";
 import type { Row } from "@/lib/derived";
-import { isGap, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct } from "@/lib/format";
+import { isGap, TIER_TEXT, TYPE_SHORT, displayName, fmtInt, fmtMi, fmtPct, fmtRate } from "@/lib/format";
 
 /** One outreach "shelf tag". Needs a scored row. */
 export function ShelfTag({ row, rank }: { row: Row; rank: number }) {
@@ -35,7 +35,7 @@ export function ShelfTag({ row, rank }: { row: Row; rank: number }) {
             <p className="label-mono border border-ink px-2 py-1 text-right leading-snug">
               Typical
               <br />
-              {fmtPct(typical)}
+              {fmtRate(typical)}
               {ratio != null && (
                 <>
                   <br />

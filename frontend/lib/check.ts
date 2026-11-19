@@ -56,6 +56,8 @@ export interface FormState {
   yearUnknown: boolean;
   /** exact age taken from a starting store; cleared as soon as the visitor edits the year */
   ageExact: string | null;
+  /** the starting store has no chain size in the USDA data, so "independent" is an assumption; cleared when the visitor sets ownership */
+  chainAssumed: boolean;
 }
 
 const s = (n: number | string | null | undefined) => (n == null ? "" : String(n));
@@ -65,7 +67,7 @@ export function blankForm(): FormState {
   v.store_type = "Small Grocery Store";
   v.chain_size = "";
   for (const k of ["n_prior_spells_same_id", "n_prior_ownership_changes", "n_grocery_05mi", "n_grocery_1mi", "n_convenience_1mi", "n_grocery_ends_1mi_prior12m"] as const) v[k] = "0";
-  return { start: "", tract: "", v, chain: false, firstYear: "", yearUnknown: false, ageExact: null };
+  return { start: "", tract: "", v, chain: false, firstYear: "", yearUnknown: false, ageExact: null, chainAssumed: false };
 }
 
 export function formFromStore(store: Store, tractKnown: boolean): FormState {
@@ -74,6 +76,7 @@ export function formFromStore(store: Store, tractKnown: boolean): FormState {
   f.start = store.record_id;
   f.tract = tractKnown && store.tract ? store.tract : "";
   f.chain = (store.chain_size ?? 1) > 1;
+  f.chainAssumed = store.inputs.chain_size == null;
   f.firstYear = s(store.since_year);
   f.yearUnknown = store.inputs.auth_date_placeholder === 1;
   f.ageExact = store.inputs.store_age_years == null ? null : String(store.inputs.store_age_years);

@@ -84,7 +84,7 @@ export default function Home() {
           <ShadeLegend mode="exits" />
           <p className="max-w-md border border-ink bg-paper-light px-3 py-2 text-sm">
             Census tracts shaded by the share of SNAP grocery store-years ending in an exit, 2008–2021, including administrative batch deauthorizations. Tracts with fewer than {meta.data?.shading.min_store_years ?? 15} store-years are left
-            uncolored.
+            unshaded because there is too little data; a blank tract does not mean no exits.
           </p>
         </div>
       </section>
