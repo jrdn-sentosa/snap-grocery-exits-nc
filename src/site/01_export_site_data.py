@@ -106,6 +106,37 @@ def tract_acs(end_year: int) -> pd.DataFrame:
     return out.set_index("geoid")
 
 
+SQM_PER_SQMI = 2_589_988.110336
+TRACT_INPUT_KEYS = ["acs_population", "pop_density_sqmi", "pct_poverty", "median_hh_income", "pct_no_vehicle", "pct_snap_hh", "pct_renter", "pct_age_65_plus", "unemployment_rate"]
+
+
+def tract_model_inputs(end_year: int, area_sqmi: pd.Series) -> pd.DataFrame:
+    """The nine tract-level API inputs, per tract, with the SAME formulas as src/prep/05_features.acs_vintage_features (checked against the
+    2024 stores' own inputs in main()). The Check page uses them when a visitor picks a tract instead of a store."""
+    raw = pd.read_csv(RAW / "acs" / f"acs5_{end_year}_nc_tract.csv", dtype={"geoid": str})
+    cols = [c for c in raw.columns if c.startswith("B") and c.endswith("E")]
+    num = raw[cols].apply(pd.to_numeric, errors="coerce").mask(lambda d: d < 0)
+    num.index = raw["geoid"]
+
+    def ratio(a: str, b: str) -> pd.Series:
+        return (num[a] / num[b]).where(num[b] > 0)
+
+    age65 = [f"B01001_{i:03d}E" for i in (20, 21, 22, 23, 24, 25, 44, 45, 46, 47, 48, 49)]
+    pop = num["B01003_001E"]
+    area = area_sqmi.reindex(num.index)
+    return pd.DataFrame({
+        "acs_population": pop,
+        "pop_density_sqmi": (pop / area).where(area > 0),
+        "pct_poverty": ratio("B17001_002E", "B17001_001E"),
+        "median_hh_income": num["B19013_001E"],
+        "pct_no_vehicle": ((num["B25044_003E"] + num["B25044_010E"]) / num["B25044_001E"]).where(num["B25044_001E"] > 0),
+        "pct_snap_hh": ratio("B22001_002E", "B22001_001E"),
+        "pct_renter": ratio("B25003_003E", "B25003_001E"),
+        "pct_age_65_plus": (num[age65].sum(axis=1, skipna=False) / num["B01001_001E"]).where(num["B01001_001E"] > 0),
+        "unemployment_rate": ratio("B23025_005E", "B23025_003E"),
+    })[TRACT_INPUT_KEYS]
+
+
 def main() -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     acs_end, acs_info = acs_vintage_for(SCORE_YEAR)
@@ -204,8 +235,21 @@ def main() -> None:
     print(f"shading: {len(shade)} Mecklenburg store-years 2008-2021, {int(shade['tract_geoid_2020'].isna().sum())} without a tract")
 
     tr = gpd.read_file(RAW / "tl_2020_37_tract.shp")
-    tr = tr[tr["COUNTYFP"] == COUNTY_FIPS][["GEOID", "NAMELSAD", "geometry"]].to_crs(4326)
+    tr = tr[tr["COUNTYFP"] == COUNTY_FIPS][["GEOID", "NAMELSAD", "ALAND", "geometry"]].to_crs(4326)
     tr["geometry"] = shapely.set_precision(tr.geometry.simplify(0.0002, preserve_topology=True), 1e-5)
+    tin = tract_model_inputs(acs_end, tr.set_index("GEOID")["ALAND"] / SQM_PER_SQMI)
+    # the tract-picker inputs must equal what the pipeline gave the 2024 stores in those tracts (same vintage, same formulas)
+    worst = 0.0
+    for s_ in stores:
+        if s_["tract"] in set(tr["GEOID"]):   # the two Mecklenburg-filed stores in a Cabarrus tract have no tract polygon here
+            for k in TRACT_INPUT_KEYS:
+                a_, b_ = s_["inputs"][k], tin.at[s_["tract"], k]
+                if (a_ is None) != bool(pd.isna(b_)):
+                    raise AssertionError(f"{s_['record_id']} {k}: store {a_} vs tract {b_}")
+                if a_ is not None:
+                    worst = max(worst, abs(a_ - b_) / max(1.0, abs(a_)))
+    print(f"tract-level inputs match the 2024 stores' inputs (max relative difference {worst:.1e})")
+    assert worst < 1e-9
     props = []
     for gid in tr["GEOID"]:
         a = acs.loc[gid] if gid in acs.index else None
@@ -215,6 +259,7 @@ def main() -> None:
         props.append({
             "geoid": gid, "name": None, "store_years_0821": sy,
             "exit_share_0821": round(ex / sy, 4) if status == "ok" else None, "shade_status": status,
+            "inputs": {k: clean(tin.at[gid, k]) if gid in tin.index else None for k in TRACT_INPUT_KEYS},
             **{k: clean(a[k]) if a is not None else None for k in ["population", "households", "snap_households", "snap_share", "no_car_households", "no_car_share", "median_hh_income"]},
         })
     tr = tr.reset_index(drop=True)

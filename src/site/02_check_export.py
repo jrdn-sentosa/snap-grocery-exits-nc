@@ -149,6 +149,12 @@ def main() -> None:
         fail(f"tract store-years {n_tract} != Mecklenburg train+validation store-years {n_meck}")
     for f in tracts["features"]:
         p = f["properties"]
+        # the tract picker on the Check page sends these straight to the API: each must pass the API's own rule for its field
+        if set(p["inputs"]) != set(export.TRACT_INPUT_KEYS):
+            fail(f"tract {p['geoid']}: input keys differ")
+        for k, v in p["inputs"].items():
+            if (m := valid_value(k, v)):
+                fail(f"tract {p['geoid']} {k}: {m}")
         if (p["shade_status"] == "ok") != (p["exit_share_0821"] is not None):
             fail(f"tract {p['geoid']}: shade_status and exit_share disagree")
         if p["shade_status"] == "ok" and p["store_years_0821"] < meta["shading"]["min_store_years"]:
