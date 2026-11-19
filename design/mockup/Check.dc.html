@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Check a store</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter+Tight:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4EFE3;color:#1C2B22;font-family:'Inter Tight',system-ui,sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
+a{color:#1F5A3D}a:hover{color:#143D29}
+button,input{font-family:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #1F5A3D;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4EFE3; color: #1C2B22; font-family: 'Inter Tight', system-ui, sans-serif">
+
+<header style="background: #F4EFE3; border-bottom: 2px solid #1C2B22">
+  <div style="max-width: 1440px; margin: 0 auto; padding: 12px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 36px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1C2B22; min-height: 44px">
+      <span style="width: 36px; height: 36px; border-radius: 50%; background: #1F5A3D; display: flex; align-items: center; justify-content: center">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><path d="M9 8.5h6l-.9 3.5H9.9z"></path></svg>
+      </span>
+      <span style="display: flex; flex-direction: column; line-height: 1.15">
+        <span style="font-family: 'Bagel Fat One', 'Inter Tight', sans-serif; font-weight: 400; font-size: 25px; line-height: 1.1; letter-spacing: 0.01em; color: #1F5A3D">Grocery Watch</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">CHARLOTTE · MECKLENBURG CO., NC</span>
+      </span>
+    </a>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+      <a href="Main.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Store map</a>
+      <a href="Highest.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Highest risk</a>
+      <a href="Check.dc.html" aria-current="page" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 600; text-decoration: none; color: #1C2B22; border-bottom: 2px solid #1F5A3D">Check a store</a>
+      <a href="Methods.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">How it works</a>
+    </nav>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: #4A5A50">SCORED JAN 1, [2025]</span>
+  </div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 32px 24px 56px; box-sizing: border-box">
+  <div style="max-width: 860px">
+    <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 58px; line-height: 60px; font-weight: 400; letter-spacing: -0.015em">Check a store</h1>
+    <p style="margin: 10px 0 0; font-size: 17px; line-height: 26px; color: #4A5A50; max-width: 760px">Enter a store's details to estimate its risk. Use it for a store that isn't on the map yet, or to see how a change, like joining a chain, would shift the score.</p>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; margin-top: 28px">
+
+    <form style="flex: 999 1 540px; min-width: 0; display: flex; flex-direction: column; gap: 32px">
+
+      <fieldset style="border: 0; margin: 0; padding: 0; border-top: 2px solid #1C2B22; padding-top: 14px; display: flex; flex-direction: column; gap: 10px">
+        <legend style="float: left; width: 100%; padding: 0; margin: 0 0 6px; display: flex; align-items: baseline; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #1F5A3D">01</span><span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; line-height: 36px; font-weight: 400">Location</span></legend>
+        <label for="addr" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">STORE ADDRESS</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px">
+          <input id="addr" type="text" value="Beatties Ford Rd &amp; LaSalle St, Charlotte, NC 28216" style="flex: 1 1 300px; min-width: 0; height: 46px; box-sizing: border-box; border: 1px solid #1C2B22; border-radius: 4px; padding: 0 12px; font-size: 15px; color: #1C2B22; background: #FFFDF7">
+          <button type="button" style="display: inline-flex; align-items: center; gap: 8px; height: 46px; padding: 0 16px; border-radius: 4px; border: 1px solid #6F7D73; background: transparent; color: #1C2B22; font-size: 15px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C2B22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Pick on map</button>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: flex-start; background: #DCE7D8; border-radius: 4px; padding: 11px 14px; font-size: 14px; line-height: 21px; color: #173A28">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F5A3D" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+          <span>Found in Mecklenburg County, census tract [ID]. <strong style="font-weight: 600">No other SNAP grocery within 1 mile</strong> of this spot.</span>
+        </div>
+      </fieldset>
+
+      <fieldset style="border: 0; margin: 0; padding: 0; border-top: 2px solid #1C2B22; padding-top: 14px">
+        <legend style="float: left; width: 100%; padding: 0; margin: 0 0 4px; display: flex; align-items: baseline; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #1F5A3D">02</span><span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; line-height: 36px; font-weight: 400">Store type</span></legend>
+        <p style="clear: both; margin: 0 0 12px; font-size: 14px; line-height: 21px; color: #4A5A50">USDA's category for the store. The figure is how often NC stores of that type stopped accepting SNAP within a year, 2008–2018.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px">
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1.5px solid #1C2B22; background: #FFFDF7; border-radius: 4px; cursor: pointer"><input type="radio" name="stype" checked style="margin: 2px 0 0; accent-color: #1F5A3D; width: 16px; height: 16px"><span><span style="display: block; font-size: 15px; font-weight: 600">Small grocery</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #B23A12; font-weight: 600">15.9% / yr</span></span></label>
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid #B8AE96; border-radius: 4px; cursor: pointer"><input type="radio" name="stype" style="margin: 2px 0 0; accent-color: #1F5A3D; width: 16px; height: 16px"><span><span style="display: block; font-size: 15px; font-weight: 500">Medium grocery</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4A5A50">6.4% / yr</span></span></label>
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid #B8AE96; border-radius: 4px; cursor: pointer"><input type="radio" name="stype" style="margin: 2px 0 0; accent-color: #1F5A3D; width: 16px; height: 16px"><span><span style="display: block; font-size: 15px; font-weight: 500">Large grocery</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4A5A50">4.3% / yr</span></span></label>
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid #B8AE96; border-radius: 4px; cursor: pointer"><input type="radio" name="stype" style="margin: 2px 0 0; accent-color: #1F5A3D; width: 16px; height: 16px"><span><span style="display: block; font-size: 15px; font-weight: 500">Supermarket</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4A5A50">1.7% / yr</span></span></label>
+          <label style="display: flex; gap: 10px; align-items: flex-start; padding: 12px; border: 1px solid #B8AE96; border-radius: 4px; cursor: pointer"><input type="radio" name="stype" style="margin: 2px 0 0; accent-color: #1F5A3D; width: 16px; height: 16px"><span><span style="display: block; font-size: 15px; font-weight: 500">Super store</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #4A5A50">1.6% / yr</span></span></label>
+        </div>
+      </fieldset>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 32px">
+        <fieldset style="border: 0; margin: 0; padding: 0; flex: 1 1 260px; border-top: 2px solid #1C2B22; padding-top: 14px">
+          <legend style="float: left; width: 100%; padding: 0; margin: 0 0 12px; display: flex; align-items: baseline; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #1F5A3D">03</span><span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; line-height: 36px; font-weight: 400">Ownership</span></legend>
+          <div style="clear: both; display: inline-flex; border: 1px solid #1C2B22; border-radius: 4px; overflow: hidden">
+            <label style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; background: #1F5A3D; color: #F4EFE3; font-size: 15px; font-weight: 600; cursor: pointer"><input type="radio" name="own" checked style="margin: 0; accent-color: #F4EFE3">Independent</label>
+            <label style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border-left: 1px solid #1C2B22; background: #FFFDF7; font-size: 15px; font-weight: 500; color: #1C2B22; cursor: pointer"><input type="radio" name="own" style="margin: 0; accent-color: #1F5A3D">Part of a chain</label>
+          </div>
+        </fieldset>
+        <fieldset style="border: 0; margin: 0; padding: 0; flex: 1 1 260px; border-top: 2px solid #1C2B22; padding-top: 14px">
+          <legend style="float: left; width: 100%; padding: 0; margin: 0 0 12px; display: flex; align-items: baseline; gap: 12px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: #1F5A3D">04</span><span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 32px; line-height: 36px; font-weight: 400">Time accepting SNAP</span></legend>
+          <label for="since" style="clear: both; display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50; margin-bottom: 6px">FIRST YEAR AUTHORIZED</label>
+          <span style="display: flex; align-items: center; gap: 12px">
+            <input id="since" type="number" value="2021" min="1973" max="2025" style="width: 130px; height: 46px; box-sizing: border-box; border: 1px solid #1C2B22; border-radius: 4px; padding: 0 12px; font-size: 15px; font-family: 'IBM Plex Mono', monospace; color: #1C2B22; background: #FFFDF7">
+            <span style="font-size: 14px; color: #4A5A50">4 years as of the score date</span>
+          </span>
+        </fieldset>
+      </div>
+
+      <div style="border: 1px dashed #6F7D73; border-radius: 4px; padding: 14px 16px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; align-items: baseline">
+          <span style="font-family: 'Instrument Serif', Georgia, serif; font-size: 25px; font-weight: 400">Filled in from the location</span>
+          <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">CENSUS ACS 2019–2023 · TRACT [ID]</span>
+        </div>
+        <dl style="margin: 12px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px">
+          <div><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">MEDIAN HH INCOME</dt><dd style="margin: 3px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1; font-weight: 400">[$—]</dd></div>
+          <div><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">HOUSEHOLDS WITHOUT A CAR</dt><dd style="margin: 3px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1; font-weight: 400">[—%]</dd></div>
+          <div><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">HOUSEHOLDS ON SNAP</dt><dd style="margin: 3px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1; font-weight: 400">[—%]</dd></div>
+          <div><dt style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">SNAP GROCERIES IN 1 MI</dt><dd style="margin: 3px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; line-height: 1.1; font-weight: 400">0</dd></div>
+        </dl>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" style="min-height: 48px; padding: 0 22px; border-radius: 4px; border: 0; background: #1F5A3D; color: #F4EFE3; font-size: 16px; font-weight: 600; cursor: pointer">Estimate risk</button>
+        <button type="reset" style="min-height: 48px; padding: 0 18px; border-radius: 4px; border: 1px solid #6F7D73; background: transparent; color: #1C2B22; font-size: 16px; font-weight: 500; cursor: pointer">Reset</button>
+      </div>
+    </form>
+
+    <section aria-label="Estimate" style="flex: 1 1 400px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+      <div>
+        <div style="background: #FFFDF7; border: 1px solid #D8CFBA; border-bottom: 0; padding: 24px 24px 18px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 21px; color: #1C2B22">
+          <div style="text-align: center; letter-spacing: 0.06em">
+            <div style="font-weight: 600">GROCERY WATCH · CHARLOTTE</div>
+            <div style="color: #4A5A50">RISK ESTIMATE · ENTERED STORE</div>
+          </div>
+          <div style="border-top: 1.5px dashed #8C9A90; margin: 14px 0"></div>
+          <h2 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 15px; line-height: 21px; font-weight: 600; letter-spacing: 0.02em">BEATTIES FORD RD &amp; LASALLE ST</h2>
+          <div style="color: #4A5A50">CHARLOTTE, NC 28216</div>
+          <div style="color: #4A5A50">SMALL GROCERY · INDEPENDENT</div>
+          <div style="color: #4A5A50">ACCEPTS SNAP SINCE 2021</div>
+          <div style="border-top: 1.5px dashed #8C9A90; margin: 14px 0"></div>
+          <div style="letter-spacing: 0.04em">12-MONTH EXIT RISK</div>
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 4px 0 6px">
+            <span style="font-size: 12px; line-height: 17px; color: #4A5A50; max-width: 190px">Chance a store like this stops accepting SNAP</span>
+            <span style="font-family: 'Fraunces', serif; font-size: 60px; line-height: 1; font-weight: 500; letter-spacing: -0.02em; color: #B23A12">29%</span>
+          </div>
+          <div style="display: flex; align-items: flex-end; gap: 6px"><span>TYPICAL SMALL GROCERY</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>15.9%</span></div>
+          <div style="display: flex; align-items: flex-end; gap: 6px"><span>RISKIER THAN</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>97% OF STORES</span></div>
+          <div style="border-top: 1.5px dashed #8C9A90; margin: 14px 0"></div>
+          <div style="letter-spacing: 0.04em; margin-bottom: 4px">WHAT WOULD CHANGE IT</div>
+          <div style="display: flex; align-items: flex-end; gap: 6px"><span>IF PART OF A CHAIN</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>21%</span></div>
+          <div style="display: flex; align-items: flex-end; gap: 6px"><span>IF 10+ YEARS ON SNAP</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>22%</span></div>
+          <div style="display: flex; align-items: flex-end; gap: 6px"><span>IF A MEDIUM GROCERY</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>12%</span></div>
+          <div style="border-top: 1.5px dashed #8C9A90; margin: 14px 0"></div>
+          <div style="letter-spacing: 0.04em; margin-bottom: 4px">WHO RELIES ON A STORE HERE</div>
+          <div style="display: flex; align-items: flex-end; gap: 6px; font-weight: 600; font-size: 14px"><span>NEIGHBORS W/ NO OTHER SNAP &lt;1 MI</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>1,940</span></div>
+          <div style="border-top: 1.5px dashed #8C9A90; margin: 14px 0 18px"></div>
+          <div style="display: flex; justify-content: center"><span style="display: inline-block; transform: rotate(-4deg); border: 2.5px solid #B23A12; color: #B23A12; padding: 6px 16px; font-size: 18px; font-weight: 600; letter-spacing: 0.14em; border-radius: 3px">HIGH RISK</span></div>
+          <div style="text-align: center; margin-top: 16px; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">SAMPLE DATA · NOT A FORECAST</div>
+        </div>
+        <svg viewBox="0 0 100 6" preserveAspectRatio="none" style="display: block; width: 100%; height: 10px" aria-hidden="true"><path d="M0,0 L1.25,6 L2.5,0 L3.75,6 L5,0 L6.25,6 L7.5,0 L8.75,6 L10,0 L11.25,6 L12.5,0 L13.75,6 L15,0 L16.25,6 L17.5,0 L18.75,6 L20,0 L21.25,6 L22.5,0 L23.75,6 L25,0 L26.25,6 L27.5,0 L28.75,6 L30,0 L31.25,6 L32.5,0 L33.75,6 L35,0 L36.25,6 L37.5,0 L38.75,6 L40,0 L41.25,6 L42.5,0 L43.75,6 L45,0 L46.25,6 L47.5,0 L48.75,6 L50,0 L51.25,6 L52.5,0 L53.75,6 L55,0 L56.25,6 L57.5,0 L58.75,6 L60,0 L61.25,6 L62.5,0 L63.75,6 L65,0 L66.25,6 L67.5,0 L68.75,6 L70,0 L71.25,6 L72.5,0 L73.75,6 L75,0 L76.25,6 L77.5,0 L78.75,6 L80,0 L81.25,6 L82.5,0 L83.75,6 L85,0 L86.25,6 L87.5,0 L88.75,6 L90,0 L91.25,6 L92.5,0 L93.75,6 L95,0 L96.25,6 L97.5,0 L98.75,6 L100,0" fill="#FFFDF7" stroke="#D8CFBA" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+      </div>
+
+      <div style="background: #1C2B22; border-radius: 4px; padding: 16px; color: #E6EDE7">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em">
+          <span style="font-weight: 600; color: #F4EFE3">DEVELOPER VIEW</span>
+          <span style="color: #A9BCAF">POST /predict → 200</span>
+        </div>
+        <pre style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; line-height: 21px; color: #E6EDE7; white-space: pre-wrap">{
+  "exit_probability": 0.29,
+  "risk_level": "high",
+  "percentile": 97,
+  "baseline_rate_for_store_type": 0.159
+}</pre>
+      </div>
+
+      <p style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; line-height: 24px; color: #3A4A40">Estimates come from the same model as the map. They describe stores like this one on average, not a particular owner's plans. <a href="Methods.dc.html" style="font-family: 'Inter Tight', sans-serif; font-style: normal; font-size: 14px">How scores work</a></p>
+    </section>
+  </div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1460}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How the scores work</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter+Tight:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4EFE3;color:#1C2B22;font-family:'Inter Tight',system-ui,sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
+a{color:#1F5A3D}a:hover{color:#143D29}
+a:focus-visible{outline:2px solid #1F5A3D;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4EFE3; color: #1C2B22; font-family: 'Inter Tight', system-ui, sans-serif">
+
+<header style="background: #F4EFE3; border-bottom: 2px solid #1C2B22">
+  <div style="max-width: 1440px; margin: 0 auto; padding: 12px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 36px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1C2B22; min-height: 44px">
+      <span style="width: 36px; height: 36px; border-radius: 50%; background: #1F5A3D; display: flex; align-items: center; justify-content: center">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><path d="M9 8.5h6l-.9 3.5H9.9z"></path></svg>
+      </span>
+      <span style="display: flex; flex-direction: column; line-height: 1.15">
+        <span style="font-family: 'Bagel Fat One', 'Inter Tight', sans-serif; font-weight: 400; font-size: 25px; line-height: 1.1; letter-spacing: 0.01em; color: #1F5A3D">Grocery Watch</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">CHARLOTTE · MECKLENBURG CO., NC</span>
+      </span>
+    </a>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+      <a href="Main.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Store map</a>
+      <a href="Highest.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Highest risk</a>
+      <a href="Check.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Check a store</a>
+      <a href="Methods.dc.html" aria-current="page" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 600; text-decoration: none; color: #1C2B22; border-bottom: 2px solid #1F5A3D">How it works</a>
+    </nav>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: #4A5A50">SCORED JAN 1, [2025]</span>
+  </div>
+</header>
+
+<main style="max-width: 1000px; margin: 0 auto; padding: 48px 24px 72px; box-sizing: border-box; display: flex; flex-direction: column; gap: 56px">
+
+  <div>
+    <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.12em; color: #1F5A3D">METHODS</p>
+    <h1 style="margin: 10px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 80px; line-height: 80px; font-weight: 400; letter-spacing: -0.02em">How the risk scores work</h1>
+    <p style="margin: 18px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 35px; font-weight: 400; color: #3A4A40; max-width: 800px">Using only what was known on January 1 of a year, we estimate whether a SNAP-authorized grocery store will stop accepting SNAP within the next 12 months. The model learns from every grocery store in North Carolina; this site focuses on Mecklenburg County.</p>
+  </div>
+
+  <section aria-labelledby="steps-h">
+    <h2 id="steps-h" style="margin: 0 0 18px; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">From records to a score</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px">
+      <div style="border-top: 2px solid #1C2B22; padding-top: 14px">
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 64px; line-height: 1; font-weight: 400; color: #1F5A3D">01</div>
+        <h3 style="margin: 12px 0 6px; font-size: 17px; font-weight: 600">Data</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 25px; color: #3A4A40">USDA's historical SNAP retailer records, 2005–2025: each store's type, location and authorization dates, joined to Census neighborhood data.</p>
+      </div>
+      <div style="border-top: 2px solid #1C2B22; padding-top: 14px">
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 64px; line-height: 1; font-weight: 400; color: #1F5A3D">02</div>
+        <h3 style="margin: 12px 0 6px; font-size: 17px; font-weight: 600">Model</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 25px; color: #3A4A40">Trained on 2008–2018, tuned on 2019–2021, and tested once on 2022–2024, so it's always judged on years it hasn't seen.</p>
+      </div>
+      <div style="border-top: 2px solid #1C2B22; padding-top: 14px">
+        <div style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 64px; line-height: 1; font-weight: 400; color: #1F5A3D">03</div>
+        <h3 style="margin: 12px 0 6px; font-size: 17px; font-weight: 600">Score</h3>
+        <p style="margin: 0; font-size: 16px; line-height: 25px; color: #3A4A40">Each store gets a 0–100% chance of exiting, grouped into Low, Medium and High with cutoffs set on the 2019–2021 years.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="exit-h">
+    <h2 id="exit-h" style="margin: 0 0 18px; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">What counts as an exit</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; border-top: 2px solid #1C2B22; padding-top: 16px">
+      <div style="display: flex; gap: 14px">
+        <span style="flex: none; width: 16px; height: 16px; border-radius: 50%; background: #B23A12; border: 2px solid #FBF8F1; box-shadow: 0 0 0 1px #7A2509; box-sizing: border-box; margin-top: 4px"></span>
+        <div><h3 style="margin: 0; font-size: 17px; font-weight: 600">Exit</h3><p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">The store's SNAP authorization ends, and no new authorization appears at the same address within 90 days.</p></div>
+      </div>
+      <div style="display: flex; gap: 14px">
+        <span style="flex: none; width: 16px; height: 16px; border-radius: 50%; background: #FBF8F1; border: 2.5px solid #4A5A50; box-sizing: border-box; margin-top: 4px"></span>
+        <div><h3 style="margin: 0; font-size: 17px; font-weight: 600">Not an exit: ownership change</h3><p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">A new authorization at the same address within 90 days. [Share] of grocery authorizations that ended through 2021 were ownership changes.</p></div>
+      </div>
+    </div>
+    <figure style="margin: 32px 0 0; display: flex; flex-wrap: wrap; gap: 24px 48px; align-items: center">
+      <svg viewBox="0 0 220 200" style="flex: 0 1 340px; width: 100%; max-width: 340px; height: auto; display: block" role="img" aria-label="Pie chart drawn as a pie. Draft shares: other exits about 44 percent, batch deauthorizations about 31 percent, and ownership changes about 25 percent, shown as a slice pulled out and served because they are not exits.">
+        <g stroke="#F4EFE3" stroke-width="2" stroke-linejoin="round">
+          <path d="M110,105 L110,25 A80,80 0 0 1 141.7,178.4 Z" fill="#B23A12"></path>
+          <path d="M110,105 L141.7,178.4 A80,80 0 0 1 30,106.6 Z" fill="#D9734E"></path>
+          <path d="M102.9,98 L22.9,99.6 A80,80 0 0 1 102.9,18 Z" fill="#EBD9B4"></path>
+        </g>
+        <g fill="none" stroke-linecap="round">
+          <path d="M110,25 A80,80 0 0 1 141.7,178.4" stroke="#C98B4A" stroke-width="11"></path>
+          <path d="M141.7,178.4 A80,80 0 0 1 30,106.6" stroke="#C98B4A" stroke-width="11"></path>
+          <path d="M22.9,99.6 A80,80 0 0 1 102.9,18" stroke="#C98B4A" stroke-width="11"></path>
+          <path d="M110,25 A80,80 0 0 1 141.7,178.4" stroke="#9C6528" stroke-width="3.5" stroke-dasharray="0.5 8"></path>
+          <path d="M141.7,178.4 A80,80 0 0 1 30,106.6" stroke="#9C6528" stroke-width="3.5" stroke-dasharray="0.5 8"></path>
+          <path d="M22.9,99.6 A80,80 0 0 1 102.9,18" stroke="#9C6528" stroke-width="3.5" stroke-dasharray="0.5 8"></path>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="15" font-weight="600" text-anchor="middle">
+          <text x="157" y="100" fill="#FFFDF7">1</text>
+          <text x="84" y="150" fill="#1C2B22">2</text>
+          <text x="69" y="69" fill="#1C2B22">3</text>
+        </g>
+      </svg>
+      <figcaption style="flex: 1 1 360px; min-width: 0">
+        <span style="display: block; font-size: 17px; font-weight: 600">How SNAP grocery authorizations ended, through 2021</span>
+        <span style="display: block; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">THE SERVED SLICE ISN'T AN EXIT: THE STORE KEPT GOING UNDER NEW OWNERS</span>
+        <ol style="list-style: none; margin: 14px 0 0; padding: 0; border-top: 1px solid #1C2B22">
+          <li style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid #D8CFBA">
+            <span style="width: 20px; height: 20px; background: #B23A12; display: flex; align-items: center; justify-content: center; color: #FFFDF7; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; margin-top: 1px">1</span>
+            <span><span style="font-size: 15px; font-weight: 600">Other exits</span><span style="display: block; font-size: 14px; line-height: 21px; color: #3A4A40; margin-top: 2px">Authorization ended, with no new one at the address within 90 days.</span></span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">[44%]</span>
+          </li>
+          <li style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid #D8CFBA">
+            <span style="width: 20px; height: 20px; background: #D9734E; display: flex; align-items: center; justify-content: center; color: #1C2B22; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; margin-top: 1px">2</span>
+            <span><span style="font-size: 15px; font-weight: 600">Batch deauthorizations</span><span style="display: block; font-size: 14px; line-height: 21px; color: #3A4A40; margin-top: 2px">Ended on a date when many stores lost authorization at once. Counted as exits; we also report results without them.</span></span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">[31%]</span>
+          </li>
+          <li style="display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 4px 12px; align-items: start; padding: 12px 0; border-bottom: 1px solid #D8CFBA">
+            <span style="width: 20px; height: 20px; background: #EBD9B4; border: 1px solid #9C6528; box-sizing: border-box; display: flex; align-items: center; justify-content: center; color: #1C2B22; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; margin-top: 1px">3</span>
+            <span><span style="font-size: 15px; font-weight: 600">Ownership changes</span><span style="display: block; font-size: 14px; line-height: 21px; color: #3A4A40; margin-top: 2px">A new authorization at the same address within 90 days. Not counted as exits.</span></span>
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">[25%]</span>
+          </li>
+        </ol>
+        <p style="margin: 10px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 17px; letter-spacing: 0.04em; color: #4A5A50">DRAFT SHARES FROM AN EARLY D2 RUN (ALL STORE TYPES). REPLACE WITH FINAL GROCERY COUNTS.</p>
+      </figcaption>
+    </figure>
+    <p style="margin: 28px 0 0; padding-top: 18px; border-top: 1px solid #D8CFBA; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 27px; line-height: 35px; color: #1C2B22">An exit isn't always a closure. A store can also withdraw from SNAP or be disqualified. For a household that uses SNAP, the result is the same: they can no longer use their benefits there.</p>
+  </section>
+
+  <section aria-labelledby="levels-h">
+    <h2 id="levels-h" style="margin: 0 0 18px; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">Store type matters most</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start">
+      <figure style="flex: 999 1 460px; margin: 0; border-top: 2px solid #1C2B22; padding-top: 14px">
+        <figcaption>
+          <span style="display: block; font-size: 16px; font-weight: 600">Share of NC grocery stores that exited within a year</span>
+          <span style="display: block; margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">BY USDA STORE TYPE · 2008–2018 TRAINING YEARS · THE BASELINE TO BEAT</span>
+        </figcaption>
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 18px">
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 15px"><span>Small grocery</span><span style="height: 18px; background: #E2DBC9"><span style="display: block; height: 100%; width: 100%; background: #1F5A3D"></span></span><span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600">15.9%</span></div>
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 15px"><span>Medium grocery</span><span style="height: 18px; background: #E2DBC9"><span style="display: block; height: 100%; width: 40.3%; background: #1F5A3D"></span></span><span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600">6.4%</span></div>
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 15px"><span>Large grocery</span><span style="height: 18px; background: #E2DBC9"><span style="display: block; height: 100%; width: 27%; background: #1F5A3D"></span></span><span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600">4.3%</span></div>
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 15px"><span>Supermarket</span><span style="height: 18px; background: #E2DBC9"><span style="display: block; height: 100%; width: 10.7%; background: #1F5A3D"></span></span><span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600">1.7%</span></div>
+          <div style="display: grid; grid-template-columns: 130px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 15px"><span>Super store</span><span style="height: 18px; background: #E2DBC9"><span style="display: block; height: 100%; width: 10.1%; background: #1F5A3D"></span></span><span style="text-align: right; font-family: 'IBM Plex Mono', monospace; font-weight: 600">1.6%</span></div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 14px; color: #4A5A50">All grocery types together: 4.1% a year, across 22,554 store-years.</p>
+      </figure>
+      <div style="flex: 1 1 280px; border-top: 2px solid #1C2B22; padding-top: 14px; display: flex; flex-direction: column; gap: 14px">
+        <h3 style="margin: 0; font-size: 16px; font-weight: 600">Risk levels on this site</h3>
+        <div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 72px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #B23A12">HIGH</span><span style="font-size: 15px; line-height: 22px; color: #3A4A40">Top 10% of scores, at least [cutoff]%</span></div>
+        <div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 72px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #8A5A06">MEDIUM</span><span style="font-size: 15px; line-height: 22px; color: #3A4A40">Above the average exit rate, [cutoff]% to [cutoff]%</span></div>
+        <div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 72px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; color: #4A5A50">LOW</span><span style="font-size: 15px; line-height: 22px; color: #3A4A40">Below the average exit rate</span></div>
+        <p style="margin: 4px 0 0; font-size: 14px; line-height: 21px; color: #4A5A50">Exits are rare, so a 20% score is very high even though it sounds low. Cutoffs were chosen on 2019–2021, never on the test years.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="perf-h">
+    <h2 id="perf-h" style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">How well it works</h2>
+    <p style="margin: 8px 0 18px; font-size: 16px; line-height: 25px; color: #3A4A40; max-width: 800px">Measured once on the held-out 2022–2024 years against the store-type baseline above. We don't report accuracy: with about 4% of stores exiting each year, predicting "no exit" for everyone would be 96% accurate and useless.</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 28px; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; padding: 18px 0">
+      <div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">PRECISION-RECALL AUC</div><div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 50px; line-height: 1.05; font-weight: 400; margin-top: 6px">[0.00]</div><div style="font-size: 13px; color: #4A5A50">Baseline [0.00]</div></div>
+      <div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">HITS IN TOP 10, MECKLENBURG</div><div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 50px; line-height: 1.05; font-weight: 400; margin-top: 6px">[0 of 10]</div><div style="font-size: 13px; color: #4A5A50">Baseline [0 of 10]</div></div>
+      <div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">HITS IN TOP 50, STATEWIDE</div><div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 50px; line-height: 1.05; font-weight: 400; margin-top: 6px">[0 of 50]</div><div style="font-size: 13px; color: #4A5A50">Baseline [0 of 50]</div></div>
+      <div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">BRIER SCORE</div><div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 50px; line-height: 1.05; font-weight: 400; margin-top: 6px">[0.000]</div><div style="font-size: 13px; color: #4A5A50">Calibration; lower is better</div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="limits-h">
+    <h2 id="limits-h" style="margin: 0 0 18px; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">Limits and fairness</h2>
+    <div style="position: relative; background: #F3E3B8; border: 2px dashed #8A5A06; border-radius: 6px; padding: 20px 22px 18px; margin-bottom: 28px">
+      <span style="position: absolute; top: -13px; left: 22px; background: #F4EFE3; padding: 0 5px; display: flex"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8A5A06" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M20 4L8.12 15.88"></path><path d="M14.47 14.48L20 20"></path><path d="M8.12 8.12L12 12"></path></svg></span>
+      <p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #4A3306">EFFECTIVE NOV 4, 2026</p>
+      <h3 style="margin: 6px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400; color: #3A2804">New USDA stocking rules</h3>
+      <p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #4A3306">Every SNAP store must now carry 7 varieties in each of 4 staple groups: dairy, fruits and vegetables, grains, and protein. Stores that can't comply lose authorization. Our training years predate the rule, so scores don't reflect it. Stores that struggle to stock the required variety may be at greater risk than shown.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px 36px">
+      <div style="border-top: 1px solid #1C2B22; padding-top: 12px">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 600">Patterns, not causes</h3>
+        <p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">Neighborhood data can lead the model to flag stores in Black or low-income areas because of correlation, not anything about the store. We compare error rates across income and demographic groups and report them with sample sizes. <a href="#">See the error breakdown</a></p>
+      </div>
+      <div style="border-top: 1px solid #1C2B22; padding-top: 12px">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 600">Missing history</h3>
+        <p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">Stores that left SNAP before 2005 aren't in USDA's file, so the model learns only from stores that had already lasted that long.</p>
+      </div>
+      <div style="border-top: 1px solid #1C2B22; padding-top: 12px">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 600">Distance is simplified</h3>
+        <p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">"Within 1 mile" is straight-line distance. It ignores highways, bus routes, and whether the nearest store is a full-service grocery.</p>
+      </div>
+      <div style="border-top: 1px solid #1C2B22; padding-top: 12px">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 600">What the data can't see</h3>
+        <p style="margin: 6px 0 0; font-size: 16px; line-height: 25px; color: #3A4A40">Sales, rent, leases and owners' plans drive most exits, and none of it is public. Treat a score as a prompt to check in, not a forecast of a decision.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="src-h">
+    <h2 id="src-h" style="margin: 0 0 18px; font-family: 'Instrument Serif', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 400; letter-spacing: -0.01em">Data sources</h2>
+    <ol style="list-style: none; margin: 0; padding: 0; border-top: 2px solid #1C2B22">
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[1]</span><span><a href="https://www.fns.usda.gov/snap/retailer-locator/data" style="font-size: 16px; font-weight: 600">USDA FNS, Historical SNAP Retailer Locator Data</a><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Stores, types, locations and dates, 2005–2025</span></span></li>
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[2]</span><span><a href="https://www.census.gov/data/developers/data-sets/acs-5year.html" style="font-size: 16px; font-weight: 600">U.S. Census Bureau, American Community Survey 5-year</a><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Income, poverty, cars and SNAP households</span></span></li>
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[3]</span><span><a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html" style="font-size: 16px; font-weight: 600">U.S. Census Bureau, TIGER/Line shapefiles</a><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Tract and block group boundaries</span></span></li>
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[4]</span><span><a href="https://www.ers.usda.gov/data-products/food-access-research-atlas/" style="font-size: 16px; font-weight: 600">USDA ERS, Food Access Research Atlas</a><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Low-access tract flags</span></span></li>
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[5]</span><span><a href="https://www.ers.usda.gov/data-products/rural-urban-commuting-area-codes/" style="font-size: 16px; font-weight: 600">USDA ERS, Rural-Urban Commuting Area codes</a><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Urban, suburban and rural status</span></span></li>
+      <li style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 12px; padding: 14px 0; border-bottom: 1px solid #D8CFBA"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #1F5A3D; font-weight: 600">[6]</span><span><span style="font-size: 16px; font-weight: 600">Charlotte-Mecklenburg Quality of Life Explorer</span><span style="display: block; font-size: 14px; color: #4A5A50; margin-top: 2px">Used to check access measures, not as a model input</span></span></li>
+    </ol>
+  </section>
+
+  <footer style="border-top: 2px solid #1C2B22; padding-top: 18px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: #4A5A50">
+    <span>Built by [team names] for [course]. Model served with FastAPI on Modal; site on Vercel.</span>
+    <a href="https://github.com/jrdn-sentosa/snap-grocery-exits-nc" style="font-weight: 600">Code on GitHub</a>
+  </footer>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

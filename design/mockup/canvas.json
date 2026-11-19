@@ -1,0 +1,21 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-08T00:55:00Z" },
+  "title": "Charlotte Grocery Risk App",
+  "launch": { "view": "canvas" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 2460, "title": "Home: hero + store map + receipt", "expand": "fill", "is_interactive": true },
+    "Highest.dc.html": { "x": 1520, "y": 0, "w": 1440, "h": 1500, "title": "Highest-risk stores", "expand": "fill", "is_interactive": true },
+    "Mobile.dc.html": { "x": 3040, "y": 0, "w": 390, "h": 2180, "title": "Phone · store detail", "radius": 28 },
+    "Check.dc.html": { "x": 0, "y": 2580, "w": 1440, "h": 1460, "title": "Check a store", "expand": "fill", "is_interactive": true },
+    "Methods.dc.html": { "x": 1520, "y": 2580, "w": 1440, "h": 3000, "title": "How it works", "expand": "fill", "is_interactive": true }
+  },
+  "order": ["Main.dc.html", "Highest.dc.html", "Mobile.dc.html", "Check.dc.html", "Methods.dc.html"],
+  "notes": {
+    "title": { "x": 0, "y": -320, "text": "Grocery Watch — D5 website mockup (civic atlas theme)", "kind": "title1", "maxW": 3430 },
+    "sample": { "x": 3510, "y": 0, "w": 380, "text": "Store names, risk scores and resident counts on these screens are SAMPLE DATA for layout only.\n\nReal figures used: store-type exit rates (2008–2018 training years), the train/validation/test years, the 90-day ownership-change rule, the data sources, and the Nov 4, 2026 USDA stocking rule.\n\n[Brackets] = fill in from D3/D6 results.", "fill": "orange", "size": "m" },
+    "tokens": { "x": 3510, "y": 600, "w": 380, "text": "THEME TOKENS (for globals.css)\n\nPaper (background) #F4EFE3\nPaper light (inputs, receipt) #FFFDF7\nPaper rule #D8CFBA\nInk (text, borders) #1C2B22\nInk secondary #4A5A50\nForest (primary) #1F5A3D\nHigh risk (tomato) #B23A12\nMedium risk (mustard) #D9A441, text #8A5A06\nLow risk = hollow ink ring\nNotice band #F3E3B8\n\nMap shading (fewer → more exits): #F3E0A8 #E7B672 #D98654 #BC4B24 #86280D; no SNAP grocery #E1DBCF\n\nFonts: Bagel Fat One (wordmark only), Instrument Serif (headings; italic for emphasis), Inter Tight (body), IBM Plex Mono (labels). Receipt and shelf tags: Plex Mono + Fraunces numbers\nRadius 4px. Rules, not cards.", "fill": "green", "size": "s" }
+  },
+  "designSystems": []
+}

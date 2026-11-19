@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Highest-risk stores</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter+Tight:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4EFE3;color:#1C2B22;font-family:'Inter Tight',system-ui,sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
+a{color:#1F5A3D}a:hover{color:#143D29}
+button{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #1F5A3D;outline-offset:2px}
+</style>
+</helmet>
+<div style="min-height: 100vh; background: #F4EFE3; color: #1C2B22; font-family: 'Inter Tight', system-ui, sans-serif">
+
+<header style="background: #F4EFE3; border-bottom: 2px solid #1C2B22">
+  <div style="max-width: 1440px; margin: 0 auto; padding: 12px 24px; box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 36px">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #1C2B22; min-height: 44px">
+      <span style="width: 36px; height: 36px; border-radius: 50%; background: #1F5A3D; display: flex; align-items: center; justify-content: center">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><path d="M9 8.5h6l-.9 3.5H9.9z"></path></svg>
+      </span>
+      <span style="display: flex; flex-direction: column; line-height: 1.15">
+        <span style="font-family: 'Bagel Fat One', 'Inter Tight', sans-serif; font-weight: 400; font-size: 25px; line-height: 1.1; letter-spacing: 0.01em; color: #1F5A3D">Grocery Watch</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">CHARLOTTE · MECKLENBURG CO., NC</span>
+      </span>
+    </a>
+    <nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px; flex: 1 1 auto">
+      <a href="Main.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Store map</a>
+      <a href="Highest.dc.html" aria-current="page" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 600; text-decoration: none; color: #1C2B22; border-bottom: 2px solid #1F5A3D">Highest risk</a>
+      <a href="Check.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">Check a store</a>
+      <a href="Methods.dc.html" style="padding: 12px 10px 10px; line-height: 20px; font-size: 15px; font-weight: 500; text-decoration: none; color: #4A5A50; border-bottom: 2px solid transparent">How it works</a>
+    </nav>
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: #4A5A50">SCORED JAN 1, [2025]</span>
+  </div>
+</header>
+
+<main style="max-width: 1440px; margin: 0 auto; padding: 32px 24px 56px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+
+  <div style="display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px">
+    <div style="max-width: 860px">
+      <p style="margin: 0 0 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.1em; color: #1F5A3D; font-weight: 600">OUTREACH LIST</p>
+      <h1 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 58px; line-height: 60px; font-weight: 400; letter-spacing: -0.015em">Stores most likely to stop accepting SNAP</h1>
+      <p style="margin: 10px 0 0; font-size: 17px; line-height: 26px; color: #4A5A50; max-width: 760px">For the Food Policy Council and partners. Ranked by each store's predicted chance of losing SNAP authorization in the next 12 months, with the neighbors who would lose nearby access.</p>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center">
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50; border: 1px dashed #6F7D73; padding: 5px 10px">SAMPLE DATA</span>
+      <button type="button" style="display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px; border-radius: 4px; border: 1px solid #1C2B22; background: transparent; color: #1C2B22; font-size: 15px; font-weight: 500; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1C2B22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"></path><path d="M7 10l5 5 5-5"></path><path d="M5 20h14"></path></svg>Download CSV</button>
+      <button type="button" style="display: inline-flex; padding: 4px; border-radius: 6px; border: 0; background: #1F5A3D; cursor: pointer">
+        <span style="display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1.5px dashed #F4EFE3; border-radius: 3px; color: #F4EFE3; font-size: 15px; font-weight: 600; box-sizing: border-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M20 4L8.12 15.88"></path><path d="M14.47 14.48L20 20"></path><path d="M8.12 8.12L12 12"></path></svg>Print outreach list</span>
+      </button>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0 32px; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; padding: 18px 0">
+    <div style="padding: 4px 0">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">GROCERY STORES SCORED</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 56px; line-height: 1; font-weight: 400; margin-top: 6px">[N]</div>
+      <div style="font-size: 13px; color: #4A5A50; margin-top: 2px">SNAP-authorized, Mecklenburg County</div>
+    </div>
+    <div style="padding: 4px 0">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">HIGH RISK</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 56px; line-height: 1; font-weight: 400; margin-top: 6px; color: #B23A12">[N]</div>
+      <div style="font-size: 13px; color: #4A5A50; margin-top: 2px">Top 10% of scores (at least [cutoff]%)</div>
+    </div>
+    <div style="padding: 4px 0">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">HIGH RISK AND WOULD LEAVE A GAP</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 56px; line-height: 1; font-weight: 400; margin-top: 6px">[N]</div>
+      <div style="font-size: 13px; color: #4A5A50; margin-top: 2px">Neighbors left more than 1 mile from SNAP</div>
+    </div>
+    <div style="padding: 4px 0">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">PAST EXITS THAT LEFT A GAP</div>
+      <div style="font-family: 'Instrument Serif', Georgia, serif; font-size: 56px; line-height: 1; font-weight: 400; margin-top: 6px">[5%]</div>
+      <div style="font-size: 13px; color: #4A5A50; margin-top: 2px">Mecklenburg exits, from the D2 data note</div>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 14px; align-items: flex-start; background: #DCE7D8; padding: 16px 18px; border-radius: 4px">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F5A3D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+    <p style="margin: 0; font-size: 15px; line-height: 23px; color: #173A28"><span style="font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 21px; font-weight: 400">Where to start.</span> 6 of these 10 stores would leave neighbors more than a mile from a SNAP grocery if they exited. Their tags are marked <strong style="font-weight: 600">Leaves a gap</strong>. The other 4 have another SNAP store nearby.</p>
+  </div>
+
+  <section aria-label="Ranked stores">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 14px">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">RANK BY</span>
+        <div role="group" aria-label="Rank by" style="display: inline-flex; border: 1px solid #1C2B22; border-radius: 4px; overflow: hidden">
+          <button type="button" aria-pressed="true" style="height: 44px; padding: 0 14px; border: 0; background: #1F5A3D; color: #F4EFE3; font-size: 14px; font-weight: 600; cursor: pointer">Risk</button>
+          <button type="button" aria-pressed="false" style="height: 44px; padding: 0 14px; border: 0; border-left: 1px solid #1C2B22; background: #FFFDF7; color: #1C2B22; font-size: 14px; font-weight: 500; cursor: pointer">People affected</button>
+        </div>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 4px; height: 44px; padding: 0 12px; border: 1px solid #6F7D73; border-radius: 4px; background: #FFFDF7; color: #1C2B22; font-size: 14px; font-weight: 500; cursor: pointer">All store types<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A5A50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+        <button type="button" style="display: inline-flex; align-items: center; gap: 4px; height: 44px; padding: 0 12px; border: 1px solid #6F7D73; border-radius: 4px; background: #FFFDF7; color: #1C2B22; font-size: 14px; font-weight: 500; cursor: pointer">All ZIP codes<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A5A50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px">
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">VIEW</span>
+        <div role="group" aria-label="View as" style="display: inline-flex; border: 1px solid #1C2B22; border-radius: 4px; overflow: hidden">
+          <button type="button" onClick="{{showTagsView}}" aria-pressed="{{tagsPressed}}" style="{{tagsBtnStyle}}">Shelf tags</button>
+          <button type="button" onClick="{{showTableView}}" aria-pressed="{{tablePressed}}" style="{{tableBtnStyle}}">Table</button>
+        </div>
+      </div>
+    </div>
+
+    <sc-if value="{{showTags}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; gap: 30px">
+        <sc-for list="{{shelves}}" as="sh" hint-placeholder-count="2">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: #4A5A50; margin-bottom: 6px">{{sh.label}}</div>
+            <div style="background: #E2DBC9; border-top: 8px solid #1C2B22; border-bottom: 3px solid #C9BFA8; padding: 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px">
+              <sc-for list="{{sh.tags}}" as="t" hint-placeholder-count="5">
+                <article style="background: #FFFDF7; border: 1px solid #1C2B22; display: flex; flex-direction: column">
+                  <div style="background: #1F5A3D; color: #F4EFE3; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; padding: 5px 10px; display: flex; justify-content: space-between"><span>SNAP EXIT RISK</span><span>NO. {{t.rank}}</span></div>
+                  <div style="padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 8px; flex: 1 1 auto">
+                    <div>
+                      <a href="Main.dc.html" style="font-size: 15px; font-weight: 600; line-height: 20px; color: #1C2B22; text-decoration: none">{{t.name}}</a>
+                      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50; margin-top: 2px">{{t.typeUpper}} · {{t.zip}}</div>
+                    </div>
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 8px">
+                      <div>
+                        <div style="{{t.priceStyle}}">{{t.probNum}}<span style="font-size: 26px">%</span></div>
+                        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50; margin-top: 2px">PER 12 MONTHS</div>
+                      </div>
+                      <div style="border: 1px solid #1C2B22; padding: 4px 7px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 15px; text-align: right">TYPICAL<br>{{t.typical}}<br><strong style="font-weight: 600">{{t.ratio}}</strong></div>
+                    </div>
+                    <div style="border-top: 1.5px dashed #8C9A90"></div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px"><span>NEIGHBORS &gt;1 MI</span><span style="{{t.resStyle}}">{{t.residents}}</span></div>
+                    <div style="font-size: 12px; line-height: 17px; color: #3A4A40">Nearest: {{t.alt}}</div>
+                    <div style="margin-top: auto; padding-top: 4px; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px">
+                      <sc-if value="{{t.gap}}" hint-placeholder-val="{{true}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: #FFFDF7; background: #B23A12; padding: 3px 7px">LEAVES A GAP</span></sc-if>
+                      <sc-if value="{{t.noGap}}" hint-placeholder-val="{{false}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">SNAP STORE NEARBY</span></sc-if>
+                      <div role="img" aria-label="{{t.barcodeLabel}}" style="display: flex; height: 22px">
+                        <sc-for list="{{t.bars}}" as="b" hint-placeholder-count="31"><span style="{{b.style}}"></span></sc-for>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{showTable}}" hint-placeholder-val="{{false}}">
+      <div style="overflow-x: auto">
+        <table style="width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 15px">
+          <thead>
+            <tr style="text-align: left">
+              <th scope="col" style="padding: 10px 12px 10px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; width: 56px">NO.</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22">STORE</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22">12-MONTH RISK</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22">VS. TYPICAL FOR TYPE</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; text-align: right">NEIGHBORS &gt;1 MI</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; text-align: right">LOW-INCOME</th>
+              <th scope="col" style="padding: 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22; text-align: right">NO-CAR HH</th>
+              <th scope="col" style="padding: 10px 0 10px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; font-weight: 500; color: #4A5A50; border-top: 2px solid #1C2B22; border-bottom: 1px solid #1C2B22">NEAREST SNAP ALTERNATIVE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{rows}}" as="r" hint-placeholder-count="10">
+              <tr>
+                <td style="padding: 14px 12px 14px 0; border-bottom: 1px solid #D8CFBA; font-family: 'Instrument Serif', Georgia, serif; font-size: 30px; font-weight: 400">{{r.rank}}</td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #D8CFBA">
+                  <a href="Main.dc.html" style="font-weight: 600; color: #1C2B22; text-decoration: underline; text-decoration-color: #B8AE96; text-underline-offset: 3px">{{r.name}}</a>
+                  <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50; margin-top: 3px">{{r.typeUpper}} · {{r.zip}}</div>
+                </td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #D8CFBA">
+                  <span style="display: inline-flex; align-items: center; gap: 10px">
+                    <span style="{{r.probStyle}}">{{r.probNum}}%</span>
+                    <span style="display: inline-block; width: 90px; height: 6px; background: #E2DBC9"><span style="{{r.barStyle}}"></span></span>
+                    <span style="{{r.levelStyle}}">{{r.levelUpper}}</span>
+                  </span>
+                </td>
+                <td style="padding: 14px 12px; border-bottom: 1px solid #D8CFBA; font-family: 'IBM Plex Mono', monospace; font-size: 14px">{{r.ratio}} <span style="color: #4A5A50; font-size: 12px">({{r.typical}} typical)</span></td>
+                <td style="{{r.resCell}}">{{r.residents}}</td>
+                <td style="{{r.numCell}}">{{r.lowInc}}</td>
+                <td style="{{r.numCell}}">{{r.noCar}}</td>
+                <td style="padding: 14px 0 14px 12px; border-bottom: 1px solid #D8CFBA; font-size: 14px; color: #3A4A40">{{r.alt}}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+    </sc-if>
+  </section>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px 40px">
+    <div style="border-top: 2px solid #1C2B22; padding-top: 12px">
+      <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 32px; font-weight: 400">Use this list to offer support</h2>
+      <p style="margin: 6px 0 0; font-size: 15px; line-height: 23px; color: #3A4A40">A high score is not a judgment of a store or its owners. It flags places where retention help, help meeting the new stocking rules, or a backup plan like a mobile market could keep food access in place.</p>
+    </div>
+    <div style="border-top: 2px solid #1C2B22; padding-top: 12px">
+      <h2 style="margin: 0; font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 32px; font-weight: 400">How "neighbors more than 1 mile" is counted</h2>
+      <p style="margin: 6px 0 0; font-size: 15px; line-height: 23px; color: #3A4A40">People in census block groups whose nearest SNAP grocery is this store and whose next-nearest is more than 1 mile away, in a straight line. Low-income and no-car counts come from the Census ACS. <a href="Methods.dc.html">Methods</a></p>
+    </div>
+  </div>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var self = this;
+    var view = (this.state && this.state.view) || 'tags';
+    var LV = {
+      High: { text: '#B23A12', bar: '#B23A12' },
+      Medium: { text: '#8A5A06', bar: '#D9A441' },
+      Low: { text: '#4A5A50', bar: '#4A5A50' }
+    };
+    var LC = ['3211', '2221', '2122', '1411', '1132', '1231', '1114', '1312', '1213', '3112'];
+    var barsFor = function (rid, unit) {
+      var widths = [1, 1, 1];
+      for (var k = 0; k < rid.length; k++) { var pat = LC[parseInt(rid.charAt(k), 10)]; for (var m = 0; m < 4; m++) { widths.push(parseInt(pat.charAt(m), 10)); } }
+      widths.push(1, 1, 1, 1);
+      return widths.map(function (w, idx) { return { style: 'display:block;flex:none;height:100%;width:' + (w * unit) + 'px;background:' + (idx % 2 === 0 ? '#1C2B22' : 'transparent') + ';' }; });
+    };
+    var data = [
+      ['Northside Grocery & Deli', 'Small grocery', '28216', 31, 'High', '2.0×', '15.9%', '3,480', '1,120', '410', 'Oaklawn Food Mart · 1.6 mi', '815302'],
+      ['Westway Food Market', 'Small grocery', '28208', 27, 'High', '1.7×', '15.9%', '2,150', '860', '300', 'Clanton Rd Market · 1.3 mi', '902417'],
+      ['Rozzelles Ferry Market', 'Small grocery', '28214', 25, 'High', '1.6×', '15.9%', '0', '0', '0', 'Mount Holly Rd Supermarket · 0.5 mi', '734120'],
+      ['Nations Ford Grocery', 'Small grocery', '28217', 24, 'High', '1.5×', '15.9%', '1,260', '540', '160', 'Tyvola Market · 1.2 mi', '698551'],
+      ['Graham St Food Center', 'Small grocery', '28206', 22, 'High', '1.4×', '15.9%', '0', '0', '0', 'North End Grocery · 0.3 mi', '857063'],
+      ['Hidden Valley Market', 'Small grocery', '28213', 21, 'High', '1.3×', '15.9%', '380', '150', '60', 'Sugar Creek Grocery · 1.1 mi', '612984'],
+      ['Monroe Rd International Foods', 'Small grocery', '28205', 19, 'High', '1.2×', '15.9%', '0', '0', '0', 'Monroe Rd Supermarket · 0.4 mi', '779236'],
+      ['Albemarle Rd Mercado', 'Small grocery', '28212', 17, 'High', '1.1×', '15.9%', '0', '0', '0', 'Eastland Fresh Foods · 0.6 mi', '843310'],
+      ['Brookshire Fresh Market', 'Medium grocery', '28216', 15, 'High', '2.3×', '6.4%', '720', '290', '95', 'Northside Grocery & Deli · 1.1 mi', '581447'],
+      ['Sugar Creek Grocery', 'Medium grocery', '28213', 14, 'High', '2.2×', '6.4%', '640', '210', '70', 'North Tryon Market · 0.9 mi', '640118']
+    ];
+    var cell = 'padding:14px 12px;border-bottom:1px solid #D8CFBA;text-align:right;font-family:\'IBM Plex Mono\',monospace;font-size:14px;';
+    var items = data.map(function (d, i) {
+      var lv = LV[d[4]];
+      var zero = d[7] === '0';
+      return {
+        rank: i + 1,
+        name: d[0],
+        typeUpper: d[1].toUpperCase(),
+        zip: d[2],
+        probNum: d[3],
+        levelUpper: d[4].toUpperCase(),
+        ratio: d[5],
+        typical: d[6],
+        residents: d[7],
+        lowInc: d[8],
+        noCar: d[9],
+        alt: d[10],
+        gap: !zero,
+        noGap: zero,
+        bars: barsFor(d[11], 1),
+        barcodeLabel: 'Barcode for USDA record ID ' + d[11],
+        priceStyle: 'font-family:\'Fraunces\',Georgia,serif;font-size:48px;line-height:1;font-weight:600;letter-spacing:-0.02em;color:' + lv.text + ';',
+        resStyle: zero ? 'color:#6F7D73;' : 'font-weight:600;font-size:14px;color:#1C2B22;',
+        probStyle: 'font-family:\'IBM Plex Mono\',monospace;font-size:16px;font-weight:600;min-width:38px;color:' + lv.text + ';',
+        barStyle: 'display:block;height:100%;width:' + Math.min(100, d[3] / 40 * 100) + '%;background:' + lv.bar + ';',
+        levelStyle: 'font-family:\'IBM Plex Mono\',monospace;font-size:11px;font-weight:600;letter-spacing:0.06em;color:' + lv.text + ';',
+        resCell: cell + (zero ? 'color:#6F7D73;' : 'color:#1C2B22;font-weight:600;font-size:15px;'),
+        numCell: cell + (zero ? 'color:#6F7D73;' : 'color:#3A4A40;')
+      };
+    });
+    var on = 'height:44px;padding:0 14px;border:0;background:#1F5A3D;color:#F4EFE3;font-size:14px;font-weight:600;cursor:pointer;';
+    var off = 'height:44px;padding:0 14px;border:0;background:#FFFDF7;color:#1C2B22;font-size:14px;font-weight:500;cursor:pointer;';
+    return {
+      showTags: view === 'tags',
+      showTable: view === 'table',
+      tagsPressed: view === 'tags' ? 'true' : 'false',
+      tablePressed: view === 'table' ? 'true' : 'false',
+      tagsBtnStyle: view === 'tags' ? on : off,
+      tableBtnStyle: (view === 'table' ? on : off) + 'border-left:1px solid #1C2B22;',
+      showTagsView: function () { self.setState({ view: 'tags' }); },
+      showTableView: function () { self.setState({ view: 'table' }); },
+      shelves: [
+        { label: 'SHELF 1 · RANKS 1–5', tags: items.slice(0, 5) },
+        { label: 'SHELF 2 · RANKS 6–10', tags: items.slice(5, 10) }
+      ],
+      rows: items
+    };
+  }
+}
+</script>
+</body>
+</html>

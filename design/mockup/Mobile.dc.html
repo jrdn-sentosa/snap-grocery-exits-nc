@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Store detail on a phone</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&amp;family=Fraunces:opsz,wght@9..144,500;9..144,600&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;family=Instrument+Serif:ital@0;1&amp;family=Inter+Tight:wght@400;500;600;700&amp;display=swap">
+<style>
+body{margin:0;background:#F4EFE3;color:#1C2B22;font-family:'Inter Tight',system-ui,sans-serif;font-synthesis:none;-webkit-font-smoothing:antialiased}
+a{color:#1F5A3D}a:hover{color:#143D29}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 2180px; overflow: hidden; background: #F4EFE3; color: #1C2B22; font-family: 'Inter Tight', system-ui, sans-serif">
+
+  <header style="height: 62px; box-sizing: border-box; padding: 0 8px 0 16px; background: #F4EFE3; border-bottom: 2px solid #1C2B22; display: flex; align-items: center; justify-content: space-between">
+    <span style="display: flex; align-items: center; gap: 10px">
+      <span style="width: 32px; height: 32px; border-radius: 50%; background: #1F5A3D; display: flex; align-items: center; justify-content: center">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><path d="M9 8.5h6l-.9 3.5H9.9z"></path></svg>
+      </span>
+      <span style="font-family: 'Bagel Fat One', 'Inter Tight', sans-serif; font-weight: 400; font-size: 22px; line-height: 1.1; letter-spacing: 0.01em; color: #1F5A3D">Grocery Watch</span>
+    </span>
+    <span style="display: flex; gap: 2px">
+      <button type="button" aria-label="Search stores" style="width: 44px; height: 44px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C2B22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg></button>
+      <button type="button" aria-label="Open menu" style="width: 44px; height: 44px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C2B22" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path></svg></button>
+    </span>
+  </header>
+
+  <div style="padding: 20px 14px 14px">
+    <div role="note" style="position: relative; background: #F3E3B8; border: 2px dashed #8A5A06; border-radius: 6px; padding: 12px 14px; font-size: 13px; line-height: 19px; color: #4A3306">
+      <span style="position: absolute; top: -12px; left: 16px; background: #F4EFE3; padding: 0 4px; display: flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A5A06" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M20 4L8.12 15.88"></path><path d="M14.47 14.48L20 20"></path><path d="M8.12 8.12L12 12"></path></svg></span>
+      <strong style="font-weight: 600">New USDA stocking rule, effective Nov 4, 2026.</strong> Scores don't account for it yet. <a href="#" style="color: #4A3306; font-weight: 600">Details</a>
+    </div>
+  </div>
+
+  <div style="position: relative; height: 270px; background: #EAE3D2; overflow: hidden; border-bottom: 1px solid #1C2B22">
+    <svg viewBox="95 250 330 230" preserveAspectRatio="xMidYMid slice" style="position: absolute; inset: 0; width: 100%; height: 100%; display: block" role="img" aria-label="Map around the selected store in northwest Charlotte, with a hatched area that has no other SNAP grocery within a mile">
+      <defs>
+        <pattern id="hatchMob" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#1F5A3D" stroke-width="1.3"></line></pattern>
+      </defs>
+      <rect x="0" y="0" width="600" height="800" fill="#EAE3D2"></rect>
+      <polygon points="330,20 395,55 425,150 470,215 540,300 575,410 545,500 490,580 440,660 385,745 345,775 300,725 240,680 175,620 130,545 110,470 140,390 175,320 215,250 240,170 275,90" fill="#FBF8F1" stroke="#1C2B22" stroke-width="1.2" stroke-dasharray="6 4"></polygon>
+      <ellipse cx="166" cy="330" rx="15" ry="32" fill="#C5D6CF"></ellipse>
+      <path d="M240,170 C220,215 200,245 178,300 C165,330 150,365 132,400 C116,440 104,475 112,520" fill="none" stroke="#C5D6CF" stroke-width="8" stroke-linecap="round"></path>
+      <g fill="url(#hatchMob)" stroke="#1F5A3D" stroke-width="1" stroke-opacity="0.6" fill-opacity="0.55">
+        <path d="M205,300 C230,285 270,300 268,330 C266,360 240,378 215,370 C195,362 188,318 205,300 Z"></path>
+        <path d="M190,455 C215,445 250,455 255,480 C258,505 235,520 210,515 C188,510 178,470 190,455 Z"></path>
+      </g>
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="310" cy="440" rx="165" ry="190" stroke="#C9BFA8" stroke-width="8"></ellipse>
+        <path d="M276,30 L288,200 L300,440 L292,600" stroke="#C9BFA8" stroke-width="8"></path>
+        <path d="M95,545 L210,482 L300,432 L400,330 L470,250" stroke="#C9BFA8" stroke-width="8"></path>
+        <path d="M300,440 L190,455 L100,470" stroke="#C9BFA8" stroke-width="6"></path>
+        <ellipse cx="310" cy="440" rx="165" ry="190" stroke="#FFFFFF" stroke-width="5"></ellipse>
+        <path d="M276,30 L288,200 L300,440 L292,600" stroke="#FFFFFF" stroke-width="5"></path>
+        <path d="M95,545 L210,482 L300,432 L400,330 L470,250" stroke="#FFFFFF" stroke-width="5"></path>
+        <path d="M300,440 L190,455 L100,470" stroke="#FFFFFF" stroke-width="3.5"></path>
+      </g>
+      <rect x="295" y="435" width="9" height="9" fill="#1C2B22"></rect>
+      <g font-family="Inter Tight, system-ui, sans-serif" font-size="11" fill="#4A5A50" text-anchor="middle">
+        <text x="336" y="428" fill="#1C2B22" font-weight="700" letter-spacing="1.2" font-size="10">UPTOWN</text>
+        <text x="360" y="318">Sugar Creek</text>
+        <text x="190" y="408">Freedom Dr</text>
+        <text x="236" y="282">Beatties Ford</text>
+        <text x="150" y="292" fill="#3E6158" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="14">Mountain Island Lake</text>
+      </g>
+    </svg>
+    <span style="position: absolute; left: 45.5%; top: 43.5%; width: 48px; height: 48px; margin: -24px 0 0 -24px; border: 1.5px dashed #1C2B22; border-radius: 50%; background: rgba(28,43,34,0.06); box-sizing: border-box"></span>
+    <span style="position: absolute; left: 45.5%; top: 43.5%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: #B23A12; border: 2px solid #FBF8F1; box-sizing: border-box; box-shadow: 0 0 0 3px #FBF8F1, 0 0 0 5px #1C2B22"></span>
+    <span style="position: absolute; left: 80.3%; top: 39.1%; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; border-radius: 50%; background: #B23A12; border: 2px solid #FBF8F1; box-sizing: border-box; box-shadow: 0 0 0 1px #7A2509"></span>
+    <span style="position: absolute; left: 31.8%; top: 69.6%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: #D9A441; border: 2px solid #FBF8F1; box-sizing: border-box; box-shadow: 0 0 0 1px #8A5A06"></span>
+    <span style="position: absolute; left: 45.5%; top: 43.5%; transform: translate(-50%, calc(-100% - 28px)); background: #1C2B22; color: #F4EFE3; font-size: 12px; font-weight: 600; line-height: 16px; padding: 6px 10px; border-radius: 3px; white-space: nowrap">Northside Grocery &amp; Deli · 31%</span>
+    <span style="position: absolute; left: 12px; bottom: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; color: #4A5A50">PLATE 1 · NW CHARLOTTE</span>
+    <button type="button" style="position: absolute; right: 12px; bottom: 8px; height: 40px; padding: 0 14px; border-radius: 4px; border: 1px solid #1C2B22; background: #FFFDF7; color: #1C2B22; font-size: 13px; font-weight: 600">List view</button>
+  </div>
+
+  <div style="padding: 20px 14px 28px; display: flex; flex-direction: column; gap: 24px">
+
+    <div>
+      <div style="background: #FFFDF7; border: 1px solid #D8CFBA; border-bottom: 0; padding: 20px 18px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 20px; color: #1C2B22">
+        <div style="text-align: center; letter-spacing: 0.06em">
+          <div style="font-weight: 600">GROCERY WATCH · CHARLOTTE</div>
+          <div style="color: #4A5A50">SNAP RISK CHECK · JAN 1 [2025]</div>
+        </div>
+        <div style="border-top: 1.5px dashed #8C9A90; margin: 12px 0"></div>
+        <h1 style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 15px; line-height: 21px; font-weight: 600; letter-spacing: 0.02em">NORTHSIDE GROCERY &amp; DELI</h1>
+        <div style="color: #4A5A50">BEATTIES FORD RD · 28216</div>
+        <div style="color: #4A5A50">SMALL GROCERY · INDEPENDENT</div>
+        <div style="color: #4A5A50">ACCEPTS SNAP SINCE 2014</div>
+        <div style="border-top: 1.5px dashed #8C9A90; margin: 12px 0"></div>
+        <div style="letter-spacing: 0.04em">12-MONTH EXIT RISK</div>
+        <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 4px 0 6px">
+          <span style="font-size: 12px; line-height: 17px; color: #4A5A50; max-width: 160px">Chance this store stops accepting SNAP</span>
+          <span style="font-family: 'Fraunces', serif; font-size: 56px; line-height: 1; font-weight: 500; letter-spacing: -0.02em; color: #B23A12">31%</span>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 6px"><span>TYPICAL SMALL GROCERY</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>15.9%</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px"><span>RISKIER THAN</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>99% OF STORES</span></div>
+        <div style="border-top: 1.5px dashed #8C9A90; margin: 12px 0"></div>
+        <div style="letter-spacing: 0.04em; margin-bottom: 4px">IF IT STOPPED TAKING SNAP</div>
+        <div style="display: flex; align-items: flex-end; gap: 6px; font-weight: 600; font-size: 13px"><span>NEIGHBORS &gt;1 MI AWAY</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>3,480</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px; padding-left: 12px; color: #3A4A40"><span>LOW-INCOME</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>1,120</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px; padding-left: 12px; color: #3A4A40"><span>NO-CAR HOUSEHOLDS</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>410</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px; padding-left: 12px; color: #3A4A40"><span>SNAP HOUSEHOLDS</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>690</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px; margin-top: 6px"><span>NEAREST SNAP GROCERY</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>1.6 MI</span></div>
+        <div style="display: flex; align-items: flex-end; gap: 6px"><span>FULL-SERVICE IN 1 MI</span><span style="flex: 1; border-bottom: 1px dotted #8C9A90; margin-bottom: 6px"></span><span>NONE</span></div>
+        <div style="border-top: 1.5px dashed #8C9A90; margin: 12px 0 16px"></div>
+        <div style="display: flex; justify-content: center"><span style="display: inline-block; transform: rotate(-4deg); border: 2.5px solid #B23A12; color: #B23A12; padding: 5px 14px; font-size: 17px; font-weight: 600; letter-spacing: 0.14em; border-radius: 3px">HIGH RISK</span></div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; margin-top: 20px">
+          <div role="img" aria-label="Barcode for USDA record ID 815302" style="display: flex; height: 42px">
+            <span style="width: 2px; background: #1C2B22"></span><span style="width: 2px"></span><span style="width: 2px; background: #1C2B22"></span>
+            <span style="width: 2px"></span><span style="width: 4px; background: #1C2B22"></span><span style="width: 2px"></span><span style="width: 6px; background: #1C2B22"></span>
+            <span style="width: 4px"></span><span style="width: 4px; background: #1C2B22"></span><span style="width: 4px"></span><span style="width: 2px; background: #1C2B22"></span>
+            <span style="width: 2px"></span><span style="width: 4px; background: #1C2B22"></span><span style="width: 6px"></span><span style="width: 2px; background: #1C2B22"></span>
+            <span style="width: 2px"></span><span style="width: 8px; background: #1C2B22"></span><span style="width: 2px"></span><span style="width: 2px; background: #1C2B22"></span>
+            <span style="width: 6px"></span><span style="width: 4px; background: #1C2B22"></span><span style="width: 2px"></span><span style="width: 2px; background: #1C2B22"></span>
+            <span style="width: 4px"></span><span style="width: 2px; background: #1C2B22"></span><span style="width: 4px"></span><span style="width: 4px; background: #1C2B22"></span>
+            <span style="width: 2px"></span><span style="width: 2px; background: #1C2B22"></span><span style="width: 2px"></span><span style="width: 2px; background: #1C2B22"></span>
+          </div>
+          <span style="font-size: 12px; letter-spacing: 0.35em; padding-left: 0.35em">815302</span>
+          <span style="font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">USDA SNAP RECORD ID</span>
+        </div>
+        <div style="text-align: center; margin-top: 12px; font-size: 11px; letter-spacing: 0.08em; color: #4A5A50">SAMPLE DATA · NOT A FORECAST</div>
+      </div>
+      <svg viewBox="0 0 100 6" preserveAspectRatio="none" style="display: block; width: 100%; height: 9px" aria-hidden="true"><path d="M0,0 L1.67,6 L3.33,0 L5,6 L6.67,0 L8.33,6 L10,0 L11.67,6 L13.33,0 L15,6 L16.67,0 L18.33,6 L20,0 L21.67,6 L23.33,0 L25,6 L26.67,0 L28.33,6 L30,0 L31.67,6 L33.33,0 L35,6 L36.67,0 L38.33,6 L40,0 L41.67,6 L43.33,0 L45,6 L46.67,0 L48.33,6 L50,0 L51.67,6 L53.33,0 L55,6 L56.67,0 L58.33,6 L60,0 L61.67,6 L63.33,0 L65,6 L66.67,0 L68.33,6 L70,0 L71.67,6 L73.33,0 L75,6 L76.67,0 L78.33,6 L80,0 L81.67,6 L83.33,0 L85,6 L86.67,0 L88.33,6 L90,0 L91.67,6 L93.33,0 L95,6 L96.67,0 L98.33,6 L100,0" fill="#FFFDF7" stroke="#D8CFBA" stroke-width="1" vector-effect="non-scaling-stroke"></path></svg>
+    </div>
+
+    <section>
+      <h2 style="margin: 0; padding-bottom: 8px; border-bottom: 2px solid #1C2B22; font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 32px; font-weight: 400">Nearest SNAP alternatives</h2>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8CFBA"><span><span style="font-size: 15px; font-weight: 600">Oaklawn Food Mart</span><span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50; margin-top: 2px">SMALL GROCERY</span></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600">1.6 mi</span></div>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8CFBA"><span><span style="font-size: 15px; font-weight: 600">LaSalle Supermarket</span><span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50; margin-top: 2px">SUPERMARKET</span></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600">2.4 mi</span></div>
+    </section>
+
+    <section>
+      <h2 style="margin: 0; padding-bottom: 8px; border-bottom: 2px solid #1C2B22; font-family: 'Instrument Serif', Georgia, serif; font-size: 27px; line-height: 32px; font-weight: 400">What's behind this score</h2>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #D8CFBA"><span style="flex: none; width: 30px; height: 30px; border-radius: 50%; background: #F6D9CB; color: #7A2509; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></span><span><span style="display: block; font-size: 15px; font-weight: 500">Store type: small grocery</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50">RAISES RISK</span></span></div>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #D8CFBA"><span style="flex: none; width: 30px; height: 30px; border-radius: 50%; background: #F6D9CB; color: #7A2509; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></span><span><span style="display: block; font-size: 15px; font-weight: 500">Independent, not part of a chain</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50">RAISES RISK</span></span></div>
+      <div style="display: flex; gap: 12px; align-items: center; padding: 11px 0; border-bottom: 1px solid #D8CFBA"><span style="flex: none; width: 30px; height: 30px; border-radius: 50%; background: #DCE7D8; color: #1F5A3D; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform: rotate(180deg)"><path d="M12 19V5"></path><path d="M5 12l7-7 7 7"></path></svg></span><span><span style="display: block; font-size: 15px; font-weight: 500">11 years accepting SNAP</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: #4A5A50">LOWERS RISK</span></span></div>
+      <p style="margin: 12px 0 0; font-family: 'Instrument Serif', Georgia, serif; font-style: italic; font-size: 18px; line-height: 24px; color: #3A4A40">Statistical patterns, not causes. They say nothing about how the store is run.</p>
+    </section>
+
+    <a href="#" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; border-radius: 4px; background: #1F5A3D; color: #F4EFE3; font-size: 16px; font-weight: 600; text-decoration: none">See highest-risk stores<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F4EFE3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":2180}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
