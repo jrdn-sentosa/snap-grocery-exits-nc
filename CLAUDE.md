@@ -39,6 +39,7 @@ Batch ends (`qa_batch_end`) are ~32% of ended periods through 2021, ~33% of groc
 - `1/1/1930` Authorization Date is a placeholder → set to missing, add flag `auth_date_placeholder`.
 - City names are inconsistently spelled/capitalized (e.g., "CHARLOTTE", "Charltote"); some store names are malformed.
 - End dates cluster on specific days (e.g., 27 Mecklenburg retailers on 2014-03-12) → likely administrative batch actions. Add flag `qa_batch_end` (threshold = 99th percentile of statewide daily end counts, computed from end dates through 2021-12-31 only; currently ≥ 40 retailers on one day). All `qa_*` and `impact_*` columns are excluded from model features.
+- **Gap rule (site and D6 report): a gap means the next SNAP grocery is more than 1.00 mile away, rounded to two decimals** (`docs/gap_rule.md`; the unrounded D2 statewide figure 23.3% becomes 23.2%).
 - Not every exit reduces access: in Mecklenburg the median grocery exit had another SNAP grocery ~0.2 mi away. Compute `impact_dist_nearest_other_grocery_mi` at exit for an impact measure (never a predictor).
 - Keep **all** NC SNAP retailers in a separate table: convenience stores are needed for the "convenience-to-grocery ratio" (partial food-swamp) feature even though they are not observations.
 - The data ends Dec 2025; USDA's new stocking standards (compliance by Nov 4, 2026) are not reflected.

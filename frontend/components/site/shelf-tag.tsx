@@ -52,6 +52,10 @@ export function ShelfTag({ row, rank }: { row: Row; rank: number }) {
             <dd className="font-mono tabular-nums">{fmtMi(d)}</dd>
           </div>
           <div className="flex items-baseline justify-between gap-2">
+            <dt className="label-mono">Priority (risk × impact)</dt>
+            <dd className="font-mono tabular-nums">{pred.priority.toFixed(3)}</dd>
+          </div>
+          <div className="flex items-baseline justify-between gap-2">
             <dt className="label-mono">No-car households in tract</dt>
             <dd className="font-mono tabular-nums">{fmtInt(store.context.tract_no_car_households)}</dd>
           </div>

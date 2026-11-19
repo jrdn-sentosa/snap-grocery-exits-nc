@@ -123,7 +123,7 @@ export function TractMap({ tracts, mode, rows = [], selectedId, matchIds, onSele
         </defs>
         <g transform={tf}>
           {paths.map((p) => (
-            <path key={p.id} d={p.d} fill={p.cls.kind === "low_data" ? `url(#${hatchId})` : p.cls.color} stroke="#fffdf7" strokeWidth={0.8 / t.k} vectorEffect="non-scaling-stroke">
+            <path key={p.id} d={p.d} fill={p.cls.kind === "low_data" ? (decorative ? "#ebe4d2" : `url(#${hatchId})`) : p.cls.color} stroke="#fffdf7" strokeWidth={0.8 / t.k} vectorEffect="non-scaling-stroke">
               {!decorative && <title>{`${p.name}: ${p.cls.label}`}</title>}
             </path>
           ))}
