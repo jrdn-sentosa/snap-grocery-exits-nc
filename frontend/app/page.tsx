@@ -83,7 +83,7 @@ export default function Home() {
         <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-4 pb-4 md:flex-row md:items-end md:justify-between md:px-5">
           <ShadeLegend mode="exits" />
           <p className="max-w-md border border-ink bg-paper-light px-3 py-2 text-sm">
-            Census tracts shaded by the share of SNAP grocery store-years ending in an exit, 2008–2021. Tracts with fewer than {meta.data?.shading.min_store_years ?? 15} store-years are left
+            Census tracts shaded by the share of SNAP grocery store-years ending in an exit, 2008–2021, including administrative batch deauthorizations. Tracts with fewer than {meta.data?.shading.min_store_years ?? 15} store-years are left
             uncolored.
           </p>
         </div>

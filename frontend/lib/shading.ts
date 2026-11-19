@@ -19,7 +19,7 @@ export const SCALE_LABELS: Record<ShadeMode, string[]> = {
 };
 
 export const MODE_TITLE: Record<ShadeMode, string> = {
-  exits: "Share of store-years ending in an exit, 2008–2021",
+  exits: "Share of store-years ending in an exit, 2008–2021, including administrative batch deauthorizations",
   nocar: "Households without a car, ACS 2018–2022",
 };
 
