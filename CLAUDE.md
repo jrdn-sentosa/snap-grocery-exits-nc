@@ -54,6 +54,8 @@ src/prep/            # 00-05d, 06_load_supabase.py; common.py, matching.py, stor
 src/eda/             # EDA reports, plots.py (figures/), lookup.py (censored store lookup), data_dictionary.py
 src/model/           # 01-09 (evaluate ... 09_final_refit.py); store_prep.py, serving.py, explain.py, impact.py, common_model.py
 models/              # pipeline.joblib + metadata.json (gitignored; built by 09_final_refit.py)
+src/site/             # D5: 01_export_site_data.py (JSON for the website, 2024 cohort features only), 02_check_export.py
+frontend/            # D5: Next.js (App Router, TypeScript, Tailwind, shadcn/ui) site on Vercel; public/data/ is the committed export
 app/                 # api.py (FastAPI), modal_api.py, verify_api.py; streamlit_app.py, modal_app.py (dashboard)
 supabase/            # schema.sql
 docs/                # data dictionary, cleaning log, model_spec_d4.md, model_examples_d4.json, api_verification.md, change logs
