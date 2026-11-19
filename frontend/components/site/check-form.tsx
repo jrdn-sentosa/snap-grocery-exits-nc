@@ -20,7 +20,7 @@ interface Result {
   form: FormState;
 }
 
-const inputCls = "h-11 w-full rounded-md border bg-paper-light px-3 outline-none focus-visible:outline-2 aria-[invalid=true]:border-tomato";
+const inputCls = "h-11 w-full rounded-md border bg-paper-light px-3 aria-[invalid=true]:border-tomato";
 
 function Section({ n, title, children, className }: { n: string; title: string; children: React.ReactNode; className?: string }) {
   return (

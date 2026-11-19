@@ -96,18 +96,18 @@ export function HighestRisk() {
       <section aria-label="Summary" className="mt-8 grid gap-x-8 border-y-2 border-ink sm:grid-cols-2 lg:grid-cols-4">
         <Tile
           label="Grocery stores scored"
-          value={loading ? <Skeleton className="h-14 w-24" /> : fmtInt(scored.length)}
-          note={`SNAP-authorized, Mecklenburg County${!loading && notScored ? ` · ${notScored} not scored (incomplete data)` : ""}`}
+          value={loading ? <Skeleton className="h-14 w-24" /> : scores.data ? fmtInt(scored.length) : "—"}
+          note={`SNAP-authorized, Mecklenburg County${scores.data && notScored ? ` · ${notScored} not scored (incomplete data)` : !loading && !scores.data ? " · scores unavailable right now" : ""}`}
         />
         <Tile
           label="High risk"
           tone="red"
-          value={loading ? <Skeleton className="h-14 w-24" /> : fmtInt(high.length)}
+          value={loading ? <Skeleton className="h-14 w-24" /> : scores.data ? fmtInt(high.length) : "—"}
           note={cut ? `Scores of ${fmtPct(cut.high)} or more` : "Highest risk level"}
         />
         <Tile
           label="High risk and would leave a gap"
-          value={loading ? <Skeleton className="h-14 w-24" /> : fmtInt(highGap.length)}
+          value={loading ? <Skeleton className="h-14 w-24" /> : scores.data ? fmtInt(highGap.length) : "—"}
           note={`Next SNAP grocery more than ${GAP_MILES} mile away`}
         />
         <Tile

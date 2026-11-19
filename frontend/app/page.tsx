@@ -122,7 +122,7 @@ export default function Home() {
                       onChange={(e) => setQuery(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && filtered[0] && select(filtered[0].store.record_id)}
                       placeholder="Beatties Ford Rd"
-                      className="h-11 w-full rounded-md border border-rule bg-paper-light pl-9 pr-3 outline-none focus-visible:outline-2"
+                      className="h-11 w-full rounded-md border border-rule bg-paper-light pl-9 pr-3"
                       autoComplete="off"
                     />
                   </div>

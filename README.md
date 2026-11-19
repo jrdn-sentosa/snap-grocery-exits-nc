@@ -44,6 +44,8 @@ src/model/  01-02 model evaluation (baseline vs logistic regression vs trees); 0
               impact.py      Jan-1 access-impact score (percentile ranks against a fixed reference)
               serving.py     loads models/pipeline.joblib, scores store-years, runs the startup self-check (used by 09 and the API)
               common_model.py, spec_writer.py   shared evaluation helpers; writer of docs/model_spec_d4.md
+src/site/   export of the website's data (01_export_site_data.py) and its check (02_check_export.py)
+frontend/   the website: Next.js (App Router, TypeScript, Tailwind, shadcn/ui); public/data/ holds the committed export
 supabase/   schema.sql, the database schema
 .streamlit/ Streamlit config (config.toml); secrets.toml is gitignored
 .claude/    local Claude Code settings (settings.local.json is gitignored)
@@ -238,6 +240,34 @@ The verifier also starts a throwaway local server with `MODEL_DIR` pointing at a
 
 The latest run is in [`docs/api_verification.md`](docs/api_verification.md): **PASS** locally and deployed, with 9/9 examples
 identical to `expected` and 8/8 invalid requests rejected with 422.
+
+## Website (Next.js on Vercel)
+
+Grocery Watch, in `frontend/`, scores the Mecklenburg County grocery stores authorized on Jan 1, 2024 through the live prediction API. Production: https://snap-grocery-exits-nc.vercel.app.
+Four pages: **Store map** (tract shading, 1-mile ring, store receipt), **Highest risk** (outreach list ranked by priority or risk, CSV, print), **Check a store** (every model input, field-level error messages, "how the score shifts if..." variants), **How it works** (methods, validation-only results, limits and fairness).
+
+**Data.** The site reads three static files in `frontend/public/data/` (stores, census tracts with ACS values and past-exit shading, rates and counts). They come from the repository's processed data:
+
+```powershell
+uv run python src/site/01_export_site_data.py    # writes frontend/public/data/*.json; reads the 2024 test rows with a column whitelist (no labels, no end dates)
+uv run python src/site/02_check_export.py        # fails on any outcome/label/end-date key, any unexpected date, or any record the API would reject
+```
+
+Outcome-based figures on the site (tract shading, store-type rates, the ownership-change pie, the share of past exits that left a gap) use cohorts 2008-2021 only. The 2024 feature columns that were read are logged in `docs/test_reservation_log.md`. The gap rule (more than 1.00 mile, rounded to two decimals) is in `docs/gap_rule.md`.
+
+**Run locally** (Node 20+; needs the API's CORS to allow `http://localhost:3000`, which it does):
+
+```powershell
+cd frontend
+npm install
+copy .env.example .env.local       # NEXT_PUBLIC_API_URL: the Modal API base URL (no trailing slash); the default is the production API
+npm run dev                         # http://localhost:3000
+npm run lint ; npx tsc --noEmit ; npm run build
+```
+
+**Deploy.** Vercel project with Root Directory `frontend` and `NEXT_PUBLIC_API_URL` set; every push to `main` deploys. Browser calls to the API need the site's origin in the Modal app's CORS list: see the CORS paragraph under Prediction API (`FRONTEND_ORIGIN`, set when `app/modal_api.py` is deployed). Only one origin is allowed, so Vercel preview URLs cannot call the API.
+
+**Loading and errors.** The API client (`frontend/lib/api.ts`) waits up to 45 s (a cold Modal container is slow), shows "Waking up the scoring service..." after about 5 s, sends at most 1,000 records per `/predict` request, and maps errors to messages: unreachable or timed out, 503 (model not ready), and 422 field by field on the Check form. Every failed load has a Try again button. Screenshots of every page, on desktop and phone, and of each error state are in `docs/site_screenshots/`.
 
 ## Dashboard (Supabase, Streamlit, Modal)
 

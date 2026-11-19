@@ -23,8 +23,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${bagel.variable} ${instrument.variable} ${interTight.variable} ${plexMono.variable} ${fraunces.variable}`}>
       <body className="min-h-screen flex flex-col">
         <TooltipProvider>
+          <a href="#main" className="no-print sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded-md focus:bg-forest focus:px-4 focus:py-2 focus:text-paper-light">
+            Skip to main content
+          </a>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main id="main" tabIndex={-1} className="flex-1 outline-none">
+            {children}
+          </main>
           <Footer />
         </TooltipProvider>
       </body>
