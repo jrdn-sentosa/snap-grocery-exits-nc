@@ -117,6 +117,8 @@ export interface TractProps {
   no_car_households: number | null;
   no_car_share: number | null;
   median_hh_income: number | null;
+  /** the nine tract-level API inputs (ACS 2018-2022), for the Check page tract picker */
+  inputs: Record<"acs_population" | "pop_density_sqmi" | "pct_poverty" | "median_hh_income" | "pct_no_vehicle" | "pct_snap_hh" | "pct_renter" | "pct_age_65_plus" | "unemployment_rate", number | null>;
 }
 
 export interface TractsFile {

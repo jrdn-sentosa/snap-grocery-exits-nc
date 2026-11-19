@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowDown, ArrowUp, Link2, Printer } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { Barcode } from "@/components/site/barcode";
 import { Button } from "@/components/ui/button";
@@ -139,6 +140,9 @@ export function Receipt({ row, scoresLoading }: { row: Row; scoresLoading?: bool
         <Button type="button" variant="outline" size="sm" onClick={() => window.print()}>
           <Printer aria-hidden /> Print receipt
         </Button>
+        <Link href={`/check?store=${store.record_id}`} className="inline-flex min-h-8 items-center rounded-md border border-rule bg-paper-light px-3 text-sm hover:bg-paper">
+          Change a detail and re-check
+        </Link>
       </div>
 
       <section className="mt-8" aria-labelledby="alts">
