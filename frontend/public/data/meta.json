@@ -1,0 +1,107 @@
+{
+ "score_year": 2024,
+ "scored_on": "2024-01-01",
+ "generated_by": "src/site/01_export_site_data.py",
+ "acs": {
+  "vintage": "2018-2022",
+  "release_date": "2023-12-07",
+  "tract_geography": "2020"
+ },
+ "counts": {
+  "stores_2024_statewide": 2137,
+  "stores_2024_mecklenburg": 224,
+  "stores_scorable": 222,
+  "tracts": 305
+ },
+ "type_rates": {
+  "years": [
+   2012,
+   2021
+  ],
+  "scope": "all NC grocery store-years",
+  "by_type": {
+   "Supermarket": {
+    "store_years": 9829,
+    "exits": 149,
+    "rate": 0.0152
+   },
+   "Super Store": {
+    "store_years": 5688,
+    "exits": 120,
+    "rate": 0.0211
+   },
+   "Large Grocery Store": {
+    "store_years": 884,
+    "exits": 33,
+    "rate": 0.0373
+   },
+   "Medium Grocery Store": {
+    "store_years": 2273,
+    "exits": 133,
+    "rate": 0.0585
+   },
+   "Small Grocery Store": {
+    "store_years": 2656,
+    "exits": 422,
+    "rate": 0.1589
+   }
+  },
+  "overall": {
+   "store_years": 21330,
+   "exits": 857,
+   "rate": 0.0402
+  }
+ },
+ "pie": {
+  "through": "2021-12-31",
+  "statewide": {
+   "ended": 1980,
+   "other_exit": {
+    "n": 784,
+    "share": 0.396
+   },
+   "batch": {
+    "n": 613,
+    "share": 0.3096
+   },
+   "ownership_change": {
+    "n": 583,
+    "share": 0.2944
+   }
+  },
+  "mecklenburg": {
+   "ended": 209,
+   "other_exit": {
+    "n": 89,
+    "share": 0.4258
+   },
+   "batch": {
+    "n": 64,
+    "share": 0.3062
+   },
+   "ownership_change": {
+    "n": 56,
+    "share": 0.2679
+   }
+  }
+ },
+ "past_exit_gap": {
+  "years": [
+   2008,
+   2021
+  ],
+  "gap_distance_mi": 1,
+  "exits": 131,
+  "with_distance": 131,
+  "gap_exits": 7,
+  "share": 0.0534
+ },
+ "shading": {
+  "years": [
+   2008,
+   2021
+  ],
+  "min_store_years": 15,
+  "label": "exit_12m (primary, batch ends included)"
+ }
+}

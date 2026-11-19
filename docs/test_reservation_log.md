@@ -37,3 +37,19 @@ no row after the cut-off (the schema's CHECK constraints refuse them).
   cohort's store-years (a Jan-1 feature) is stored.
 - **Use:** input preparation only. Nothing about the model, its settings, tiers or cutoffs was derived from these rows.
 
+
+### 2026-11-19: 2024 Jan-1 feature columns exported for the website (no outcomes)
+- **What was read:** `src/site/01_export_site_data.py` opens `data/processed/store_year_test.parquet` once, with the explicit column list `TEST_COLUMNS`
+  and a `year == 2024` filter: `record_id`, `spell_id`, `county`, `store_name`, `latitude`, `longitude`, `tract_geoid_2020`, `acs_vintage`, `acs_tract_vintage`, and the
+  Jan-1 features the API takes (`store_type`, `store_age_years`, `auth_date_placeholder`, `n_prior_spells_same_id`, `n_prior_ownership_changes`, `chain_size`, `n_grocery_05mi`,
+  `n_grocery_1mi`, `n_convenience_1mi`, `convenience_to_grocery_ratio_1mi`, `n_grocery_ends_1mi_prior12m`, the ACS columns, `unemployment_rate`,
+  `dist_other_grocery_jan1_mi`). Mecklenburg rows (224) are written to `frontend/public/data/stores.json` so the site can score them through the API.
+- **Also read for 2024:** `data/interim/periods_spells.parquet` (including `auth_date` and `end_date`) only to decide which grocery authorizations were active on
+  Jan 1, 2024 (the same rule as `05d_context_columns.py`), for the "nearest SNAP grocery" list; and `spells.parquet` street, city and start-date columns (no `spell_end`, no outcome
+  flag). The dates are dropped before anything is written. The export holds no end date and no date after 2024-01-01.
+- **What was not read:** no `exit_*`, `qa_*`, `impact_*` or `bias_*` column of the test file; no count, rate, plot or summary of any 2022-2024 outcome. The site shows the API's
+  predictions for the 2024 cohort, which are model outputs, not outcomes. `02_check_export.py` fails if a forbidden key or any other date appears in the JSON.
+- **Everything outcome-based on the site** (tract past-exit shading, store-type exit rates, the grocery pie, the share of past exits that left a gap) uses
+  `store_year_trainval.parquet` (cohorts 2008-2021) and spells that ended on or before 2021-12-31; the export asserts the cut-off.
+- **Use:** display and scoring only. The model, its settings, tiers and cutoffs stay frozen, and nothing about them was derived from these rows. The 2022-2024 test
+  years are still evaluated once, in D6. Note that the 2024 12-month window has already elapsed, so the site labels the scores "as of Jan 1, 2024".
