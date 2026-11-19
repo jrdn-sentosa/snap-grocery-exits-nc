@@ -2,11 +2,12 @@
 
 HW4 pattern: the FastAPI app lives in its own module (app/api.py); this file only builds the image and returns that app from an
 @modal.asgi_app() function. It is a separate Modal app from the Streamlit dashboard (app/modal_app.py). The API reads no database, so
-**no secret is attached** (the snap-supabase secret is not needed).
+**no credential is attached** (the snap-supabase secret is not needed). The only value passed in is FRONTEND_ORIGIN, the public website origin
+that CORS must allow (see below).
 
 Build the model first (models/ is gitignored; the bundle is baked into the image from the local build):
     uv run python src/model/09_final_refit.py           # after the README "Reproduce" steps
-Deploy, from the repository root:
+Deploy, from the repository root (set FRONTEND_ORIGIN in the shell to override the default production domain):
     uv run python -m modal deploy app/modal_api.py
 URL: https://<modal-workspace>--snap-grocery-exits-api.us-east.modal.run  (/docs, /health, /model-info, POST /predict)
 
@@ -16,6 +17,8 @@ the ones the bundle was built with (docs/model_spec_d4.md, section 8), read from
 """
 
 import json
+import os
+import re
 from pathlib import Path
 
 import modal
@@ -25,6 +28,13 @@ ROOT = APP_DIR.parent
 MODEL_SRC = ROOT / "src" / "model"
 SKLEARN_PIN = "1.9.1"           # spec section 8
 FASTAPI_PIN = "0.163.1"         # same as the `api` dependency group in pyproject.toml
+
+# CORS: the one extra origin app/api.py allows (besides http://localhost:3000). Read from the LOCAL environment at deploy time, defaulting to the
+# production site. Not a secret (it is a public URL); Modal.Secret.from_dict is just the way to hand an environment variable to the container.
+DEFAULT_FRONTEND_ORIGIN = "https://snap-grocery-exits-nc.vercel.app"
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "").strip().rstrip("/") or DEFAULT_FRONTEND_ORIGIN
+if not re.fullmatch(r"https?://[A-Za-z0-9.-]+(:\d+)?", FRONTEND_ORIGIN):   # an origin has no path, query or trailing slash
+    raise SystemExit(f"FRONTEND_ORIGIN must be an origin like https://example.vercel.app (no path), got {FRONTEND_ORIGIN!r}")
 
 app = modal.App("snap-grocery-exits-api")
 
@@ -44,7 +54,7 @@ for name in ("store_prep.py", "serving.py", "explain.py", "impact.py"):
 image = image.add_local_file(ROOT / "models" / "pipeline.joblib", "/root/models/pipeline.joblib")
 
 
-@app.function(image=image)  # no secrets: the API needs no credentials
+@app.function(image=image, secrets=[modal.Secret.from_dict({"FRONTEND_ORIGIN": FRONTEND_ORIGIN})])  # no credentials: only the public CORS origin
 @modal.concurrent(max_inputs=20)
 @modal.asgi_app(label="snap-grocery-exits-api")
 def api():

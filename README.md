@@ -224,9 +224,14 @@ both servers:
 - All 8 `invalid_examples` must return 422 (never 500).
 
 **CORS.** The API allows browser calls (GET and POST only, no credentials) from `http://localhost:3000` and from one more origin
-read from the `FRONTEND_ORIGIN` environment variable (our Vercel domain, e.g. `https://our-app.vercel.app`, no trailing slash). The
-default is the inert placeholder `https://placeholder.invalid`. To set it on Modal, add it to the `@app.function` in
-`app/modal_api.py` (`modal.Secret.from_dict({"FRONTEND_ORIGIN": ...})`; it is not a secret) and redeploy.
+read from the `FRONTEND_ORIGIN` environment variable (default in `app/api.py`: the inert placeholder `https://placeholder.invalid`). The
+Modal deploy sets it: `app/modal_api.py` reads `FRONTEND_ORIGIN` from the **local** environment at deploy time and, if it is unset, uses
+our production site `https://snap-grocery-exits-nc.vercel.app`. It is an origin only (no path, no trailing slash) and is passed with
+`modal.Secret.from_dict`, although it is not a secret. To allow a different site, e.g. a custom domain, set `FRONTEND_ORIGIN` in the shell and redeploy
+(`PYTHONUTF8=1 uv run python -m modal deploy app/modal_api.py` on Windows); only one origin is allowed at a time, so Vercel preview URLs are
+blocked. Check it with a preflight:
+`curl -i -X OPTIONS <api-url>/predict -H "Origin: https://snap-grocery-exits-nc.vercel.app" -H "Access-Control-Request-Method: POST" -H "Access-Control-Request-Headers: content-type"`
+must answer 200 with `access-control-allow-origin` equal to that origin.
 
 The verifier also starts a throwaway local server with `MODEL_DIR` pointing at an empty temporary folder and checks that
 `/health` reports `self_check_passed = false` and that `POST /predict` returns 503, never 500. The deployed app is not touched for this.
