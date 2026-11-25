@@ -1,0 +1,323 @@
+{
+  "info": {
+    "_postman_id": "30a8877e-3d64-4d01-88ca-13470440d3cf",
+    "name": "Snapshot Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58295424",
+    "_collection_link": "https://go.postman.co/collection/58295424-30a8877e-3d64-4d01-88ca-13470440d3cf?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "health",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Alt-Svc",
+              "value": "h3=\":443\"; ma=2592000"
+            },
+            {
+              "key": "Content-Length",
+              "value": "54"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 25 Nov 2026 17:11:10 GMT"
+            },
+            {
+              "key": "Modal-Function-Call-Id",
+              "value": "fc-01M89V0ZJ5GWXZBXGWK6504WAE"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Vary",
+              "value": "accept-encoding"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"status\": \"ok\",\n  \"self_check_passed\": true,\n  \"problems\": []\n}"
+        }
+      ]
+    },
+    {
+      "name": "model-info",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/model-info",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "model-info"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "model-info",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/model-info",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "model-info"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Alt-Svc",
+              "value": "h3=\":443\"; ma=2592000"
+            },
+            {
+              "key": "Content-Length",
+              "value": "2820"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 25 Nov 2026 17:13:49 GMT"
+            },
+            {
+              "key": "Modal-Function-Call-Id",
+              "value": "fc-01M89V5RVW8MHV78M2C5XCJZ9V"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Vary",
+              "value": "accept-encoding"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"metadata\": {\n    \"steps\": [\n      \"prep\",\n      \"hgb\"\n    ],\n    \"created\": \"2026-11-17T19:02:40+00:00\",\n    \"sklearn_version\": \"1.9.1\",\n    \"python_version\": \"3.13.5\",\n    \"numpy_version\": \"2.5.4\",\n    \"pandas_version\": \"3.1.0\",\n    \"label\": \"exit_12m\",\n    \"training_years\": [\n      2012,\n      2021\n    ],\n    \"n_train_rows\": 21330,\n    \"n_train_exits\": 857,\n    \"features\": [\n      \"store_type\",\n      \"store_age_years\",\n      \"auth_date_placeholder\",\n      \"n_prior_spells_same_id\",\n      \"n_prior_ownership_changes\",\n      \"chain_size\",\n      \"n_grocery_05mi\",\n      \"n_grocery_1mi\",\n      \"n_convenience_1mi\",\n      \"convenience_to_grocery_ratio_1mi\",\n      \"n_grocery_ends_1mi_prior12m\",\n      \"acs_population\",\n      \"pop_density_sqmi\",\n      \"pct_poverty\",\n      \"median_hh_income\",\n      \"pct_no_vehicle\",\n      \"pct_snap_hh\",\n      \"pct_renter\",\n      \"pct_age_65_plus\",\n      \"unemployment_rate\"\n    ],\n    \"input_columns\": [\n      \"year\",\n      \"store_type\",\n      \"store_age_years\",\n      \"auth_date_placeholder\",\n      \"n_prior_spells_same_id\",\n      \"n_prior_ownership_changes\",\n      \"chain_size\",\n      \"n_grocery_05mi\",\n      \"n_grocery_1mi\",\n      \"n_convenience_1mi\",\n      \"convenience_to_grocery_ratio_1mi\",\n      \"n_grocery_ends_1mi_prior12m\",\n      \"acs_population\",\n      \"pop_density_sqmi\",\n      \"pct_poverty\",\n      \"median_hh_income\",\n      \"pct_no_vehicle\",\n      \"pct_snap_hh\",\n      \"pct_renter\",\n      \"pct_age_65_plus\",\n      \"unemployment_rate\"\n    ],\n    \"context_columns\": [\n      \"dist_other_grocery_jan1_mi\"\n    ],\n    \"tier_cutoffs\": {\n      \"low\": 0.021,\n      \"high\": 0.084,\n      \"base_rate_2012_2018\": 0.042183954078227205\n    },\n    \"calibration\": \"none\",\n    \"settings\": {\n      \"learning_rate\": 0.1,\n      \"max_leaf_nodes\": 2,\n      \"min_samples_leaf\": 100,\n      \"l2_regularization\": 0,\n      \"max_iter\": 300,\n      \"early_stopping\": false,\n      \"categorical_features\": \"from_dtype\",\n      \"random_state\": 2026\n    },\n    \"baseline_log_odds\": -3.173424305254799,\n    \"unemployment_median\": 0.08414766558089033,\n    \"store_type_categories\": [\n      \"Large Grocery Store\",\n      \"Medium Grocery Store\",\n      \"Small Grocery Store\",\n      \"Super Store\",\n      \"Supermarket\"\n    ],\n    \"income_reference_years\": [\n      2012,\n      2013,\n      2014,\n      2015,\n      2016,\n      2017,\n      2018,\n      2019,\n      2020,\n      2021,\n      2022,\n      2023,\n      2024\n    ],\n    \"income_reference_n\": {\n      \"2012\": 2053,\n      \"2013\": 2147,\n      \"2014\": 2167,\n      \"2015\": 2142,\n      \"2016\": 2171,\n      \"2017\": 2147,\n      \"2018\": 2145,\n      \"2019\": 2107,\n      \"2020\": 2119,\n      \"2021\": 2117,\n      \"2022\": 2144,\n      \"2023\": 2162,\n      \"2024\": 2133\n    },\n    \"transformer\": \"store_prep.StoreFeaturePrep (src/model/store_prep.py)\"\n  },\n  \"self_check_passed\": true,\n  \"limits\": [\n    \"Estimates a store's chance of losing SNAP authorization within 12 months of Jan 1, with ownership changes not counted as exits and administrative batch ends counted as exits (exit_12m). It does not say a store will close.\",\n    \"Discrimination is modest: 2012-2018 model validation PR-AUC 0.149 against a 3.5% exit rate; top-50-per-year precision 25%. Say 'higher risk', not 'will exit'.\",\n    \"Fairness: dropping the seven tract demographic inputs did not narrow the majority-Black vs majority-White false-positive gap (4.1% vs 1.5% with them, 4.6% vs 1.2% without, validation, top 50 per year); it is plausibly carried by store type and chain size. To be reported on the test set in D6 (docs/changes_since_d3.md).\",\n    \"The 2022-2024 cohorts have never been scored. The refit model's only evaluation is the D6 test run.\"\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "predict-good",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"year\": 2019,\n    \"store_type\": \"Small Grocery Store\",\n    \"store_age_years\": 4.216290212183436,\n    \"auth_date_placeholder\": 0,\n    \"n_prior_spells_same_id\": 0,\n    \"n_prior_ownership_changes\": 0,\n    \"chain_size\": 2,\n    \"n_grocery_05mi\": 2,\n    \"n_grocery_1mi\": 5,\n    \"n_convenience_1mi\": 10,\n    \"convenience_to_grocery_ratio_1mi\": 1.6666666666666667,\n    \"n_grocery_ends_1mi_prior12m\": 2,\n    \"acs_population\": 4072,\n    \"pop_density_sqmi\": 5242.685016450795,\n    \"pct_poverty\": 0.27480353634577603,\n    \"median_hh_income\": 35455,\n    \"pct_no_vehicle\": 0.12717882504841835,\n    \"pct_snap_hh\": 0.2550032278889606,\n    \"pct_renter\": 0.6668818592640413,\n    \"pct_age_65_plus\": 0.09823182711198428,\n    \"unemployment_rate\": 0.10870566559189314,\n    \"dist_other_grocery_jan1_mi\": 0.013833263777837883\n  }\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "predict-good",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"year\": 2019,\n    \"store_type\": \"Small Grocery Store\",\n    \"store_age_years\": 4.216290212183436,\n    \"auth_date_placeholder\": 0,\n    \"n_prior_spells_same_id\": 0,\n    \"n_prior_ownership_changes\": 0,\n    \"chain_size\": 2,\n    \"n_grocery_05mi\": 2,\n    \"n_grocery_1mi\": 5,\n    \"n_convenience_1mi\": 10,\n    \"convenience_to_grocery_ratio_1mi\": 1.6666666666666667,\n    \"n_grocery_ends_1mi_prior12m\": 2,\n    \"acs_population\": 4072,\n    \"pop_density_sqmi\": 5242.685016450795,\n    \"pct_poverty\": 0.27480353634577603,\n    \"median_hh_income\": 35455,\n    \"pct_no_vehicle\": 0.12717882504841835,\n    \"pct_snap_hh\": 0.2550032278889606,\n    \"pct_renter\": 0.6668818592640413,\n    \"pct_age_65_plus\": 0.09823182711198428,\n    \"unemployment_rate\": 0.10870566559189314,\n    \"dist_other_grocery_jan1_mi\": 0.013833263777837883\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "predict"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Alt-Svc",
+              "value": "h3=\":443\"; ma=2592000"
+            },
+            {
+              "key": "Content-Length",
+              "value": "513"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 25 Nov 2026 17:49:33 GMT"
+            },
+            {
+              "key": "Modal-Function-Call-Id",
+              "value": "fc-01M89X7ETJ0M2Q6P0K964K74QR"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Vary",
+              "value": "accept-encoding"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"predictions\": [\n    {\n      \"row\": 0,\n      \"raw_score\": -1.2820902918180146,\n      \"probability\": 0.21719461974312232,\n      \"tier\": \"high\",\n      \"impact\": 0.42143296493827515,\n      \"priority\": 0.09153297256698527,\n      \"reasons\": [\n        {\n          \"feature\": \"store_type\",\n          \"text\": \"It is a Small Grocery Store (raises risk)\",\n          \"effect\": 1.2963256119200988\n        },\n        {\n          \"feature\": \"chain_size\",\n          \"text\": \"2 SNAP stores in NC share its name (raises risk)\",\n          \"effect\": 0.8608179182020214\n        },\n        {\n          \"feature\": \"store_age_years\",\n          \"text\": \"It has been authorized for 4.2 years (raises risk)\",\n          \"effect\": 0.14703309278897567\n        }\n      ]\n    }\n  ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "predict-bad",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "[\n  {\n    \"year\": 2027,\n    \"store_type\": \"Supermarket\",\n    \"store_age_years\": 3.482546201232033,\n    \"auth_date_placeholder\": 0.0,\n    \"n_prior_spells_same_id\": 0.0,\n    \"n_prior_ownership_changes\": 0.0,\n    \"chain_size\": 12.0,\n    \"n_grocery_05mi\": 2.0,\n    \"n_grocery_1mi\": 2.0,\n    \"n_convenience_1mi\": 2.0,\n    \"convenience_to_grocery_ratio_1mi\": 0.6666666666666666,\n    \"n_grocery_ends_1mi_prior12m\": 0.0,\n    \"acs_population\": 5168.0,\n    \"pop_density_sqmi\": 933.8268527393552,\n    \"pct_poverty\": 0.23989849697442905,\n    \"median_hh_income\": 48783.0,\n    \"pct_no_vehicle\": 0.05344295991778006,\n    \"pct_snap_hh\": 0.19424460431654678,\n    \"pct_renter\": 0.4028776978417266,\n    \"pct_age_65_plus\": 0.18188854489164086,\n    \"unemployment_rate\": 0.07149240393208221,\n    \"dist_other_grocery_jan1_mi\": 0.17388249998788136\n  }\n]",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "predict-bad",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "[\n  {\n    \"year\": 2027,\n    \"store_type\": \"Supermarket\",\n    \"store_age_years\": 3.482546201232033,\n    \"auth_date_placeholder\": 0.0,\n    \"n_prior_spells_same_id\": 0.0,\n    \"n_prior_ownership_changes\": 0.0,\n    \"chain_size\": 12.0,\n    \"n_grocery_05mi\": 2.0,\n    \"n_grocery_1mi\": 2.0,\n    \"n_convenience_1mi\": 2.0,\n    \"convenience_to_grocery_ratio_1mi\": 0.6666666666666666,\n    \"n_grocery_ends_1mi_prior12m\": 0.0,\n    \"acs_population\": 5168.0,\n    \"pop_density_sqmi\": 933.8268527393552,\n    \"pct_poverty\": 0.23989849697442905,\n    \"median_hh_income\": 48783.0,\n    \"pct_no_vehicle\": 0.05344295991778006,\n    \"pct_snap_hh\": 0.19424460431654678,\n    \"pct_renter\": 0.4028776978417266,\n    \"pct_age_65_plus\": 0.18188854489164086,\n    \"unemployment_rate\": 0.07149240393208221,\n    \"dist_other_grocery_jan1_mi\": 0.17388249998788136\n  }\n]",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/predict",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "predict"
+              ]
+            }
+          },
+          "status": "Unprocessable Entity",
+          "code": 422,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Alt-Svc",
+              "value": "h3=\":443\"; ma=2592000"
+            },
+            {
+              "key": "Content-Length",
+              "value": "145"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Date",
+              "value": "Wed, 25 Nov 2026 17:53:42 GMT"
+            },
+            {
+              "key": "Modal-Function-Call-Id",
+              "value": "fc-01M89XF2G7C5X61P5VF19E4C8E"
+            },
+            {
+              "key": "Vary",
+              "value": "Origin"
+            },
+            {
+              "key": "Vary",
+              "value": "accept-encoding"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"detail\": [\n    {\n      \"type\": \"less_than_equal\",\n      \"loc\": [\n        \"body\",\n        0,\n        \"year\"\n      ],\n      \"msg\": \"Input should be less than or equal to 2024\",\n      \"input\": 2027,\n      \"ctx\": {\n        \"le\": 2024\n      }\n    }\n  ]\n}"
+        }
+      ]
+    }
+  ]
+}
